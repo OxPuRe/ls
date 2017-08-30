@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2016/11/01 17:50:21 by auverneu         ###   ########.fr        #
+#    Updated: 2017/01/27 18:04:32 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -108,7 +108,9 @@ SRC_NAME = flag_aff.c\
 	ft_nbinstr.c\
 	ft_max.c\
 	ft_min.c\
-	ft_memset_int.c
+	ft_memset_int.c\
+	ft_putchar_prtf.c\
+	ft_strupper.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
