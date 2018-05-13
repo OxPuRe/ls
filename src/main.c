@@ -6,7 +6,7 @@
 /*   By:  <@student.42.fr>                          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by                   #+#    #+#             */
-/*   Updated: 2017/06/07 01:50:17 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/09 15:29:44 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 
 int		main(int ac, char **av)
 {
-	int		args;
-	int		ret;
-	t_opts	*opts;
+	int	ret;
 
-	ls_parse_opt(*opts);
-	ret = ls_core(args, *opts);
+	if (ac != 2)
+		return (1);
+	ret = test(av);
 	return (ret);
 }
