@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2017/05/26 02:10:50 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/15 19:19:18 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,31 @@
 # include <grp.h>
 # include <stdlib.h>
 # include <libft.h>
+# include <limits.h>
+# include <pwd.h>
+# include <grp.h>
 
-# define LS_OPTS	"1aAcCdflrRStuU"
-
-struct				s_file
+enum ls_opts
 {
-	char			*name;
+	ONE = 1, A = 2, AA = 4, C = 8, CC = 16, D = 32, F = 64, L = 128, R = 256,
+	S = 512, T = 1024, U = 2048, UU = 4096
+};
+
+typedef struct				s_info
+{
+	unsigned int	flags;
+}					t_info;
+
+typedef struct				s_listls
+{
 	char			type;
-}					t_file;
+	char			*rights;
+	char			*owner;
+	char			*group;
+	unsigned long	nb_link;
+	unsigned long	size;
+	char			*date;
+}					t_listls;
 
-struct				s_opts
-{
-	char			*pgr_name;
-	unsigned int	opts;
-}					t_opts;
-
+//int		ft_info_ls(char **av);
 #endif
