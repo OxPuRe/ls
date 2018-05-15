@@ -6,58 +6,67 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/15 12:15:18 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/15 15:45:11 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_ls.h>
 
-char	*ft_type_ls(char *info, mode_t st_mode)
+t_listls	*ft_alloc_listls(void)
 {
-	    if (st_mode & S_IFREG)
-        sprintf(info, "-");
+	t_listls	*new;
+
+	if (!(new = (t_listls *)malloc(sizeof(t_listls))))
+		return (NULL);
+	new->type = '\0';
+	if (!(new->rights = (char *)malloc(9 * sizeof(char))))
+		{
+			free(new);
+			return (NULL);
+		}
+	return (new);
+}
+
+void		ft_type_ls(t_listls *info, mode_t st_mode)
+{
+	if (st_mode & S_IFREG)
+        info->type = '-';
     else if (st_mode & S_IFDIR)
-        sprintf(info, "d");
+        info->type = 'd';
     else if (st_mode & S_IFLNK)
-        sprintf(info, "l");
+        info->type = 'l';
     else if (st_mode & S_IFIFO)
-        sprintf(info, "p");
+        info->type = 'p';
     else if (st_mode & S_IFSOCK)
-        sprintf(info, "s");
+        info->type = 's';
     else if (st_mode & S_IFCHR)
-        sprintf(info, "c");
+        info->type = 'c';
     else if (st_mode & S_IFBLK)
-        sprintf(info, "b");
-	return (info+1);
-};
+        info->type = 'b';
+}
 
-char	*ft_rights_ls(char *info, mode_t st_mode)
+void		ft_rights_ls(t_listls *info, mode_t st_mode)
 {
-	(st_mode & S_IRUSR) ? sprintf(info++, "r") : sprintf(info++, "-");
-    (st_mode & S_IWUSR) ? sprintf(info++, "w") : sprintf(info++, "-");
-    (st_mode & S_IXUSR) ? sprintf(info++, "x") : sprintf(info++, "-");
-    (st_mode & S_IRGRP) ? sprintf(info++, "r") : sprintf(info++, "-");
-    (st_mode & S_IWGRP) ? sprintf(info++, "w") : sprintf(info++, "-");
-    (st_mode & S_IXGRP) ? sprintf(info++, "x") : sprintf(info++, "-");
-    (st_mode & S_IROTH) ? sprintf(info++, "r") : sprintf(info++, "-");
-    (st_mode & S_IWOTH) ? sprintf(info++, "w") : sprintf(info++, "-");
-    (st_mode & S_IXOTH) ? sprintf(info, "x") : sprintf(info, "-");
-	return (info);
+	(st_mode & S_IRUSR) ? (info->rights[0] = 'r') : (info->rights[0] = '-');
+    (st_mode & S_IWUSR) ? (info->rights[1] = 'w') : (info->rights[1] = '-');
+    (st_mode & S_IXUSR) ? (info->rights[2] = 'x') : (info->rights[2] = '-');
+    (st_mode & S_IRGRP) ? (info->rights[3] = 'r') : (info->rights[3] = '-');
+    (st_mode & S_IWGRP) ? (info->rights[4] = 'w') : (info->rights[4] = '-');
+    (st_mode & S_IXGRP) ? (info->rights[5] = 'x') : (info->rights[5] = '-');
+    (st_mode & S_IROTH) ? (info->rights[6] = 'r') : (info->rights[6] = '-');
+    (st_mode & S_IWOTH) ? (info->rights[7] = 'w') : (info->rights[7] = '-');
+    (st_mode & S_IXOTH) ? (info->rights[8] = 'x') : (info->rights[8] = '-');
+}
 
-};
-
-int		ft_info_ls(char **av)
+int			ft_info_ls(char **av)
 {
 	struct stat	st_ls;
-	char		*info;
-	char		*ret;
+	t_listls	*info;
 
- 	info = (char *)malloc(11 * sizeof(char));
-	ret = info;
+	info = ft_alloc_listls();
 	stat(av[1], &st_ls);
-	info = ft_type_ls(info, st_ls.st_mode);
-	info = ft_rights_ls(info, st_ls.st_mode);
-	//sprintf(info++, )
-	printf("%s\n", ret);
+	ft_type_ls(info, st_ls.st_mode);
+	ft_rights_ls(info, st_ls.st_mode);
+	printf("%c%s\n", info->type, info->rights);
 	return (0);
 }
