@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/15 15:45:11 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/15 19:50:57 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,35 @@ void		ft_rights_ls(t_listls *info, mode_t st_mode)
     (st_mode & S_IXOTH) ? (info->rights[8] = 'x') : (info->rights[8] = '-');
 }
 
+void		ft_listend_ls(t_listls *info, struct stat *st_ls)
+{
+	struct passwd	*user;
+	struct group	*group;
+	char			*tmp;
+
+	tmp = NULL;
+	info->nb_link = (unsigned long)st_ls->st_nlink;
+	user = getpwuid(st_ls->st_uid);
+	group = getgrgid(st_ls->st_gid);
+	info->owner = user->pw_name;
+	info->group = group->gr_name;
+	info->size = (unsigned long)st_ls->st_size;
+	tmp = ctime(&st_ls->st_mtime);
+	ft_memmove(info->date, &tmp[4], 12);
+	info->date[12] = '\0';
+}
+
 int			ft_info_ls(char **av)
 {
 	struct stat	st_ls;
 	t_listls	*info;
 
 	info = ft_alloc_listls();
-	stat(av[1], &st_ls);
+	lstat(av[1], &st_ls);
 	ft_type_ls(info, st_ls.st_mode);
 	ft_rights_ls(info, st_ls.st_mode);
-	printf("%c%s\n", info->type, info->rights);
+	ft_listend_ls(info, &st_ls);
+	printf("%c%s %2lu %s  %s  %lu %s\n", info->type, info->rights, info->nb_link,
+		info->owner, info->group, info->size, info->date);
 	return (0);
 }
