@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/15 19:19:18 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/16 12:04:25 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,5 @@ typedef struct				s_listls
 	char			*date;
 }					t_listls;
 
-//int		ft_info_ls(char **av);
+int		ft_infolst_ls(char *av);
 #endif

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/15 19:50:57 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/16 12:04:20 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,22 @@ t_listls	*ft_alloc_listls(void)
 	return (new);
 }
 
-void		ft_type_ls(t_listls *info, mode_t st_mode)
+void		ft_lstbegin_ls(t_listls *info, mode_t st_mode)
 {
 	if (st_mode & S_IFREG)
-        info->type = '-';
-    else if (st_mode & S_IFDIR)
-        info->type = 'd';
-    else if (st_mode & S_IFLNK)
-        info->type = 'l';
-    else if (st_mode & S_IFIFO)
-        info->type = 'p';
-    else if (st_mode & S_IFSOCK)
-        info->type = 's';
-    else if (st_mode & S_IFCHR)
-        info->type = 'c';
-    else if (st_mode & S_IFBLK)
-        info->type = 'b';
-}
-
-void		ft_rights_ls(t_listls *info, mode_t st_mode)
-{
+		info->type = '-';
+	else if (st_mode & S_IFDIR)
+		info->type = 'd';
+	else if (st_mode & S_IFLNK)
+		info->type = 'l';
+	else if (st_mode & S_IFIFO)
+		info->type = 'p';
+	else if (st_mode & S_IFSOCK)
+		info->type = 's';
+	else if (st_mode & S_IFCHR)
+		info->type = 'c';
+	else if (st_mode & S_IFBLK)
+		info->type = 'b';
 	(st_mode & S_IRUSR) ? (info->rights[0] = 'r') : (info->rights[0] = '-');
     (st_mode & S_IWUSR) ? (info->rights[1] = 'w') : (info->rights[1] = '-');
     (st_mode & S_IXUSR) ? (info->rights[2] = 'x') : (info->rights[2] = '-');
@@ -58,7 +54,7 @@ void		ft_rights_ls(t_listls *info, mode_t st_mode)
     (st_mode & S_IXOTH) ? (info->rights[8] = 'x') : (info->rights[8] = '-');
 }
 
-void		ft_listend_ls(t_listls *info, struct stat *st_ls)
+void		ft_lstend_ls(t_listls *info, struct stat *st_ls)
 {
 	struct passwd	*user;
 	struct group	*group;
@@ -76,16 +72,15 @@ void		ft_listend_ls(t_listls *info, struct stat *st_ls)
 	info->date[12] = '\0';
 }
 
-int			ft_info_ls(char **av)
+int			ft_infolst_ls(char *name)
 {
 	struct stat	st_ls;
 	t_listls	*info;
 
 	info = ft_alloc_listls();
-	lstat(av[1], &st_ls);
-	ft_type_ls(info, st_ls.st_mode);
-	ft_rights_ls(info, st_ls.st_mode);
-	ft_listend_ls(info, &st_ls);
+	lstat(name, &st_ls);
+	ft_lstbegin_ls(info, st_ls.st_mode);
+	ft_lstend_ls(info, &st_ls);
 	printf("%c%s %2lu %s  %s  %lu %s\n", info->type, info->rights, info->nb_link,
 		info->owner, info->group, info->size, info->date);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By:  <@student.42.fr>                          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by                   #+#    #+#             */
-/*   Updated: 2018/05/13 18:25:51 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/16 12:04:32 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int		main(int ac, char **av)
 
 	if (ac != 2)
 		return (1);
-	ret = ft_info_ls(av);
+	if (!(av[1]))
+		return (1);
+	ret = ft_infolst_ls("auteur");
 	return (ret);
 }
