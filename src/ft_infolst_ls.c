@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   ft_infolst_ls.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/16 12:04:20 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/16 16:08:22 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_listls	*ft_alloc_listls(void)
 			free(new);
 			return (NULL);
 		}
+	new->size_len = 0;
 	return (new);
 }
 
@@ -54,7 +55,7 @@ void		ft_lstbegin_ls(t_listls *info, mode_t st_mode)
     (st_mode & S_IXOTH) ? (info->rights[8] = 'x') : (info->rights[8] = '-');
 }
 
-void		ft_lstend_ls(t_listls *info, struct stat *st_ls)
+void		ft_lstend_ls(t_listls *info, struct stat *st_ls, int *prc_size)
 {
 	struct passwd	*user;
 	struct group	*group;
@@ -67,21 +68,21 @@ void		ft_lstend_ls(t_listls *info, struct stat *st_ls)
 	info->owner = user->pw_name;
 	info->group = group->gr_name;
 	info->size = (unsigned long)st_ls->st_size;
+	*prc_size = ft_max((ft_intlen((int)info->size)), *prc_size);
+	printf("[%i]\n", info->size_len);
 	tmp = ctime(&st_ls->st_mtime);
-	ft_memmove(info->date, &tmp[4], 12);
+	info->date = (char *)malloc(12 * sizeof(char));
+	info->date = (char *)ft_memmove(info->date, &tmp[4], 12);
 	info->date[12] = '\0';
 }
 
-int			ft_infolst_ls(char *name)
+int			ft_infolst_ls(t_listls *info, int *prc_size, char *name)
 {
 	struct stat	st_ls;
-	t_listls	*info;
 
 	info = ft_alloc_listls();
 	lstat(name, &st_ls);
 	ft_lstbegin_ls(info, st_ls.st_mode);
-	ft_lstend_ls(info, &st_ls);
-	printf("%c%s %2lu %s  %s  %lu %s\n", info->type, info->rights, info->nb_link,
-		info->owner, info->group, info->size, info->date);
+	ft_lstend_ls(info, &st_ls, prc_size);
 	return (0);
 }

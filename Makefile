@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2018/05/09 15:27:33 by auverneu         ###   ########.fr        #
+#    Updated: 2018/05/16 15:00:58 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ SRC_PATH = src
 OBJ_PATH = obj
 LIBS_NAME = libft
 SRC_NAME = main.c\
-	test.c
+	ft_infolst_ls.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
