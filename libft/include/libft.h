@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/25 15:59:29 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/15 14:31:55 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/18 17:33:03 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,6 +196,7 @@ void				prtf_s(t_file *prtf);
 void				reset_flag(t_file *prtf);
 int					ft_max(int a, int b);
 int					ft_min(int a, int b);
+double				ft_pow(double x, int y);
 void				*ft_memset_int(void *b, int c, size_t len);
 
 #endif

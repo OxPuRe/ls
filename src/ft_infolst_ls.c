@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/16 16:08:22 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/18 17:52:58 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,19 +69,20 @@ void		ft_lstend_ls(t_listls *info, struct stat *st_ls, int *prc_size)
 	info->group = group->gr_name;
 	info->size = (unsigned long)st_ls->st_size;
 	*prc_size = ft_max((ft_intlen((int)info->size)), *prc_size);
-	printf("[%i]\n", info->size_len);
 	tmp = ctime(&st_ls->st_mtime);
 	info->date = (char *)malloc(12 * sizeof(char));
 	info->date = (char *)ft_memmove(info->date, &tmp[4], 12);
 	info->date[12] = '\0';
 }
 
-int			ft_infolst_ls(t_listls *info, int *prc_size, char *name)
+int			ft_infolst_ls(int *prc_size, char *name)
 {
+	t_listls	*info;
 	struct stat	st_ls;
 
-	info = ft_alloc_listls();
 	lstat(name, &st_ls);
+	info = ft_alloc_listls();
+	info->name = name;
 	ft_lstbegin_ls(info, st_ls.st_mode);
 	ft_lstend_ls(info, &st_ls, prc_size);
 	return (0);

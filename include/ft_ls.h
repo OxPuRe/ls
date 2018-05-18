@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/16 16:05:45 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/18 17:51:17 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,29 +28,50 @@
 # include <pwd.h>
 # include <grp.h>
 
-enum ls_opts
+# define LS_OPTS "1aAcCdflrRtuUs"
+
+enum ls_flags
 {
-	ONE = 1, A = 2, AA = 4, C = 8, CC = 16, D = 32, F = 64, L = 128, R = 256,
-	S = 512, T = 1024, U = 2048, UU = 4096
+	F_ONE = 1,
+	F_A = 2,
+	F_AA = 4,
+	F_C = 8,
+	F_CC = 16,
+	F_D = 32,
+	F_F = 64,
+	F_L = 128,
+	F_R = 256,
+	F_RR = 512,
+	F_T = 1024,
+	F_U = 2048,
+	F_UU = 4096,
+	F_S = 8192
 };
 
-typedef struct				s_info
+enum ls_error
 {
-	unsigned int	flags;
-}					t_info;
+	ILL_OPT = 1
+};
+
+typedef struct				s_reg_ls
+{
+	char					type;
+	char					*name;
+}							t_reg_ls;
 
 typedef struct				s_listls
 {
-	char			type;
-	char			*rights;
-	char			*owner;
-	char			*group;
-	unsigned long	nb_link;
-	unsigned long	size;
-	int				size_len;
-	char			*date;
-	char			*name;
-}					t_listls;
+	char					type;
+	char					*rights;
+	char					*owner;
+	char					*group;
+	unsigned long			nb_link;
+	unsigned long			size;
+	int						size_len;
+	char					*date;
+	char					*name;
+}							t_listls;
 
-int		ft_infolst_ls(t_listls *info, int *prc_size, char *name);
+int							ft_infolst_ls(int *prc_size, char *name);
+t_listls					*ft_alloc_listls(void);
 #endif
