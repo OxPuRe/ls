@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/18 17:52:58 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/19 19:36:24 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,11 @@ void		ft_lstend_ls(t_listls *info, struct stat *st_ls, int *prc_size)
 	*prc_size = ft_max((ft_intlen((int)info->size)), *prc_size);
 	tmp = ctime(&st_ls->st_mtime);
 	info->date = (char *)malloc(12 * sizeof(char));
-	info->date = (char *)ft_memmove(info->date, &tmp[4], 12);
+	info->date = (char *)ft_memmove(info->date, &tmp[4], ft_strlen(&tmp[4]));
 	info->date[12] = '\0';
 }
 
-int			ft_infolst_ls(int *prc_size, char *name)
+int			ft_infolst_ls(int *prc_size, char *name, int flags)
 {
 	t_listls	*info;
 	struct stat	st_ls;
@@ -85,5 +85,10 @@ int			ft_infolst_ls(int *prc_size, char *name)
 	info->name = name;
 	ft_lstbegin_ls(info, st_ls.st_mode);
 	ft_lstend_ls(info, &st_ls, prc_size);
+	if (!(flags & F_A) && (info->name[0] == '.'))
+		return (0);
+	printf("%c%s %2lu %s  %s  %lu %s %s\n", info->type, info->rights,
+		info->nb_link, info->owner, info->group, info->size, info->date,
+		info->name);
 	return (0);
 }

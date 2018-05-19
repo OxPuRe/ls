@@ -6,7 +6,7 @@
 /*   By:  <@student.42.fr>                          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by                   #+#    #+#             */
-/*   Updated: 2018/05/18 18:45:23 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/19 19:28:42 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,19 +60,16 @@ int		ft_core_ls(int ac, char **av, int flags)
 		rep_name = "./";
 	else
 		rep_name = av[1];
+rep_name = "./";
 	if (!(rep = opendir(rep_name)))
 		exit(1);
 	while ((rep_info = readdir(rep)) != NULL)
 	{
-		if ((flags & F_L))
-			ft_infolst_ls(&prc_size, rep_info->d_name);
+		if ((flags & F_L) != 0)
+			ft_infolst_ls(&prc_size, rep_info->d_name, flags);
 		//else
 			//ft_info_ls();
 	}
-	ft_putstr("Ok\n");
-	//printf("%c%s %2lu %s  %s  %lu %s %s\n", info->type, info->rights,
-	//	info->nb_link, info->owner, info->group, info->size, info->date,
-	//	rep_info->d_name);
 	return (0);
 }
 
@@ -80,7 +77,7 @@ int		main(int ac, char **av)
 {
 	int		flags;
 
-	if (!(flags = ft_opts_ls(ac, av)))
-		ft_core_ls(ac, av, flags);
+	flags = ft_opts_ls(ac, av);
+	ft_core_ls(ac, av, flags);
 	return (0);
 }
