@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/19 19:36:24 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/21 15:38:01 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ t_listls	*ft_alloc_listls(void)
 
 	if (!(new = (t_listls *)malloc(sizeof(t_listls))))
 		return (NULL);
-	new->type = '\0';
 	if (!(new->rights = (char *)malloc(9 * sizeof(char))))
 		{
 			free(new);

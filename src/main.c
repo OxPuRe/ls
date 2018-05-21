@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:  <@student.42.fr>                          +#+  +:+       +#+        */
+/*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/10/20 19:45:51 by                   #+#    #+#             */
-/*   Updated: 2018/05/19 19:28:42 by auverneu         ###   ########.fr       */
+/*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
+/*   Updated: 2018/05/21 15:46:35 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,19 +56,19 @@ int		ft_core_ls(int ac, char **av, int flags)
 
 	rep = NULL;
 	rep_info = NULL;
+	rep_name = av[0];
 	if (ac == 1)
 		rep_name = "./";
-	else
-		rep_name = av[1];
-rep_name = "./";
+	if (flags && ac == 2)
+		rep_name = "./";
 	if (!(rep = opendir(rep_name)))
 		exit(1);
 	while ((rep_info = readdir(rep)) != NULL)
 	{
 		if ((flags & F_L) != 0)
 			ft_infolst_ls(&prc_size, rep_info->d_name, flags);
-		//else
-			//ft_info_ls();
+		else
+			ft_inforeg_ls(rep_info->d_name, flags);
 	}
 	return (0);
 }
