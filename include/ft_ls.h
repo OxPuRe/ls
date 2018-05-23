@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/21 15:51:26 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/23 19:25:56 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,9 @@ typedef struct				s_listls
 	char					*group;
 	char					*date;
 	char					*name;
-}							t_listls;
+}							t_structls;
 
-int							ft_infolst_ls(int *prc_size, char *name, int flags);
-int							ft_inforeg_ls(char *name, int flags);
-t_listls					*ft_alloc_listls(void);
+int							ft_infolst_ls(int flags, char **arg);
+int							ft_inforeg_ls(unsigned short winsz, int flags, char **arg);
+t_structls					*ft_alloc_listls(void);
 #endif

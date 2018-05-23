@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/21 15:46:35 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/23 17:47:47 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,8 @@ int		ft_error_ls(int err, char *str)
 	return (-1);
 }
 
-int		ft_opts_ls(int ac, char **av)
+char		*ft_opts_ls(int ac, char **av, int flags)
 {
-	int		flags;
 	int		i;
 	int		j;
 	char	*opts;
@@ -44,40 +43,20 @@ int		ft_opts_ls(int ac, char **av)
 				return (ft_error_ls(ILL_OPT, &av[j][i]));
 		}
 	}
-	return (flags);
-}
-
-int		ft_core_ls(int ac, char **av, int flags)
-{
-	DIR				*rep;
-	char			*rep_name;
-	struct dirent	*rep_info;
-	int				prc_size;
-
-	rep = NULL;
-	rep_info = NULL;
-	rep_name = av[0];
-	if (ac == 1)
-		rep_name = "./";
-	if (flags && ac == 2)
-		rep_name = "./";
-	if (!(rep = opendir(rep_name)))
-		exit(1);
-	while ((rep_info = readdir(rep)) != NULL)
-	{
-		if ((flags & F_L) != 0)
-			ft_infolst_ls(&prc_size, rep_info->d_name, flags);
-		else
-			ft_inforeg_ls(rep_info->d_name, flags);
-	}
-	return (0);
+	return (&av[j]);
 }
 
 int		main(int ac, char **av)
 {
-	int		flags;
+	struct winsize	sz;
+	int				*flags;
+	char			**arg;
 
-	flags = ft_opts_ls(ac, av);
-	ft_core_ls(ac, av, flags);
+	arg = ft_opts_ls(ac, av, &flags);
+	ioctl(0, TIOCGWINSZ, &sz);
+	if ((flags & F_L) != 0)
+		ft_infolst_ls(flags, arg);
+	else
+		ft_inforeg_ls(sz.ws_col, flags, arg);
 	return (0);
 }
