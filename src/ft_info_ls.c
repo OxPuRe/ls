@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_infolst_ls.c                                    :+:      :+:    :+:   */
+/*   ft_info_ls.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/23 19:37:02 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/28 22:20:21 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void		ft_lstbegin_ls(t_structls *info, mode_t st_mode)
     (st_mode & S_IXOTH) ? (info->rights[8] = 'x') : (info->rights[8] = '-');
 }
 
-void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *prc_size)
+void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *prc)
 {
 	struct passwd	*user;
 	struct group	*group;
@@ -67,32 +67,27 @@ void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *prc_size)
 	info->owner = user->pw_name;
 	info->group = group->gr_name;
 	info->size = (unsigned long)st_ls->st_size;
-	*prc_size = ft_max((ft_intlen((int)info->size)), *prc_size);
+	*prc = ft_max((ft_intlen((int)info->size)), *prc);
 	tmp = ctime(&st_ls->st_mtime);
 	info->date = (char *)malloc(12 * sizeof(char));
 	info->date = (char *)ft_memmove(info->date, &tmp[4], 12);
 }
 
-int			ft_infolst_ls(int flags, char **arg)
+int			ft_info_ls(int flags, char *arg, int *prc)
 {
 	t_structls	*info;
-	t_list		*lstls;
-	t_list		*begin;
 	struct stat	st_ls;
 	int			i;
 
 	i = 0;
 	lstat(name, &st_ls);
-	if (lstls)
+	if (!lstls)
+		lstls = ft_lstnew();
 	info = ft_alloc_structls();
-	info->name = arg[i];
+	info->name = arg;
 	ft_lstbegin_ls(info, st_ls.st_mode);
-	ft_lstend_ls(info, &st_ls, prc_size);
-	if (!(flags & F_A) && (info->name[0] == '.'))
-		return (0);
-	printf("%c%s %2lu %s  %s  %lu %s %s\n", info->type, info->rights,
-		info->nb_link, info->owner, info->group, info->size, info->date,
-		info->name);
+	if ((flags & F_L) != 0)
+		ft_lstend_ls(info, &st_ls, *prc);
 	return (0);
 }
 

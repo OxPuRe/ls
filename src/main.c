@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/23 17:47:47 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/28 21:41:53 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,25 @@ char		*ft_opts_ls(int ac, char **av, int flags)
 	return (&av[j]);
 }
 
-int		main(int ac, char **av)
+void		ft_print_ls(int flags, t_list *begin)
 {
 	struct winsize	sz;
-	int				*flags;
+	printf("%c%s %2lu %s  %s  %lu %s %s\n", info->type, info->rights,
+		info->nb_link, info->owner, info->group, info->size, info->date,
+		info->name);
+}
+
+int		main(int ac, char **av)
+{
+	int				flags;
 	char			**arg;
+	int				*prc;
 
 	arg = ft_opts_ls(ac, av, &flags);
 	ioctl(0, TIOCGWINSZ, &sz);
-	if ((flags & F_L) != 0)
-		ft_infolst_ls(flags, arg);
-	else
-		ft_inforeg_ls(sz.ws_col, flags, arg);
+	if (!arg[0])
+		arg[0] = "./";
+	while (*arg)
+		ft_info_ls(flags, arg++, prc);
 	return (0);
 }

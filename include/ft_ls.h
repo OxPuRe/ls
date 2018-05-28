@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/23 19:25:56 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/28 21:31:55 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,6 @@ enum ls_error
 	ILL_OPT = 1
 };
 
-typedef struct				s_regls
-{
-	char					type;
-	char					*name;
-}							t_regls;
-
 typedef struct				s_listls
 {
 	char					type;
@@ -72,7 +66,6 @@ typedef struct				s_listls
 	char					*name;
 }							t_structls;
 
-int							ft_infolst_ls(int flags, char **arg);
-int							ft_inforeg_ls(unsigned short winsz, int flags, char **arg);
+int							ft_info_ls(int flags, char *arg, int *prc);
 t_structls					*ft_alloc_listls(void);
 #endif
