@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/28 21:31:55 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/05 14:47:24 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,11 @@ enum ls_flags
 
 enum ls_error
 {
-	ILL_OPT = 1
+	ILL_OPT = 1,
+	ALLOC_F
 };
 
-typedef struct				s_listls
+typedef struct				s_structls
 {
 	char					type;
 	int						size_len;
@@ -66,6 +67,6 @@ typedef struct				s_listls
 	char					*name;
 }							t_structls;
 
-int							ft_info_ls(int flags, char *arg, int *prc);
-t_structls					*ft_alloc_listls(void);
+int							ft_info_ls(int flags, const char *arg, int *prc);
+int							ft_error_ls(int err, char *str);
 #endif

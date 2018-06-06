@@ -6,26 +6,21 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/28 22:20:21 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/05 17:46:27 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_ls.h>
 
-t_structls	*ft_alloc_structls(void)
-{
-	t_structls	*new;
-
-	if (!(new = (t_structls *)malloc(sizeof(t_structls))))
-		return (NULL);
-	if (!(new->rights = (char *)malloc(9 * sizeof(char))))
-		{
-			free(new);
-			return (NULL);
-		}
-	new->size_len = 0;
-	return (new);
-}
+// t_structls	ft_alloc_structls(void)
+// {
+// 	t_structls	new;
+//
+// 	if (!(new.rights = (char *)malloc(9 * sizeof(char))))
+// 			ft_error_ls(ALLOC_F, "");
+// 	new.size_len = 0;
+// 	return (new);
+//}
 
 void		ft_lstbegin_ls(t_structls *info, mode_t st_mode)
 {
@@ -73,22 +68,41 @@ void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *prc)
 	info->date = (char *)ft_memmove(info->date, &tmp[4], 12);
 }
 
-int			ft_info_ls(int flags, char *arg, int *prc)
+int			ft_info_ls(int flags, const char *arg, int *prc)
 {
-	t_structls	*info;
-	struct stat	st_ls;
-	int			i;
+	t_structls		info[4096];
+	struct stat		st_ls;
+	struct dirent	*rep_info;
+	DIR				*rep;
+	int				i;
+	int				j;
 
 	i = 0;
-	lstat(name, &st_ls);
-	if (!lstls)
-		lstls = ft_lstnew();
-	info = ft_alloc_structls();
-	info->name = arg;
-	ft_lstbegin_ls(info, st_ls.st_mode);
-	if ((flags & F_L) != 0)
-		ft_lstend_ls(info, &st_ls, *prc);
+	rep = opendir(arg);
+	*prc = 0;
+	while ((rep_info = readdir(rep)) != NULL)
+	{
+		info[i].name = rep_info->d_name;
+		lstat(info[i].name, &st_ls);
+		info[i].rights = (char *)malloc(9 * sizeof(char));
+		ft_lstbegin_ls(&info[i], st_ls.st_mode);
+		if ((flags & F_L) != 0)
+			ft_lstend_ls(&info[i], &st_ls, prc);
+		i++;
+	}
+	closedir(rep);
+	j = 0;
+	while (j < i)
+	{
+		if ((flags & F_L) != 0)
+		{
+			printf("%c%s %lu %s %s %*.lu %s %s\n", info[j].type, info[j].rights, info[j].nb_link, info[j].owner, info[j].group, *prc, info[j].size, info[j].date, info[j].name);
+			free(info[i].date);
+			free(info[i].rights);
+		}
+		else
+			printf("%s\n", info[j].name);
+		j++;
+	}
 	return (0);
 }
-
-	while ((rep_info = readdir(rep)) != NULL)

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/28 21:41:53 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/06 19:24:11 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,55 +16,58 @@ int		ft_error_ls(int err, char *str)
 {
 	if (err == ILL_OPT)
 		printf("%s%c\n%s", "ls: illegal option -- ", str[0], "usage: ft_ls [-1aAcCdflrRtuUs] [file ...]\n");
+	else if (err == ALLOC_F)
+		printf("test");
 	return (-1);
 }
 
-char		*ft_opts_ls(int ac, char **av, int flags)
+void		ft_opts_ls(int ac, char **av, int *flags)
 {
 	int		i;
-	int		j;
 	char	*opts;
 
 	i = 0;
-	j = 0;
-	flags = 0;
+	*flags = 0;
 	opts = "-1aAcCdflrRtuUs";
-	if (ac == 1 || av[1][0] != '-')
-		return (0);
-	if (av[1][1] == '-')
-		return (ft_error_ls(ILL_OPT, "-"));
-	while (++j < ac && av[j] && av[j][0] == '-')
+	if (ac == 1)
+		*av = ".";
+	else
 	{
-		while (av[j][++i])
+		while (*(++av) && *av[0] == '-')
 		{
-			if (ft_strchr(opts, av[j][i]))
-				flags |= (int)ft_pow(2, (ft_strchr(opts, av[j][i]) - opts - 1));
-			else
-				return (ft_error_ls(ILL_OPT, &av[j][i]));
+			while (*av[++i])
+			{
+				if (ft_strchr(opts, *av[i]))
+					*flags |= (int)ft_pow(2, (ft_strchr(opts, *av[i]) - opts - 1));
+				else
+					ft_error_ls(ILL_OPT, &(*av[i]));
+			}
 		}
+		if (!*flags || (*flags && *av))
+			av++;
+		else
+			*av = ".";
 	}
-	return (&av[j]);
-}
-
-void		ft_print_ls(int flags, t_list *begin)
-{
-	struct winsize	sz;
-	printf("%c%s %2lu %s  %s  %lu %s %s\n", info->type, info->rights,
-		info->nb_link, info->owner, info->group, info->size, info->date,
-		info->name);
 }
 
 int		main(int ac, char **av)
 {
-	int				flags;
-	char			**arg;
+	int				*flags;
 	int				*prc;
+	int				i;
 
-	arg = ft_opts_ls(ac, av, &flags);
-	ioctl(0, TIOCGWINSZ, &sz);
-	if (!arg[0])
-		arg[0] = "./";
-	while (*arg)
-		ft_info_ls(flags, arg++, prc);
+	flags = (int *)malloc(sizeof(int));
+	prc = (int *)malloc(sizeof(int));
+	//ioctl(0, TIOCGWINSZ, &sz);
+	ft_opts_ls(ac, av, flags);
+	i = 0;
+	ft_putstr(*av);
+	while (*av)
+	{
+		ft_info_ls(*flags, *av, prc);
+		free(prc);
+		av++;
+	}
+	free(flags);
 	return (0);
 }
