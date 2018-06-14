@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/06 19:24:11 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/14 18:40:53 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,52 +21,61 @@ int		ft_error_ls(int err, char *str)
 	return (-1);
 }
 
-void		ft_opts_ls(int ac, char **av, int *flags)
+int			ft_opts_ls(char **av, int *flags)
 {
-	int		i;
 	char	*opts;
+	int		i;
+	int		j;
 
-	i = 0;
-	*flags = 0;
+	i = 1;
+	j = 1;
 	opts = "-1aAcCdflrRtuUs";
-	if (ac == 1)
-		*av = ".";
-	else
+	while (av[i])
 	{
-		while (*(++av) && *av[0] == '-')
-		{
-			while (*av[++i])
+		if (av[i][0] == '-')
+			while (av[i][j])
 			{
-				if (ft_strchr(opts, *av[i]))
-					*flags |= (int)ft_pow(2, (ft_strchr(opts, *av[i]) - opts - 1));
+				if (ft_strchr(opts, av[i][j]))
+					*flags |= (int)ft_pow(2, (ft_strchr(opts, av[i][j]) - opts - 1));
 				else
-					ft_error_ls(ILL_OPT, &(*av[i]));
+					ft_error_ls(ILL_OPT, &(av[i][j]));
+				j++;
 			}
-		}
-		if (!*flags || (*flags && *av))
-			av++;
 		else
-			*av = ".";
+			break;
+		j = 1;
+		if (av[i + 1])
+		{
+			i++;
+			if (av[i][0] != '-')
+				break;
+		}
+		else
+		{
+			av[i] = "./";
+			break;
+		}
 	}
+	return (i);
 }
 
 int		main(int ac, char **av)
 {
 	int				*flags;
-	int				*prc;
 	int				i;
 
-	flags = (int *)malloc(sizeof(int));
-	prc = (int *)malloc(sizeof(int));
-	//ioctl(0, TIOCGWINSZ, &sz);
-	ft_opts_ls(ac, av, flags);
 	i = 0;
-	ft_putstr(*av);
-	while (*av)
+	flags = (int *)malloc(sizeof(int));
+	*flags = 0;
+	//ioctl(0, TIOCGWINSZ, &sz);
+	if (ac != 1)
+		i = ft_opts_ls(av, flags);
+	else
+		av[i] = "./";
+	while (av[i])
 	{
-		ft_info_ls(*flags, *av, prc);
-		free(prc);
-		av++;
+		ft_info_ls(*flags, av[i]);
+		i++;
 	}
 	free(flags);
 	return (0);
