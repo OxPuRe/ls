@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/14 18:40:53 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/18 18:15:11 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int		main(int ac, char **av)
 		av[i] = "./";
 	while (av[i])
 	{
-		ft_info_ls(*flags, av[i]);
+		ft_info_ls(*flags, ft_strjoin(av[i], "/"));
 		i++;
 	}
 	free(flags);

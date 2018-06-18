@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/14 18:29:54 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/18 19:01:45 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *pl, int *ps)
 	info->date = ft_strdup(ctime(&st_ls->st_mtime));
 }
 
-int			ft_info_ls(int flags, const char *arg)
+int			ft_info_ls(int flags, char *arg)
 {
 	t_structls		info[4096];
 	struct stat		st_ls;
@@ -85,8 +85,9 @@ int			ft_info_ls(int flags, const char *arg)
 	*ps = 0;
 	while ((rep_info = readdir(rep)) != NULL)
 	{
+		//ft_printf("{%d}\n", flags);
 		info[i].name = rep_info->d_name;
-		lstat(info[i].name, &st_ls);
+		lstat(ft_strjoin(arg, info[i].name), &st_ls);
 		ft_lstbegin_ls(&info[i], st_ls.st_mode);
 		if ((flags & F_L) != 0)
 			ft_lstend_ls(&info[i], &st_ls, pl ,ps);
@@ -107,5 +108,6 @@ int			ft_info_ls(int flags, const char *arg)
 	closedir(rep);
 	free(pl);
 	free(ps);
+	free(arg);
 	return (0);
 }
