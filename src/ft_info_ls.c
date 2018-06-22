@@ -6,21 +6,11 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/18 19:01:45 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/22 21:01:28 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_ls.h>
-
-// t_structls	ft_alloc_structls(void)
-// {
-// 	t_structls	new;
-//
-// 	if (!(new.rights = (char *)malloc(9 * sizeof(char))))
-// 			ft_error_ls(ALLOC_F, "");
-// 	new.size_len = 0;
-// 	return (new);
-//}
 
 void		ft_lstbegin_ls(t_structls *info, mode_t st_mode)
 {
@@ -76,16 +66,19 @@ int			ft_info_ls(int flags, char *arg)
 	int				j;
 	int				*pl;
 	int				*ps;
+	char			**dir;
+	int				o;
 
+	o = 0;
 	i = 0;
 	rep = opendir(arg);
 	pl = (int *)malloc(sizeof(int));
 	ps = (int *)malloc(sizeof(int));
 	*pl = 0;
 	*ps = 0;
+	printf("{%s}\n", arg);
 	while ((rep_info = readdir(rep)) != NULL)
 	{
-		//ft_printf("{%d}\n", flags);
 		info[i].name = rep_info->d_name;
 		lstat(ft_strjoin(arg, info[i].name), &st_ls);
 		ft_lstbegin_ls(&info[i], st_ls.st_mode);
@@ -93,9 +86,13 @@ int			ft_info_ls(int flags, char *arg)
 			ft_lstend_ls(&info[i], &st_ls, pl ,ps);
 		i++;
 	}
+	dir = (char **)malloc(i * sizeof(char *));
 	j = 0;
 	while (j < i)
 	{
+		if (info[j].type == 'd' && strcmp(info[j].name, ".") &&
+			strcmp(info[j].name, ".."))
+			dir[o++] = info[j].name;
 		if ((flags & F_L) != 0)
 		{
 			printf("%c%s  %*.lu %s  %s  %*.lu %.12s %s\n", info[j].type, info[j].rights, *pl, info[j].nb_link, info[j].owner, info[j].group, *ps, info[j].size, &info[j].date[4], info[j].name);
@@ -106,8 +103,10 @@ int			ft_info_ls(int flags, char *arg)
 		j++;
 	}
 	closedir(rep);
+	if ((flags & F_RR) != 0 && *dir)
+		ft_info_ls(flags, *(dir+1));
 	free(pl);
 	free(ps);
-	free(arg);
+	//free(arg);
 	return (0);
 }
