@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/22 21:01:28 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/24 17:39:23 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *pl, int *ps)
 	info->date = ft_strdup(ctime(&st_ls->st_mtime));
 }
 
-int			ft_info_ls(int flags, char *arg)
+char			**ft_info_ls(int flags, char *arg)
 {
-	t_structls		info[4096];
+	t_structls		info[2048];
 	struct stat		st_ls;
 	struct dirent	*rep_info;
 	DIR				*rep;
@@ -76,10 +76,9 @@ int			ft_info_ls(int flags, char *arg)
 	ps = (int *)malloc(sizeof(int));
 	*pl = 0;
 	*ps = 0;
-	printf("{%s}\n", arg);
 	while ((rep_info = readdir(rep)) != NULL)
 	{
-		info[i].name = rep_info->d_name;
+		info[i].name = ft_strdup(rep_info->d_name);
 		lstat(ft_strjoin(arg, info[i].name), &st_ls);
 		ft_lstbegin_ls(&info[i], st_ls.st_mode);
 		if ((flags & F_L) != 0)
@@ -90,9 +89,13 @@ int			ft_info_ls(int flags, char *arg)
 	j = 0;
 	while (j < i)
 	{
+		if (!(flags & F_AA) && info[j].name[0] == '.')
+			;
+		else
+		{
 		if (info[j].type == 'd' && strcmp(info[j].name, ".") &&
 			strcmp(info[j].name, ".."))
-			dir[o++] = info[j].name;
+			dir[o++] = ft_strjoin(arg, info[j].name);
 		if ((flags & F_L) != 0)
 		{
 			printf("%c%s  %*.lu %s  %s  %*.lu %.12s %s\n", info[j].type, info[j].rights, *pl, info[j].nb_link, info[j].owner, info[j].group, *ps, info[j].size, &info[j].date[4], info[j].name);
@@ -100,13 +103,30 @@ int			ft_info_ls(int flags, char *arg)
 		}
 		else
 			printf("%s\n", info[j].name);
+			free(info[j].name);
+		}
 		j++;
 	}
+	ft_printf("\n");
 	closedir(rep);
-	if ((flags & F_RR) != 0 && *dir)
-		ft_info_ls(flags, *(dir+1));
 	free(pl);
 	free(ps);
-	//free(arg);
+	free(arg);
+	return (dir);
+}
+
+int		test(int flags, char **av, int i)
+{
+	char	**dir;
+
+	while (av[i] != NULL)
+	{
+		if (strcmp(av[i], "."))
+	 		ft_printf("%s:\n", av[i]);
+		dir = ft_info_ls(flags, ft_strjoin(av[i], "/"));
+		if ((flags & F_RR) && *dir != NULL)
+			test(flags, dir++, 0);
+		i++;
+	}
 	return (0);
 }

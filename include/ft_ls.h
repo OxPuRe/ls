@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/18 18:21:10 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/24 16:39:50 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct				s_structls
 	char					*name;
 }							t_structls;
 
-int							ft_info_ls(int flags, char *arg);
+char						**ft_info_ls(int flags, char *arg);
 int							ft_error_ls(int err, char *str);
+int							test(int flags, char **av, int i);
 #endif

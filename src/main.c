@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/18 18:15:11 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/06/24 17:00:02 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int		ft_error_ls(int err, char *str)
 {
 	if (err == ILL_OPT)
-		printf("%s%c\n%s", "ls: illegal option -- ", str[0], "usage: ft_ls [-1aAcCdflrRtuUs] [file ...]\n");
+		printf("%s%c\n%s", "ft_ls: illegal option -- ", str[0], "usage: ft_ls [-1aAcCdflrRtuUs] [file ...]\n");
 	else if (err == ALLOC_F)
 		printf("test");
 	return (-1);
@@ -52,7 +52,7 @@ int			ft_opts_ls(char **av, int *flags)
 		}
 		else
 		{
-			av[i] = "./";
+			av[i] = ".";
 			break;
 		}
 	}
@@ -71,12 +71,8 @@ int		main(int ac, char **av)
 	if (ac != 1)
 		i = ft_opts_ls(av, flags);
 	else
-		av[i] = "./";
-	while (av[i])
-	{
-		ft_info_ls(*flags, ft_strjoin(av[i], "/"));
-		i++;
-	}
+		av[i] = ".";
+	test(*flags, av, i);
 	free(flags);
 	return (0);
 }
