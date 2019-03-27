@@ -18,6 +18,7 @@ OBJ_PATH = obj
 LIBS_NAME = libft
 SRC_NAME = main.c\
 	ft_info_ls.c\
+	ft_sortalpha.c\
 	ft_sort_ls.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))

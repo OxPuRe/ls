@@ -10,25 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <libft.h>
+#include <ft_ls.h.h>
 
-int		partitionner(int *tableau, int p, int r)
+int		partitionner(int *tableau, int p, int r, size_t size,
+						int(*compar)(const void*, const void*))
 {
-	int pivot;
 	int	temp;
 	int	i;
 	int	j;
 
-	pivot = tableau[p];
-	i = p - 1;
-	j = r + 1;
+	i = p;
+	j = r;
+
 	while (1)
 	{
-		while (tableau[--j] > pivot)
-			;
-		while (tableau[++i] < pivot)
-			;
 		if (i < j)
 		{
 			temp = tableau[i];
@@ -40,14 +36,23 @@ int		partitionner(int *tableau, int p, int r)
 	}
 }
 
-void	ft_sort_ls(int *tableau, int p, int r)
+void	ft_sort_ls(int *tableau, int p, int r, size_t size,
+						int(*compar)(const void*, const void*))
 {
-	int	q;
+	int	pivot;
 
 	if (p < r)
 	{
-		q = partitionner(tableau, p, r);
-		ft_sort_ls(tableau, p, q);
-		ft_sort_ls(tableau, q + 1, r);
+		pivot = 0;
+		pivot = partitionner(tableau, p, r, size, compar);
+		ft_sort_ls(tableau, p, pivot - 1, size, compar);
+		ft_sort_ls(tableau, pivot + 1, r, size, compar);
 	}
+}
+
+void	ft_qsort(void *base, size_t nmemb, size_t size,
+					int(*compar)(const void*, const void*))
+{
+	
+	ft_sort_ls(base, 0, nmemb, size, compar)
 }

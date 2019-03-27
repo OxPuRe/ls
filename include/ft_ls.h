@@ -25,8 +25,6 @@
 # include <stdlib.h>
 # include <libft.h>
 # include <limits.h>
-# include <pwd.h>
-# include <grp.h>
 
 # define LS_OPTS "1aAcCdflrRtuUs"
 
@@ -70,4 +68,5 @@ typedef struct				s_structls
 char						**ft_info_ls(int flags, char *arg);
 int							ft_error_ls(int err, char *str);
 int							test(int flags, char **av, int i);
+void						ft_sortalpha(char **tab);
 #endif

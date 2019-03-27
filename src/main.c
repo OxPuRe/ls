@@ -65,13 +65,16 @@ int		main(int ac, char **av)
 	int				i;
 
 	i = 0;
-	flags = (int *)malloc(sizeof(int));
+	flags = malloc(sizeof(int));
 	*flags = 0;
 	//ioctl(0, TIOCGWINSZ, &sz);
 	if (ac != 1)
 		i = ft_opts_ls(av, flags);
 	else
 		av[i] = ".";
+	printf("{%s}\n", av[i]);
+	if (av[i])
+		ft_sortalpha(&av[i]);
 	test(*flags, av, i);
 	free(flags);
 	return (0);

@@ -40,7 +40,7 @@ void		ft_lstbegin_ls(t_structls *info, mode_t st_mode)
 	info->rights[9] = '\0';
 }
 
-void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *pl, int *ps)
+void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *pl, int *ps, unsigned long *block)
 {
 	struct passwd	*user;
 	struct group	*group;
@@ -54,6 +54,7 @@ void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *pl, int *ps)
 	info->size = (unsigned long)st_ls->st_size;
 	*ps = ft_max((ft_intlen((int)info->size)), *ps);
 	info->date = ft_strdup(ctime(&st_ls->st_mtime));
+	*block += st_ls->st_blocks;
 }
 
 char			**ft_info_ls(int flags, char *arg)
@@ -68,12 +69,13 @@ char			**ft_info_ls(int flags, char *arg)
 	int				*ps;
 	char			**dir;
 	int				o;
+	unsigned long	block;
 
 	o = 0;
 	i = 0;
 	rep = opendir(arg);
-	pl = (int *)malloc(sizeof(int));
-	ps = (int *)malloc(sizeof(int));
+	pl = malloc(sizeof(int));
+	ps = malloc(sizeof(int));
 	*pl = 0;
 	*ps = 0;
 	while ((rep_info = readdir(rep)) != NULL)
@@ -82,11 +84,13 @@ char			**ft_info_ls(int flags, char *arg)
 		lstat(ft_strjoin(arg, info[i].name), &st_ls);
 		ft_lstbegin_ls(&info[i], st_ls.st_mode);
 		if ((flags & F_L) != 0)
-			ft_lstend_ls(&info[i], &st_ls, pl ,ps);
+			ft_lstend_ls(&info[i], &st_ls, pl ,ps, &block);
 		i++;
 	}
-	dir = (char **)malloc(i * sizeof(char *));
+	dir = malloc(i * sizeof(char *));
 	j = 0;
+printf("total %lU\n", block);
+	block = 0;
 	while (j < i)
 	{
 		if (!(flags & F_AA) && info[j].name[0] == '.')
@@ -107,7 +111,6 @@ char			**ft_info_ls(int flags, char *arg)
 		}
 		j++;
 	}
-	ft_printf("\n");
 	closedir(rep);
 	free(pl);
 	free(ps);
@@ -118,14 +121,18 @@ char			**ft_info_ls(int flags, char *arg)
 int		test(int flags, char **av, int i)
 {
 	char	**dir;
+	int		n;
 
+	n = (av[i + 1]) ? 1 : 0;
 	while (av[i] != NULL)
 	{
-		if (strcmp(av[i], "."))
+		if (strcmp(av[i], ".") && n)
 	 		ft_printf("%s:\n", av[i]);
 		dir = ft_info_ls(flags, ft_strjoin(av[i], "/"));
 		if ((flags & F_RR) && *dir != NULL)
 			test(flags, dir++, 0);
+		if (av[i + 1])
+			printf("\n");
 		i++;
 	}
 	return (0);
