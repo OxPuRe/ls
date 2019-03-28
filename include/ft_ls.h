@@ -30,6 +30,7 @@
 
 enum ls_flags
 {
+	tiret = 1,
 	F_ONE = 1,
 	F_A = 2,
 	F_AA = 4,
@@ -68,5 +69,4 @@ typedef struct				s_structls
 char						**ft_info_ls(int flags, char *arg);
 int							ft_error_ls(int err, char *str);
 int							test(int flags, char **av, int i);
-void						ft_sortalpha(char **tab);
 #endif

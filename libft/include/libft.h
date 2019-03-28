@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/25 15:59:29 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/18 17:33:03 by auverneu         ###   ########.fr       */
+/*   Updated: 2018/05/15 14:31:55 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ char				*ft_strtrim(char const *s);
 char				*ft_strtrimc(char const *s, char c);
 char				*ft_strupper(char *str);
 char				*ft_ulltoa_base(uintmax_t n, int base);
+
 int					ft_atoi(char *str);
 int					ft_gnl(int const fd, char **line);
 int					ft_intlen(int n);
@@ -133,6 +134,7 @@ int					ft_toupper(int c);
 int					ft_ullonglen_base(unsigned long long n, int base);
 int					ft_wctomb(char *s, wchar_t w);
 int					*ft_ssplitnb(char const *s);
+
 size_t				ft_countwords(char const *s, char c);
 size_t				ft_ilen_base(unsigned int x, unsigned int base);
 size_t				ft_nbinstr(char const *s);
@@ -140,18 +142,22 @@ size_t				ft_strlcat(char *dst, const char *src, size_t size);
 size_t				ft_strlen(const char *str);
 size_t				ft_wclen(wchar_t w);
 size_t				ft_wcstrlen(wchar_t *w);
+
 t_file				*create(char *format);
 t_list				*ft_lstdup(t_list *lst);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 t_list				*ft_lstnew(void const *content, size_t content_size);
+
 unsigned int		ft_abs(int nb);
 unsigned int		ft_atoi_base(char *str, int base);
+
 void				*ft_memalloc(size_t size);
 void				*ft_memccpy(void *dst, const void *src, int c, size_t n);
 void				*ft_memchr(const void *s, int c, size_t n);
 void				*ft_memcpy(void *dst, const void *src, size_t n);
 void				*ft_memmove(void *dst, const void *src, size_t n);
 void				*ft_memset(void *b, int c, size_t len);
+
 void				display_o(t_file *prtf, int *i);
 void				display_prec(t_file *prtf, int i, int j);
 void				display_t(t_file *prtf, int i, int j);
@@ -196,7 +202,9 @@ void				prtf_s(t_file *prtf);
 void				reset_flag(t_file *prtf);
 int					ft_max(int a, int b);
 int					ft_min(int a, int b);
-double				ft_pow(double x, int y);
 void				*ft_memset_int(void *b, int c, size_t len);
 
+void                ft_memswap(void *x, void *y, size_t size);
+void	ft_qsort(void *base, size_t nmemb, size_t size,
+					int(*compar)(const void*, const void*));
 #endif

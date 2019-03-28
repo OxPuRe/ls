@@ -21,26 +21,30 @@ int		ft_error_ls(int err, char *str)
 	return (-1);
 }
 
-int			ft_opts_ls(char **av, int *flags)
+int			ft_opts_ls(int ac, char **av, int *flags)
 {
 	char	*opts;
+	char	*ret;
 	int		i;
 	int		j;
 
 	i = 1;
 	j = 1;
-	opts = "-1aAcCdflrRtuUs";
-	while (av[i])
+	while (i <= ac)
 	{
 		if (av[i][0] == '-')
+		{
+			if (av[i][1] == '-')
+				break ;
 			while (av[i][j])
 			{
-				if (ft_strchr(opts, av[i][j]))
-					*flags |= (int)ft_pow(2, (ft_strchr(opts, av[i][j]) - opts - 1));
+				if ((ret = ft_strchr(opts, av[i][j])))
+					*flags |= (int)1U << (ret - LS_OPTS);
 				else
 					ft_error_ls(ILL_OPT, &(av[i][j]));
 				j++;
 			}
+		}
 		else
 			break;
 		j = 1;
@@ -50,32 +54,48 @@ int			ft_opts_ls(char **av, int *flags)
 			if (av[i][0] != '-')
 				break;
 		}
-		else
-		{
-			av[i] = ".";
-			break;
-		}
 	}
 	return (i);
+}
+
+int		ft_cmpstring(const void *a, const void *b)
+{
+	return (ft_strcmp(*(char * const *)a, *(char * const *)b));
 }
 
 int		main(int ac, char **av)
 {
 	int				*flags;
 	int				i;
+	char			**paths;
 
-	i = 0;
+	i = 1;
 	flags = malloc(sizeof(int));
 	*flags = 0;
+	paths = NULL;
 	//ioctl(0, TIOCGWINSZ, &sz);
-	if (ac != 1)
-		i = ft_opts_ls(av, flags);
+	if (ac > 1)
+	{
+		i = ft_opts_ls(ac, av, flags);
+		if (i == ac)
+			paths[0] = ft_strdup(".");
+			// if (!ppaths[0])
+			// 	return (ERROR);
+		else
+			paths = av + i;
+	}
 	else
-		av[i] = ".";
-	printf("{%s}\n", av[i]);
-	if (av[i])
-		ft_sortalpha(&av[i]);
-	test(*flags, av, i);
+	{
+		paths = (char **)malloc(sizeof(char *));
+		// if (!paths)
+		// 	return (ERROR);
+		paths[0] = ft_strdup(".");
+		// if (!ppaths[0])
+		// 	return (ERROR);
+	}
+	printf("{%s}\n", paths[0]);
+	//ft_qsort(&av[i], ac - i, sizeof(char *), ft_cmpstring);
+	test(*flags, paths, 0);
 	free(flags);
 	return (0);
 }

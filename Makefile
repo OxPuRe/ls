@@ -17,9 +17,7 @@ SRC_PATH = src
 OBJ_PATH = obj
 LIBS_NAME = libft
 SRC_NAME = main.c\
-	ft_info_ls.c\
-	ft_sortalpha.c\
-	ft_sort_ls.c
+	ft_info_ls.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
@@ -41,7 +39,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
 
 $(LIBS):
 	@printf "\e[34;4m[Making]:\e[0m %s\n" $(patsubst %/,%,$(dir $@))
-	@make -C $(dir $@) all
+	$(MAKE) -C $(dir $@) all
 
 $(OBJ_PATH):
 	@mkdir -p $(OBJ_PATH)
@@ -50,7 +48,7 @@ clean:
 	@printf "\e[35;4m[Cleaning]:\e[0m\n"
 	@rm -fv $(OBJ)
 	@rm -rf $(OBJ_PATH)
-	@$(foreach LIB, $(LIBS_NAME), make -C $(LIB) clean;)
+	@$(foreach LIB, $(LIBS_NAME), $(MAKE) -C $(LIB) clean;)
 
 fclean: clean
 	@printf "\e[31;4m[Cleaning]:\e[0m\n"

@@ -11,48 +11,49 @@
 /* ************************************************************************** */
 
 #include <libft.h>
-#include <ft_ls.h.h>
 
-int		partitionner(int *tableau, int p, int r, size_t size,
-						int(*compar)(const void*, const void*))
+int		partition(t_list *tab, int begin, int end, int(*compar)(const void*, const void*))
 {
-	int	temp;
-	int	i;
-	int	j;
+	void	*mem;
+	int		i;
+	int		j;
 
-	i = p;
-	j = r;
+	mem = NULL;
+	mem = ft_memcpy(mem, &tab->content[begin], tab->content_size);
+	i = begin;
+	j = end + 1;
 
-	while (1)
+	while (i < j)
 	{
+		while (compar((char *)tab->content + i * tab->content_size, mem) && i <= end)
+			i += 1 * tab->content_size;
+		while (compar(mem, (char *)tab->content + j * tab->content_size))
+			j += 1 * tab->content_size;
 		if (i < j)
-		{
-			temp = tableau[i];
-			tableau[i] = tableau[j];
-			tableau[j] = temp;
-		}
-		else
-			return (j);
+			ft_memswap((char *)tab->content + i * tab->content_size, (char *)			tab->content + j * tab->content_size, tab->content_size);
 	}
+	ft_memswap((char *)tab->content + begin * tab->content_size, (char *)			tab->content + j * tab->content_size, tab->content_size);
+	return (j);
 }
 
-void	ft_sort_ls(int *tableau, int p, int r, size_t size,
-						int(*compar)(const void*, const void*))
+void	ft_sort(t_list *tab, int begin, int end, int(*compar)(const void*, const void*))
 {
-	int	pivot;
+	int	p;
 
-	if (p < r)
+	if (begin < end)
 	{
-		pivot = 0;
-		pivot = partitionner(tableau, p, r, size, compar);
-		ft_sort_ls(tableau, p, pivot - 1, size, compar);
-		ft_sort_ls(tableau, pivot + 1, r, size, compar);
+		p = partition(tab, begin, end, compar);
+		ft_sort(tab, begin, p - 1, compar);
+		ft_sort(tab, p + 1, end, compar);
 	}
 }
 
 void	ft_qsort(void *base, size_t nmemb, size_t size,
 					int(*compar)(const void*, const void*))
 {
-	
-	ft_sort_ls(base, 0, nmemb, size, compar)
+	t_list	tab;
+
+	tab.content = base;
+	tab.content_size = size;
+	ft_sort(&tab, 0, (int)nmemb, compar);
 }
