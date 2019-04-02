@@ -28,7 +28,7 @@ int			ft_opts_ls(int ac, char **av, int *flags)
 	int		i;
 	int		j;
 
-	i = 1;
+	i = 0;
 	j = 1;
 	while (i <= ac)
 	{
@@ -55,12 +55,13 @@ int			ft_opts_ls(int ac, char **av, int *flags)
 				break;
 		}
 	}
+printf("{Hello %d}\n", i);
 	return (i);
 }
 
 int		ft_cmpstring(const void *a, const void *b)
 {
-	return (ft_strcmp(*(char * const *)a, *(char * const *)b));
+	return (ft_strcmp(a, b));
 }
 
 int		main(int ac, char **av)
@@ -74,27 +75,23 @@ int		main(int ac, char **av)
 	*flags = 0;
 	paths = NULL;
 	//ioctl(0, TIOCGWINSZ, &sz);
+
+	i = ft_opts_ls(ac, av, flags);
+	paths = (char **)malloc(sizeof(char *) * ((ac - i > 1) ? ac - i : 1));
+	// if (!paths)
+	// 	return (ERROR);
 	if (ac > 1)
 	{
-		i = ft_opts_ls(ac, av, flags);
 		if (i == ac)
-			paths[0] = ft_strdup(".");
-			// if (!ppaths[0])
-			// 	return (ERROR);
+			paths[0] = ".";
 		else
-			paths = av + i;
+			ft_memcpy(paths, av + i, ac - i);
 	}
 	else
 	{
-		paths = (char **)malloc(sizeof(char *));
-		// if (!paths)
-		// 	return (ERROR);
-		paths[0] = ft_strdup(".");
-		// if (!ppaths[0])
-		// 	return (ERROR);
+		paths[0] = ".";
 	}
-	printf("{%s}\n", paths[0]);
-	//ft_qsort(&av[i], ac - i, sizeof(char *), ft_cmpstring);
+	//ft_qsort(paths, ac - i, sizeof(char *), ft_cmpstring);
 	test(*flags, paths, 0);
 	free(flags);
 	return (0);

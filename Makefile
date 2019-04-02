@@ -39,7 +39,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
 
 $(LIBS):
 	@printf "\e[34;4m[Making]:\e[0m %s\n" $(patsubst %/,%,$(dir $@))
-	$(MAKE) -C $(dir $@) all
+	@$(MAKE) -C $(dir $@) all
 
 $(OBJ_PATH):
 	@mkdir -p $(OBJ_PATH)

@@ -12,28 +12,28 @@
 
 #include <libft.h>
 
-int		partition(t_list *tab, int begin, int end, int(*compar)(const void*, const void*))
+static int		ft_partition(t_list *tab, int begin, int end, int (*compar)(const void*, const void*))
 {
-	void	*mem;
-	int		i;
-	int		j;
+	void		*pivot;
+	int			i;
+	int			j;
 
-	mem = NULL;
-	mem = ft_memcpy(mem, &tab->content[begin], tab->content_size);
+	pivot = (unsigned char *)tab->content + end;
 	i = begin;
-	j = end + 1;
-
-	while (i < j)
+	j = begin;
+	while (j < end)
 	{
-		while (compar((char *)tab->content + i * tab->content_size, mem) && i <= end)
-			i += 1 * tab->content_size;
-		while (compar(mem, (char *)tab->content + j * tab->content_size))
-			j += 1 * tab->content_size;
-		if (i < j)
-			ft_memswap((char *)tab->content + i * tab->content_size, (char *)			tab->content + j * tab->content_size, tab->content_size);
+		if (compar((unsigned char *)tab->content + j, pivot) <= 0)
+		{
+			ft_memswap((unsigned char *)tab->content + i,
+				(unsigned char *)tab->content + j, tab->content_size);
+			i += tab->content_size;
+		}
+		j += tab->content_size;
 	}
-	ft_memswap((char *)tab->content + begin * tab->content_size, (char *)			tab->content + j * tab->content_size, tab->content_size);
-	return (j);
+	ft_memswap((unsigned char *)tab->content + i, (unsigned char *)tab->content
+		+ end, tab->content_size);
+	return (i);
 }
 
 void	ft_sort(t_list *tab, int begin, int end, int(*compar)(const void*, const void*))
@@ -42,9 +42,9 @@ void	ft_sort(t_list *tab, int begin, int end, int(*compar)(const void*, const vo
 
 	if (begin < end)
 	{
-		p = partition(tab, begin, end, compar);
-		ft_sort(tab, begin, p - 1, compar);
-		ft_sort(tab, p + 1, end, compar);
+		p = ft_partition(tab, begin, end, compar);
+		ft_sort(tab, begin, p - tab->content_size, compar);
+		ft_sort(tab, p + tab->content_size, end, compar);
 	}
 }
 
@@ -55,5 +55,5 @@ void	ft_qsort(void *base, size_t nmemb, size_t size,
 
 	tab.content = base;
 	tab.content_size = size;
-	ft_sort(&tab, 0, (int)nmemb, compar);
+	ft_sort(&tab, 0, (int)(nmemb - 1) * size, compar);
 }

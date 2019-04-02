@@ -89,7 +89,7 @@ char			**ft_info_ls(int flags, char *arg)
 	}
 	dir = malloc(i * sizeof(char *));
 	j = 0;
-printf("total %lU\n", block);
+//printf("total %lU\n", block);
 	block = 0;
 	while (j < i)
 	{
