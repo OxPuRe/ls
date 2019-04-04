@@ -30,7 +30,6 @@
 
 enum ls_flags
 {
-	tiret = 1,
 	F_ONE = 1,
 	F_A = 2,
 	F_AA = 4,
@@ -55,6 +54,13 @@ enum ls_error
 
 typedef struct				s_structls
 {
+	char					*ex;
+	char					**paths;
+	int						flags;
+}							t_structls;
+
+typedef struct				s_infols
+{
 	char					type;
 	int						size_len;
 	unsigned long			nb_link;
@@ -64,7 +70,7 @@ typedef struct				s_structls
 	char					*group;
 	char					*date;
 	char					*name;
-}							t_structls;
+}							t_infols;
 
 char						**ft_info_ls(int flags, char *arg);
 int							ft_error_ls(int err, char *str);

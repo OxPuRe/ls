@@ -21,41 +21,42 @@ int		ft_error_ls(int err, char *str)
 	return (-1);
 }
 
-int			ft_opts_ls(int ac, char **av, int *flags)
+int			ft_opts_ls(int ac, char **av, t_structls *ls)
 {
-	char	*opts;
 	char	*ret;
 	int		i;
 	int		j;
 
-	i = 0;
+	i = 1;
 	j = 1;
-	while (i <= ac)
+	while (i < ac)
 	{
 		if (av[i][0] == '-')
 		{
 			if (av[i][1] == '-')
-				break ;
+				return (i);
 			while (av[i][j])
 			{
-				if ((ret = ft_strchr(opts, av[i][j])))
-					*flags |= (int)1U << (ret - LS_OPTS);
+				if ((ret = ft_strchr(LS_OPTS, av[i][j])))
+					ls->flags |= (int)1U << (ret - LS_OPTS);
 				else
 					ft_error_ls(ILL_OPT, &(av[i][j]));
 				j++;
+		
 			}
 		}
 		else
-			break;
-		j = 1;
+			return (1);
 		if (av[i + 1])
 		{
 			i++;
+			j = 1;
 			if (av[i][0] != '-')
-				break;
+				return (i);
 		}
+		else
+			break;
 	}
-printf("{Hello %d}\n", i);
 	return (i);
 }
 
@@ -66,33 +67,38 @@ int		ft_cmpstring(const void *a, const void *b)
 
 int		main(int ac, char **av)
 {
-	int				*flags;
+	t_structls		ls;
 	int				i;
-	char			**paths;
+	int				j;
 
-	i = 1;
-	flags = malloc(sizeof(int));
-	*flags = 0;
-	paths = NULL;
+	ls.flags = 0;
+	ls.paths = NULL;
 	//ioctl(0, TIOCGWINSZ, &sz);
 
-	i = ft_opts_ls(ac, av, flags);
-	paths = (char **)malloc(sizeof(char *) * ((ac - i > 1) ? ac - i : 1));
-	// if (!paths)
-	// 	return (ERROR);
-	if (ac > 1)
+	i = 1;
+	j = 0;
+	ls.ex = ft_strdup(av[0]);
+	i = ft_opts_ls(ac, av, &ls);
+	printf("{Hello %d/%d}\n", i, ac);
+	if (i == ac)
 	{
-		if (i == ac)
-			paths[0] = ".";
-		else
-			ft_memcpy(paths, av + i, ac - i);
+		ls.paths = malloc(sizeof(char *));
+		ls.paths[0] = ft_strdup(".");
 	}
 	else
 	{
-		paths[0] = ".";
+		ls.paths = malloc(sizeof(char *) * (ac - i));
+		while (i++ < ac)
+			ls.paths[j++] = ft_strdup(av[i]);
 	}
-	//ft_qsort(paths, ac - i, sizeof(char *), ft_cmpstring);
-	test(*flags, paths, 0);
-	free(flags);
+	
+	//paths = (char **)malloc(sizeof(char *) * ((ac - i > 1) ? ac - i : 1));
+	// if (!paths)
+	// 	return (ERROR);
+	if (ft_strcmp(ls.paths[0], ".") != 0)
+	{
+		qsort(ls.paths, ac - (i > 0 ? i : 1), sizeof(char *), ft_cmpstring);
+	}
+	test(ls.flags, ls.paths, 0);
 	return (0);
 }

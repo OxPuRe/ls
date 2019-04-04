@@ -12,7 +12,7 @@
 
 #include <ft_ls.h>
 
-void		ft_lstbegin_ls(t_structls *info, mode_t st_mode)
+void		ft_lstbegin_ls(t_infols *info, mode_t st_mode)
 {
 	if (st_mode & S_IFREG)
 		info->type = '-';
@@ -40,7 +40,7 @@ void		ft_lstbegin_ls(t_structls *info, mode_t st_mode)
 	info->rights[9] = '\0';
 }
 
-void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *pl, int *ps, unsigned long *block)
+void		ft_lstend_ls(t_infols *info, struct stat *st_ls, int *pl, int *ps, unsigned long *block)
 {
 	struct passwd	*user;
 	struct group	*group;
@@ -59,7 +59,7 @@ void		ft_lstend_ls(t_structls *info, struct stat *st_ls, int *pl, int *ps, unsig
 
 char			**ft_info_ls(int flags, char *arg)
 {
-	t_structls		info[2048];
+	t_infols		info[2048];
 	struct stat		st_ls;
 	struct dirent	*rep_info;
 	DIR				*rep;
