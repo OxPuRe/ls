@@ -56,6 +56,7 @@ typedef struct				s_structls
 {
 	char					*ex;
 	char					**paths;
+	int						nb;
 	int						flags;
 }							t_structls;
 
@@ -74,5 +75,5 @@ typedef struct				s_infols
 
 char						**ft_info_ls(int flags, char *arg);
 int							ft_error_ls(int err, char *str);
-int							test(int flags, char **av, int i);
+int							test(t_structls *ls, char **paths);
 #endif

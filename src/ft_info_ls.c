@@ -118,20 +118,20 @@ char			**ft_info_ls(int flags, char *arg)
 	return (dir);
 }
 
-int		test(int flags, char **av, int i)
+int		test(t_structls *ls, char **paths)
 {
 	char	**dir;
-	int		n;
+	int		i;
 
-	n = (av[i + 1]) ? 1 : 0;
-	while (av[i] != NULL)
+	i = 0;
+	while (i < ls->nb)
 	{
-		if (strcmp(av[i], ".") && n)
-	 		ft_printf("%s:\n", av[i]);
-		dir = ft_info_ls(flags, ft_strjoin(av[i], "/"));
-		if ((flags & F_RR) && *dir != NULL)
-			test(flags, dir++, 0);
-		if (av[i + 1])
+		if (strcmp(paths[i], ".") && ls->nb > 1)
+	 		ft_printf("%s:\n", paths[i]);
+		dir = ft_info_ls(ls->flags, ft_strjoin(paths[i], "/"));
+		if ((ls->flags & F_RR) && *dir != NULL)
+			test(ls, dir++);
+		if (paths[i + 1])
 			printf("\n");
 		i++;
 	}

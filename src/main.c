@@ -47,9 +47,8 @@ int			ft_opts_ls(int ac, char **av, t_structls *ls)
 		}
 		else
 			return (1);
-		if (av[i + 1])
+		if (av[i++ + 1])
 		{
-			i++;
 			j = 1;
 			if (av[i][0] != '-')
 				return (i);
@@ -62,7 +61,7 @@ int			ft_opts_ls(int ac, char **av, t_structls *ls)
 
 int		ft_cmpstring(const void *a, const void *b)
 {
-	return (ft_strcmp(a, b));
+	return (ft_strcmp(*((char * const *)a), *((char * const *)b)));
 }
 
 int		main(int ac, char **av)
@@ -75,30 +74,26 @@ int		main(int ac, char **av)
 	ls.paths = NULL;
 	//ioctl(0, TIOCGWINSZ, &sz);
 
-	i = 1;
 	j = 0;
 	ls.ex = ft_strdup(av[0]);
 	i = ft_opts_ls(ac, av, &ls);
-	printf("{Hello %d/%d}\n", i, ac);
-	if (i == ac)
-	{
-		ls.paths = malloc(sizeof(char *));
-		ls.paths[0] = ft_strdup(".");
-	}
-	else
-	{
-		ls.paths = malloc(sizeof(char *) * (ac - i));
-		while (i++ < ac)
-			ls.paths[j++] = ft_strdup(av[i]);
-	}
-	
-	//paths = (char **)malloc(sizeof(char *) * ((ac - i > 1) ? ac - i : 1));
+	ls.nb = (ac - i) ? (ac - i) : 1;
+	ls.paths = malloc(sizeof(char *) * ls.nb);
 	// if (!paths)
 	// 	return (ERROR);
-	if (ft_strcmp(ls.paths[0], ".") != 0)
+//printf("{ %d }\n", i);
+	if ((ac - i) != 0)
 	{
-		qsort(ls.paths, ac - (i > 0 ? i : 1), sizeof(char *), ft_cmpstring);
+		while (i < ac)
+		{
+			ls.paths[j] = ft_strdup(av[i]);
+			i++;
+			j++;
+		}
 	}
-	test(ls.flags, ls.paths, 0);
+	else
+		ls.paths[0] = ft_strdup(".");
+	ft_qsort(ls.paths, ls.nb, sizeof(char *), &ft_cmpstring);
+	test(&ls, ls.paths);
 	return (0);
 }
