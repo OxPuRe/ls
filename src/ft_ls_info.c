@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/18 15:54:58 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/18 19:25:15 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,21 @@ void		ft_lstbegin_ls(t_infols *info, mode_t st_mode)
 	info->rights[9] = '\0';
 }
 
-void			ft_lstend_ls(t_infols *info, struct stat *st_ls, int *pl, int *ps, unsigned long *block)
+void			ft_lstend_ls(t_infols *info, t_var *v)
 {
 	struct passwd	*user;
 	struct group	*group;
 
-	info->nb_link = (unsigned long)st_ls->st_nlink;
-	*pl = ft_max((ft_intlen((int)info->nb_link)), *pl);
-	user = getpwuid(st_ls->st_uid);
-	group = getgrgid(st_ls->st_gid);
+	info->link = (unsigned long)v->st.st_nlink;
+	v->s_link = ft_max((ft_intlen((int)info->link)), v->s_link);
+	user = getpwuid(v->st.st_uid);
+	group = getgrgid(v->st.st_gid);
 	info->owner = user->pw_name;
 	info->group = group->gr_name;
-	info->size = (unsigned long)st_ls->st_size;
-	*ps = ft_max((ft_intlen((int)info->size)), *ps);
-	info->date = ft_strdup(ctime(&st_ls->st_mtime));
-	*block += st_ls->st_blocks;
+	info->size = (unsigned long)v->st.st_size;
+	v->s_size = ft_max((ft_intlen((int)info->size)), v->s_size);
+	info->date = ft_strdup(ctime(&v->st.st_mtime));
+	v->blk += v->st.st_blocks;
 }
 
 void			ft_ls_convert(t_list *mem, t_infols *info)
@@ -76,7 +76,7 @@ void			ft_ls_fill(t_infols *info, t_structls *lsr, char *dir, t_var *v)
 		lstat(ft_strjoin(dir, info[i].name), &v->st);
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
 		if ((lsr->flag & F_L) != 0)
-			ft_lstend_ls(&info[i], &st_ls, pl ,ps, &block);
+			ft_lstend_ls(&info[i], v);
 		i++;
 	}
 }
@@ -100,4 +100,5 @@ t_structls		*ft_ls_info(char *dir, t_structls *lsr)
 	info = malloc(sizeof(t_infols) * lsr->nbe);
 	ft_ls_convert(mem, info);
 	ft_ls_fill(info, lsr, dir, &v);
+	ft_ls_sort(lsr);
 }

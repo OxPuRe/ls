@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/18 14:18:09 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/18 18:45:24 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,16 +65,16 @@ typedef struct 				s_var
 	struct stat				st;
 	struct dirent			*rep_i;
 	DIR						*rep;
-	int						links;
-	int						size;
+	int						s_link;
+	int						s_size;
+	unsigned long			blk;
 }							t_var;
 
 typedef struct				s_infols
 {
 	char					*name;
 	char					type;
-	int						size_len;
-	unsigned long			nb_link;
+	unsigned long			link;
 	unsigned long			size;
 	char					rights[10];
 	char					*owner;
@@ -82,7 +82,7 @@ typedef struct				s_infols
 	char					*date;
 }							t_infols;
 
-t_structls					*ft_ls_info(char *dir);
+t_structls					*ft_ls_info(char *dir, t_structls *lsr);
 int							ft_error_ls(int err, char *str);
 int							test(t_structls *ls, char **paths);
 #endif
