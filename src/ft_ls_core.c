@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/18 11:21:54 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/18 15:45:39 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,25 @@
 
 int		ft_ls_core(t_structls *ls)
 {
-	char	**dir;
+	t_structls	lsr;
 	int		i;
 
 	i = 0;
-	while (ls->nb)
+	lsr.ex = ls->ex;
+	lsr.flag = ls->flag;
+	lsr.nbe = 0;
+	while (ls->nbe)
 	{
-		if (strcmp(ls->paths[i], ".") && ls->nb > 1)
-	 		ft_printf("%s:\n", ls->paths[i]);
-		dir = ft_info_ls(ls, ft_strjoin(ls->paths[i], "/"));
-		if ((ls->flags & F_RR) && *dir != NULL)
+		if (strcmp(ls->elem[i], ".") && ls->nbe > 1)
+	 		ft_printf("%s:\n", ls->elem[i]);
+		lsr.elem = ft_info_ls(ft_strjoin(ls->elem[i], "/"), &lsr);
+		if ((ls->flag & F_RR) && lsr.elem != NULL)
 		{
-			test(ls, ls->paths);
+			ft_ls_core(&lsr);
 		}
-		if (ls->paths[i + 1])
+		if (ls->elem[i + 1])
 			printf("\n");
-		ls->nb--;
+		ls->nbe--;
 		i++;
 	}
 	return (0);

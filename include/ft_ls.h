@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/18 11:52:37 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/18 14:18:09 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ typedef struct				s_infols
 	char					*date;
 }							t_infols;
 
-char						**ft_info_ls(t_structls *ls, char *arg);
+t_structls					*ft_ls_info(char *dir);
 int							ft_error_ls(int err, char *str);
 int							test(t_structls *ls, char **paths);
 #endif

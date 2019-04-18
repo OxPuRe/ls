@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/18 11:57:35 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/18 13:11:09 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,18 @@ int		ft_error_ls(int err, char *str)
 	return (-1);
 }
 
-int		ft_cmpstring(const void *a, const void *b)
-{
-	return (ft_strcmp(*((char * const *)a), *((char * const *)b)));
-}
+
 
 int		main(int ac, char **av)
 {
 	t_structls		ls;
 
-	ls.ex = ft_strdup(av[0]);
+	ls.ex = av[0];
 	ls.flag = 0;
 	ft_opts_ls(ac, av, &ls);
-	// if (!paths)
-	// 	return (ERROR);
-//printf("{ %d }\n", i);
-	if (ls.flag & (F_F || F_UU))
-		ft_qsort(ls.elem, ls.nbe, sizeof(char *), &ft_cmpstring);
+	if (!(ls.flag & (F_F || F_UU)))
+		ft_ls_sort(&ls, 0);
 	ft_ls_core(&ls, ls.elem);
 	return (0);
 }
+//printf("{ %d }\n", i);

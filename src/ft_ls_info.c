@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_info_ls.c                                       :+:      :+:    :+:   */
+/*   ft_ls_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/18 11:17:56 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/18 15:54:58 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void		ft_lstbegin_ls(t_infols *info, mode_t st_mode)
 	info->rights[9] = '\0';
 }
 
-void		ft_lstend_ls(t_infols *info, struct stat *st_ls, int *pl, int *ps, unsigned long *block)
+void			ft_lstend_ls(t_infols *info, struct stat *st_ls, int *pl, int *ps, unsigned long *block)
 {
 	struct passwd	*user;
 	struct group	*group;
@@ -57,8 +57,47 @@ void		ft_lstend_ls(t_infols *info, struct stat *st_ls, int *pl, int *ps, unsigne
 	*block += st_ls->st_blocks;
 }
 
-char			**ft_info_ls(t_structls *ls, char *arg)
+void			ft_ls_convert(t_list *mem, t_infols *info)
 {
-	t_var		var;
-	
+	while (mem)
+	{
+		info->name = mem->content;
+		mem = mem->next;
+	}
+}
+
+void			ft_ls_fill(t_infols *info, t_structls *lsr, char *dir, t_var *v)
+{
+	int			i;
+
+	i = 0;
+	while (lsr->nbe--)
+	{
+		lstat(ft_strjoin(dir, info[i].name), &v->st);
+		ft_lstbegin_ls(&info[i], v->st.st_mode);
+		if ((lsr->flag & F_L) != 0)
+			ft_lstend_ls(&info[i], &st_ls, pl ,ps, &block);
+		i++;
+	}
+}
+
+t_structls		*ft_ls_info(char *dir, t_structls *lsr)
+{
+	t_list		*list;
+	t_list		*mem;
+	t_var		v;
+	t_infols	*info;
+
+	mem = list;
+	v.rep = opendir(dir);
+	while ((v.rep_i = readdir(v.rep)) != NULL)
+	{
+		if (list)
+			list = list->next;
+		list = ft_lstnew(ft_strdup(v.rep_i->d_name), sizeof(char *));
+		lsr->nbe += 1;
+	}
+	info = malloc(sizeof(t_infols) * lsr->nbe);
+	ft_ls_convert(mem, info);
+	ft_ls_fill(info, lsr, dir, &v);
 }
