@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/24 16:39:50 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/18 11:52:37 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,23 @@ enum ls_error
 typedef struct				s_structls
 {
 	char					*ex;
-	char					**paths;
-	int						nb;
-	int						flags;
+	char					*elem;
+	int						nbe;
+	int						flag;
 }							t_structls;
+
+typedef struct 				s_var
+{
+	struct stat				st;
+	struct dirent			*rep_i;
+	DIR						*rep;
+	int						links;
+	int						size;
+}							t_var;
 
 typedef struct				s_infols
 {
+	char					*name;
 	char					type;
 	int						size_len;
 	unsigned long			nb_link;
@@ -70,10 +80,9 @@ typedef struct				s_infols
 	char					*owner;
 	char					*group;
 	char					*date;
-	char					*name;
 }							t_infols;
 
-char						**ft_info_ls(int flags, char *arg);
+char						**ft_info_ls(t_structls *ls, char *arg);
 int							ft_error_ls(int err, char *str);
 int							test(t_structls *ls, char **paths);
 #endif

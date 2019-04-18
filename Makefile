@@ -16,8 +16,7 @@ INC_PATH = include
 SRC_PATH = src
 OBJ_PATH = obj
 LIBS_NAME = libft
-SRC_NAME = main.c\
-	ft_info_ls.c
+SRC_NAME = main.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))

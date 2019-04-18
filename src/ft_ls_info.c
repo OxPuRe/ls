@@ -6,11 +6,11 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/24 17:39:23 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/18 11:17:56 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ft_ls.h>
+#include "ft_ls.h"
 
 void		ft_lstbegin_ls(t_infols *info, mode_t st_mode)
 {
@@ -57,83 +57,8 @@ void		ft_lstend_ls(t_infols *info, struct stat *st_ls, int *pl, int *ps, unsigne
 	*block += st_ls->st_blocks;
 }
 
-char			**ft_info_ls(int flags, char *arg)
+char			**ft_info_ls(t_structls *ls, char *arg)
 {
-	t_infols		info[2048];
-	struct stat		st_ls;
-	struct dirent	*rep_info;
-	DIR				*rep;
-	int				i;
-	int				j;
-	int				*pl;
-	int				*ps;
-	char			**dir;
-	int				o;
-	unsigned long	block;
-
-	o = 0;
-	i = 0;
-	rep = opendir(arg);
-	pl = malloc(sizeof(int));
-	ps = malloc(sizeof(int));
-	*pl = 0;
-	*ps = 0;
-	while ((rep_info = readdir(rep)) != NULL)
-	{
-		info[i].name = ft_strdup(rep_info->d_name);
-		lstat(ft_strjoin(arg, info[i].name), &st_ls);
-		ft_lstbegin_ls(&info[i], st_ls.st_mode);
-		if ((flags & F_L) != 0)
-			ft_lstend_ls(&info[i], &st_ls, pl ,ps, &block);
-		i++;
-	}
-	dir = malloc(i * sizeof(char *));
-	j = 0;
-//printf("total %lU\n", block);
-	block = 0;
-	while (j < i)
-	{
-		if (!(flags & F_AA) && info[j].name[0] == '.')
-			;
-		else
-		{
-		if (info[j].type == 'd' && strcmp(info[j].name, ".") &&
-			strcmp(info[j].name, ".."))
-			dir[o++] = ft_strjoin(arg, info[j].name);
-		if ((flags & F_L) != 0)
-		{
-			printf("%c%s  %*.lu %s  %s  %*.lu %.12s %s\n", info[j].type, info[j].rights, *pl, info[j].nb_link, info[j].owner, info[j].group, *ps, info[j].size, &info[j].date[4], info[j].name);
-			free(info[j].date);
-		}
-		else
-			printf("%s\n", info[j].name);
-			free(info[j].name);
-		}
-		j++;
-	}
-	closedir(rep);
-	free(pl);
-	free(ps);
-	free(arg);
-	return (dir);
-}
-
-int		test(t_structls *ls, char **paths)
-{
-	char	**dir;
-	int		i;
-
-	i = 0;
-	while (i < ls->nb)
-	{
-		if (strcmp(paths[i], ".") && ls->nb > 1)
-	 		ft_printf("%s:\n", paths[i]);
-		dir = ft_info_ls(ls->flags, ft_strjoin(paths[i], "/"));
-		if ((ls->flags & F_RR) && *dir != NULL)
-			test(ls, dir++);
-		if (paths[i + 1])
-			printf("\n");
-		i++;
-	}
-	return (0);
+	t_var		var;
+	
 }

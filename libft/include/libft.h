@@ -66,6 +66,13 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+typedef struct 		s_vlst
+{
+	struct s_list	*head;
+	struct s_list	*end;
+}					t_vlst;
+
+
 typedef struct		s_strc
 {
 	int				fd;
@@ -144,9 +151,13 @@ size_t				ft_wclen(wchar_t w);
 size_t				ft_wcstrlen(wchar_t *w);
 
 t_file				*create(char *format);
+
 t_list				*ft_lstdup(t_list *lst);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 t_list				*ft_lstnew(void const *content, size_t content_size);
+t_list    			*ft_lstend(t_list *lst);
+void				ft_lstqsort(t_list **lsthead, int (*compar)(const void *,
+						const void *));
 
 unsigned int		ft_abs(int nb);
 unsigned int		ft_atoi_base(char *str, int base);
@@ -205,6 +216,6 @@ int					ft_min(int a, int b);
 void				*ft_memset_int(void *b, int c, size_t len);
 
 void                ft_memswap(void *x, void *y, size_t size);
-void	ft_qsort(void *base, size_t nmemb, size_t size,
-					int(*compar)(const void*, const void*));
+void				ft_qsort(void *base, size_t nmemb, size_t size,
+							int(*compar)(const void*, const void*));
 #endif
