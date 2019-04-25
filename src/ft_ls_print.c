@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/25 16:48:00 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/25 17:49:53 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_infols		*ft_ls_print(t_infols *info, t_stls *ls, t_var *v)
 	info_r = NULL;
 	while (i < v->tmp)
 	{
-		printf("[%s]\n", info[i].name);
+		printf("%s\n", info[i].name);
 		if ((ls->flag & F_RR) && info[i].type == 'd')
 		{
 			if (mem == NULL)

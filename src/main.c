@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/25 16:48:00 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/25 17:44:09 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int					main(int ac, char **av)
 	info = ft_ls_opts(ac, av, &ls);
 	//if (!(ls.flag & (F_F | F_UU)))
 	//	ft_ls_sort(&ls, 0);
+	//ft_ls_sort(info, &ls);
 	ft_ls_core(&ls, info);
 	return (0);
 }
