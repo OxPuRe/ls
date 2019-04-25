@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2017/01/27 18:04:32 by auverneu         ###   ########.fr        #
+#    Updated: 2019/04/25 18:12:25 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -113,8 +113,7 @@ SRC_NAME = flag_aff.c\
 	ft_strupper.c\
 	ft_memswap.c\
 	ft_qsort.c\
-	ft_lstend.c\
-	ft_lstqsort.c
+	ft_lstend.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
