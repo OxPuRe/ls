@@ -1,36 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls_core.c                                       :+:      :+:    :+:   */
+/*   ft_ls_print.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
+/*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
 /*   Updated: 2019/04/25 16:48:00 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int				ft_ls_core(t_stls *ls, t_infols *info)
+t_infols		*ft_ls_print(t_infols *info, t_stls *ls, t_var *v)
 {
-	t_infols	*info_r;
 	int			i;
+	t_list		*list;
+	t_list		*mem;
+	t_infols	*info_r;
 
 	i = 0;
-	while (ls->nbe)
+	list = NULL;
+	mem = list;
+	info_r = NULL;
+	while (i < v->tmp)
 	{
-		if (strcmp(info[i].name, ".") && ls->nbe > 1)
-			ft_printf("%s:\n", info[i].name);
-		info_r = ft_ls_info(ft_strjoin(info[i].name, "/"), ls);
-		if ((ls->flag & F_RR) && info_r != NULL)
+		printf("[%s]\n", info[i].name);
+		if ((ls->flag & F_RR) && info[i].type == 'd')
 		{
-			ft_ls_core(ls, info_r);
+			if (mem == NULL)
+			{
+				mem = ft_lstnew(info[i].name, ft_strlen(info[i].name));
+				list = mem;
+			}
+			else
+			{
+				list->next = ft_lstnew(info[i].name, ft_strlen(info[i].name));
+				list = list->next;
+			}
 		}
-		ls->nbe--;
-		if (ls->nbe)
-			printf("\n");
 		i++;
 	}
-	return (0);
+	if (mem)
+	{
+		ft_ls_convert(mem, info_r, ls->nbe);
+		return (info_r);
+	}
+	else
+		return (NULL);
 }

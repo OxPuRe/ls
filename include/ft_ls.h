@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/18 18:45:24 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/25 16:48:16 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,19 @@ enum ls_error
 	ALLOC_F
 };
 
-typedef struct				s_structls
+typedef struct				s_stls
 {
 	char					*ex;
-	char					*elem;
 	int						nbe;
 	int						flag;
-}							t_structls;
+}							t_stls;
 
 typedef struct 				s_var
 {
 	struct stat				st;
 	struct dirent			*rep_i;
 	DIR						*rep;
+	int						tmp;
 	int						s_link;
 	int						s_size;
 	unsigned long			blk;
@@ -74,15 +74,19 @@ typedef struct				s_infols
 {
 	char					*name;
 	char					type;
+	char					rights[10];
 	unsigned long			link;
 	unsigned long			size;
-	char					rights[10];
 	char					*owner;
 	char					*group;
 	char					*date;
 }							t_infols;
 
-t_structls					*ft_ls_info(char *dir, t_structls *lsr);
-int							ft_error_ls(int err, char *str);
-int							test(t_structls *ls, char **paths);
+t_infols					*ft_ls_info(char *dir, t_stls *ls);
+int							ft_ls_error(int err, char *str);
+t_infols					*ft_ls_opts(int ac, char **av, t_stls *ls);
+int							ft_ls_core(t_stls *ls, t_infols *info);
+void						ft_ls_sort(t_infols *info, t_stls *ls);
+t_infols					*ft_ls_print(t_infols *info, t_stls *ls, t_var *v);
+void						ft_ls_convert(t_list *mem, t_infols *info, int nbe);
 #endif

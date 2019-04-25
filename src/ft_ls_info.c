@@ -6,13 +6,13 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/18 19:25:15 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/04/25 16:49:18 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void		ft_lstbegin_ls(t_infols *info, mode_t st_mode)
+void				ft_lstbegin_ls(t_infols *info, mode_t st_mode)
 {
 	if (st_mode & S_IFREG)
 		info->type = '-';
@@ -28,19 +28,19 @@ void		ft_lstbegin_ls(t_infols *info, mode_t st_mode)
 		info->type = 'c';
 	else if (st_mode & S_IFBLK)
 		info->type = 'b';
-	(st_mode & S_IRUSR) ? (info->rights[0] = 'r') : (info->rights[0] = '-');
-    (st_mode & S_IWUSR) ? (info->rights[1] = 'w') : (info->rights[1] = '-');
-    (st_mode & S_IXUSR) ? (info->rights[2] = 'x') : (info->rights[2] = '-');
-    (st_mode & S_IRGRP) ? (info->rights[3] = 'r') : (info->rights[3] = '-');
-    (st_mode & S_IWGRP) ? (info->rights[4] = 'w') : (info->rights[4] = '-');
-    (st_mode & S_IXGRP) ? (info->rights[5] = 'x') : (info->rights[5] = '-');
-    (st_mode & S_IROTH) ? (info->rights[6] = 'r') : (info->rights[6] = '-');
-    (st_mode & S_IWOTH) ? (info->rights[7] = 'w') : (info->rights[7] = '-');
-    (st_mode & S_IXOTH) ? (info->rights[8] = 'x') : (info->rights[8] = '-');
+	info->rights[0] = (st_mode & S_IRUSR) ? 'r' : '-';
+	info->rights[1] = (st_mode & S_IWUSR) ? 'w' : '-';
+	info->rights[2] = (st_mode & S_IXUSR) ? 'x' : '-';
+	info->rights[3] = (st_mode & S_IRGRP) ? 'r' : '-';
+	info->rights[4] = (st_mode & S_IWGRP) ? 'w' : '-';
+	info->rights[5] = (st_mode & S_IXGRP) ? 'x' : '-';
+	info->rights[6] = (st_mode & S_IROTH) ? 'r' : '-';
+	info->rights[7] = (st_mode & S_IWOTH) ? 'w' : '-';
+	info->rights[8] = (st_mode & S_IXOTH) ? 'x' : '-';
 	info->rights[9] = '\0';
 }
 
-void			ft_lstend_ls(t_infols *info, t_var *v)
+void				ft_lstend_ls(t_infols *info, t_var *v)
 {
 	struct passwd	*user;
 	struct group	*group;
@@ -57,48 +57,64 @@ void			ft_lstend_ls(t_infols *info, t_var *v)
 	v->blk += v->st.st_blocks;
 }
 
-void			ft_ls_convert(t_list *mem, t_infols *info)
+void				ft_ls_convert(t_list *mem, t_infols *info, int nbe)
 {
-	while (mem)
-	{
-		info->name = mem->content;
-		mem = mem->next;
-	}
-}
-
-void			ft_ls_fill(t_infols *info, t_structls *lsr, char *dir, t_var *v)
-{
-	int			i;
+	int				i;
 
 	i = 0;
-	while (lsr->nbe--)
+	while (i < nbe)
 	{
-		lstat(ft_strjoin(dir, info[i].name), &v->st);
-		ft_lstbegin_ls(&info[i], v->st.st_mode);
-		if ((lsr->flag & F_L) != 0)
-			ft_lstend_ls(&info[i], v);
+		info[i].name = mem->content;
+		mem = mem->next;
 		i++;
 	}
 }
 
-t_structls		*ft_ls_info(char *dir, t_structls *lsr)
+void				ft_ls_fill(t_infols *info, t_stls *ls, char *dir,
+								t_var *v)
 {
-	t_list		*list;
-	t_list		*mem;
-	t_var		v;
-	t_infols	*info;
+	int				i;
 
-	mem = list;
+	i = 0;
+	while (i < v->tmp)
+	{
+		lstat(ft_strjoin(dir, info[i].name), &v->st);
+		ft_lstbegin_ls(&info[i], v->st.st_mode);
+		if ((ls->flag & F_L) != 0)
+			ft_lstend_ls(&info[i], v);
+		i++;
+	}
+	ft_ls_sort(info, ls);
+}
+
+t_infols			*ft_ls_info(char *dir, t_stls *ls)
+{
+	t_list			*list;
+	t_list			*mem;
+	t_var			v;
+	t_infols		*info;
+
+	mem = NULL;
+	v.tmp = 0;
 	v.rep = opendir(dir);
 	while ((v.rep_i = readdir(v.rep)) != NULL)
 	{
-		if (list)
+		if (mem == NULL)
+		{
+			mem = ft_lstnew(v.rep_i->d_name, ft_strlen(v.rep_i->d_name));
+			list = mem;
+		}
+		else
+		{
+			list->next = ft_lstnew(v.rep_i->d_name, ft_strlen(v.rep_i->d_name));
 			list = list->next;
-		list = ft_lstnew(ft_strdup(v.rep_i->d_name), sizeof(char *));
-		lsr->nbe += 1;
+		}
+		v.tmp += 1;
 	}
-	info = malloc(sizeof(t_infols) * lsr->nbe);
-	ft_ls_convert(mem, info);
-	ft_ls_fill(info, lsr, dir, &v);
-	ft_ls_sort(lsr);
+	info = malloc(sizeof(t_infols) * v.tmp);
+	ft_ls_convert(mem, info, v.tmp);
+	ft_ls_fill(info, ls, dir, &v);
+	return (ft_ls_print(info, ls, &v));
 }
+
+//printf("(%s)\n", info[i].name);
