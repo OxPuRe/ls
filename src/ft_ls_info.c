@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/25 17:40:44 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/17 19:42:22 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ void				ft_lstend_ls(t_infols *info, t_var *v)
 	group = getgrgid(v->st.st_gid);
 	info->owner = user->pw_name;
 	info->group = group->gr_name;
-	info->size = (unsigned long)v->st.st_size;
+	info->size = v->st.st_size;
 	v->s_size = ft_max((ft_intlen((int)info->size)), v->s_size);
-	info->date = ft_strdup(ctime(&v->st.st_mtime));
+	info->date = v->st.st_mtime;
 	v->blk += v->st.st_blocks;
 }
 
@@ -87,34 +87,24 @@ void				ft_ls_fill(t_infols *info, t_stls *ls, char *dir,
 	ft_ls_sort(info, ls);
 }
 
-t_infols			*ft_ls_info(char *dir, t_stls *ls)
+t_stls			*ft_ls_info(t_stls *ls, int i)
 {
 	t_list			*list;
 	t_list			*mem;
 	t_var			v;
 	t_infols		*info;
 
+	list = NULL;
 	mem = NULL;
 	v.tmp = 0;
-	v.rep = opendir(dir);
+	v.rep = opendir(ls->arg[i].name);
 	while ((v.rep_i = readdir(v.rep)) != NULL)
 	{
-		if (mem == NULL)
-		{
-			mem = ft_lstnew(v.rep_i->d_name, ft_strlen(v.rep_i->d_name));
-			list = mem;
-		}
-		else
-		{
-			list->next = ft_lstnew(v.rep_i->d_name, ft_strlen(v.rep_i->d_name));
-			list = list->next;
-		}
+		ft_ls_list(mem, list, v.rep_i->d_name);
 		v.tmp += 1;
 	}
 	info = malloc(sizeof(t_infols) * v.tmp);
 	ft_ls_convert(mem, info, v.tmp);
-	ft_ls_fill(info, ls, dir, &v);
+	ft_ls_fill(info, ls, ls->arg[i].name, &v);
 	return (ft_ls_print(info, ls, &v));
 }
-
-//printf("(%s)\n", info[i].name);

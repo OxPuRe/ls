@@ -6,20 +6,21 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/25 16:48:00 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/17 19:58:46 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_infols		*ft_alloc_elem(t_stls *ls, char **av, int ac, int i)
+void			ft_recup_arg(t_stls *ls, char **av, int ac, int i)
 {
 	int			j;
-	t_infols	*info;
+	struct stat	*stat;
 
 	j = 0;
+	stat = NULL;
 	ls->nbe = (ac - i) ? (ac - i) : 1;
-	info = malloc(sizeof(t_infols) * ls->nbe);
+	ls->arg = malloc(sizeof(t_arg) * ls->nbe);
 	// TODO : err malloc
 	// if (!ls->elem)
 	// 	return (ERROR);
@@ -27,14 +28,17 @@ t_infols		*ft_alloc_elem(t_stls *ls, char **av, int ac, int i)
 	{
 		while (i < ac)
 		{
-			info[j].name = ft_strdup(av[i]);
+			ls->arg[j].name = ft_strdup(av[i]);
+			lstat(av[i], stat);
+			ls->arg[j].type = (stat->st_mode & S_IFDIR) ? 'd' : '-';
+			ls->arg[j].right = (stat->st_mode & S_IRUSR) ? 'r' : '-';
+			ls->arg[j].size = stat->st_size;
 			i++;
 			j++;
 		}
 	}
 	else
-		info[0].name = ft_strdup(".");
-	return (info);
+		ls->arg[0].name = ft_strdup(".");
 }
 
 void			ft_recup_flag(t_stls *ls, char **av, int i, int j)
@@ -53,7 +57,7 @@ void			ft_recup_flag(t_stls *ls, char **av, int i, int j)
 	}
 }
 
-t_infols		*ft_ls_opts(int ac, char **av, t_stls *ls)
+void			ft_ls_opts(int ac, char **av, t_stls *ls)
 {
 	int			i;
 	int			j;
@@ -71,5 +75,8 @@ t_infols		*ft_ls_opts(int ac, char **av, t_stls *ls)
 		else
 			break ;
 	}
-	return (ft_alloc_elem(ls, av, ac, i));
+printf("%d\n", i);
+	ft_recup_arg(ls, av, ac, i);
+	//if (!(ls.flag & (F_F | F_UU)))
+	//	ft_ls_sort(&ls, 0);
 }

@@ -6,45 +6,53 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/25 17:49:53 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/17 19:43:05 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_infols		*ft_ls_print(t_infols *info, t_stls *ls, t_var *v)
+void				ft_ls_rec(t_list *mem, t_stls *lsr, int nbe, t_stls *ls)
+{
+	int				i;
+
+	i = 0;
+	lsr->ex = ls->ex;
+	lsr->flag = ls->flag;
+	lsr->nbe = nbe;
+	while (i < nbe)
+	{
+		lsr->arg[i].name = mem->content;
+		mem = mem->next;
+		i++;
+	}
+}
+
+t_stls			*ft_ls_print(t_infols *info, t_stls *ls, t_var *v)
 {
 	int			i;
 	t_list		*list;
 	t_list		*mem;
-	t_infols	*info_r;
+	t_stls		*lsr;
 
 	i = 0;
 	list = NULL;
-	mem = list;
-	info_r = NULL;
+	mem = NULL;
+	lsr = NULL;
 	while (i < v->tmp)
 	{
 		printf("%s\n", info[i].name);
 		if ((ls->flag & F_RR) && info[i].type == 'd')
 		{
-			if (mem == NULL)
-			{
-				mem = ft_lstnew(info[i].name, ft_strlen(info[i].name));
-				list = mem;
-			}
-			else
-			{
-				list->next = ft_lstnew(info[i].name, ft_strlen(info[i].name));
-				list = list->next;
-			}
+			ft_ls_list(mem, list, info[i].name);
 		}
 		i++;
 	}
 	if (mem)
 	{
-		ft_ls_convert(mem, info_r, ls->nbe);
-		return (info_r);
+		lsr = malloc(sizeof(t_stls) * i);
+		ft_ls_rec(mem, lsr, i, ls);
+		return (lsr);
 	}
 	else
 		return (NULL);

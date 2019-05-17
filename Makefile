@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/04/23 16:04:05 by auverneu         ###   ########.fr        #
+#    Updated: 2019/05/17 19:40:56 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,8 @@ SRC_NAME = main.c\
 	ft_ls_info.c\
 	ft_ls_print.c\
 	ft_ls_sort.c\
-	ft_ls_opts.c
+	ft_ls_opts.c\
+	ft_ls_utils.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))

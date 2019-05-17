@@ -1,36 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls_core.c                                       :+:      :+:    :+:   */
+/*   ft_ls_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/17 17:12:02 by auverneu         ###   ########.fr       */
+/*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
+/*   Updated: 2019/05/17 17:49:14 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int				ft_ls_core(t_stls *ls)
+void		ft_ls_list(t_list *mem, t_list *list, char *name)
 {
-	t_stls	*lsr;
-	int			i;
 
-	i = 0;
-	while (ls->nbe)
+	if (mem == NULL)
 	{
-		if (ft_strcmp(ls->arg[i].name, ".") && ls->nbe > 1)
-			ft_printf("%s:\n", ls->arg[i].name);
-		lsr = ft_ls_info(ls, i);
-		if ((ls->flag & F_RR) && lsr != NULL)
-		{
-			ft_ls_core(lsr);
-		}
-		ls->nbe--;
-		if (ls->nbe)
-			printf("\n");
-		i++;
+		mem = ft_lstnew(name, ft_strlen(name));
+		list = mem;
 	}
-	return (0);
+	else
+	{
+		list->next = ft_lstnew(name, ft_strlen(name));
+		list = list->next;
+	}
 }
