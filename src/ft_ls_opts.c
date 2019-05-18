@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/17 19:58:46 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/18 19:34:38 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,9 @@
 void			ft_recup_arg(t_stls *ls, char **av, int ac, int i)
 {
 	int			j;
-	struct stat	*stat;
+	struct stat	stat;
 
 	j = 0;
-	stat = NULL;
 	ls->nbe = (ac - i) ? (ac - i) : 1;
 	ls->arg = malloc(sizeof(t_arg) * ls->nbe);
 	// TODO : err malloc
@@ -29,10 +28,12 @@ void			ft_recup_arg(t_stls *ls, char **av, int ac, int i)
 		while (i < ac)
 		{
 			ls->arg[j].name = ft_strdup(av[i]);
-			lstat(av[i], stat);
-			ls->arg[j].type = (stat->st_mode & S_IFDIR) ? 'd' : '-';
-			ls->arg[j].right = (stat->st_mode & S_IRUSR) ? 'r' : '-';
-			ls->arg[j].size = stat->st_size;
+			lstat(av[i], &stat);
+			ls->arg[j].type = (stat.st_mode & S_IFDIR) ? 'd' : '-';
+			ls->arg[j].right = (stat.st_mode & S_IRUSR) ? 'r' : '-';
+			ls->arg[j].size = stat.st_size;
+			ls->arg[j].time = ft_ls_time(&stat, ls->flag);
+printf("[%c]\n", ls->arg[j].type);
 			i++;
 			j++;
 		}
@@ -75,8 +76,7 @@ void			ft_ls_opts(int ac, char **av, t_stls *ls)
 		else
 			break ;
 	}
-printf("%d\n", i);
 	ft_recup_arg(ls, av, ac, i);
-	//if (!(ls.flag & (F_F | F_UU)))
+	//
 	//	ft_ls_sort(&ls, 0);
 }
