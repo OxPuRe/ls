@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/18 19:34:38 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/20 19:35:36 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void			ft_recup_arg(t_stls *ls, char **av, int ac, int i)
 			ls->arg[j].right = (stat.st_mode & S_IRUSR) ? 'r' : '-';
 			ls->arg[j].size = stat.st_size;
 			ls->arg[j].time = ft_ls_time(&stat, ls->flag);
-printf("[%c]\n", ls->arg[j].type);
 			i++;
 			j++;
 		}

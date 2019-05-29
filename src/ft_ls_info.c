@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/17 19:42:22 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/29 17:22:25 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void				ft_ls_fill(t_infols *info, t_stls *ls, char *dir,
 			ft_lstend_ls(&info[i], v);
 		i++;
 	}
-	ft_ls_sort(info, ls);
+	//ft_ls_sort(info, ls);
 }
 
 t_stls			*ft_ls_info(t_stls *ls, int i)
@@ -100,11 +100,12 @@ t_stls			*ft_ls_info(t_stls *ls, int i)
 	v.rep = opendir(ls->arg[i].name);
 	while ((v.rep_i = readdir(v.rep)) != NULL)
 	{
-		ft_ls_list(mem, list, v.rep_i->d_name);
+		ft_ls_list(&mem, &list, v.rep_i->d_name);
 		v.tmp += 1;
 	}
 	info = malloc(sizeof(t_infols) * v.tmp);
 	ft_ls_convert(mem, info, v.tmp);
+	ls->arg[i].name = ft_strjoin(ls->arg[i].name, "/");
 	ft_ls_fill(info, ls, ls->arg[i].name, &v);
-	return (ft_ls_print(info, ls, &v));
+	return (ft_ls_print(info, ls, &v, i));
 }

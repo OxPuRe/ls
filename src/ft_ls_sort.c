@@ -6,21 +6,21 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 13:04:01 by auverneu          #+#    #+#             */
-/*   Updated: 2019/04/25 16:48:00 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/20 17:22:48 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int         ft_cmpstring(const void *a, const void *b)
+int				ft_cmpstring(const void *a, const void *b)
 {
 	return (ft_strcmp(*((char *const *)a), *((char *const *)b)));
 }
 
-static int  ft_cmpsize(const void *f1, const void *f2)
+static int		ft_cmpsize(const void *f1, const void *f2)
 {
-    t_infols	*fl1;
-    t_infols	*fl2;
+	t_infols	*fl1;
+	t_infols	*fl2;
 
 	fl1 = *((t_infols **)f1);
 	fl2 = *((t_infols **)f2);
@@ -29,10 +29,10 @@ static int  ft_cmpsize(const void *f1, const void *f2)
 	return (ft_strcmp(fl1->name, fl2->name));
 }
 
-void        ft_ls_sort(t_infols *info, t_stls *ls)
+void			ft_ls_sort(t_infols *info, t_stls *ls)
 {
-    if ((ls->flag & F_S))
-        ft_qsort(info, ls->nbe, sizeof(t_infols *), &ft_cmpsize);
-    else
-        ft_qsort(info, ls->nbe, sizeof(t_infols *), &ft_cmpstring);    
+	if ((ls->flag & F_S))
+		ft_qsort(info, ls->nbe, sizeof(t_infols *), &ft_cmpsize);
+	else
+		ft_qsort(info, ls->nbe, sizeof(t_infols *), &ft_cmpstring);
 }

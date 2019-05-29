@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/18 19:33:11 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/20 17:10:28 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,16 @@ time_t		ft_ls_time(struct stat *stat, int flag)
 		return (stat->st_mtimespec.tv_sec);
 }
 
-void		ft_ls_list(t_list *mem, t_list *list, char *name)
+void		ft_ls_list(t_list **mem, t_list **list, char *name)
 {
-
-	if (mem == NULL)
+	if (*mem == NULL)
 	{
-		mem = ft_lstnew(name, ft_strlen(name));
-		list = mem;
+		*mem = ft_lstnew(name, ft_strlen(name));
+		*list = *mem;
 	}
 	else
 	{
-		list->next = ft_lstnew(name, ft_strlen(name));
-		list = list->next;
+		(*list)->next = ft_lstnew(name, ft_strlen(name));
+		*list = (*list)->next;
 	}
 }
