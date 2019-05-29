@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/20 19:35:36 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/05/29 19:30:16 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void			ft_recup_arg(t_stls *ls, char **av, int ac, int i)
 {
 	int			j;
+	int			l;
 	struct stat	stat;
 
 	j = 0;
@@ -28,6 +29,8 @@ void			ft_recup_arg(t_stls *ls, char **av, int ac, int i)
 		while (i < ac)
 		{
 			ls->arg[j].name = ft_strdup(av[i]);
+			l = ft_strlen(ls->arg[j].name) - 1;
+			ls->arg[j].name[l] = (ls->arg[j].name[l] == '/') ? '\0' : ls->arg[j].name[l];
 			lstat(av[i], &stat);
 			ls->arg[j].type = (stat.st_mode & S_IFDIR) ? 'd' : '-';
 			ls->arg[j].right = (stat.st_mode & S_IRUSR) ? 'r' : '-';
