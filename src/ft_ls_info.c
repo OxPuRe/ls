@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/29 17:22:25 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/06 21:39:40 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,10 @@ void				ft_ls_fill(t_infols *info, t_stls *ls, char *dir,
 	{
 		lstat(ft_strjoin(dir, info[i].name), &v->st);
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
-		if ((ls->flag & F_L) != 0)
-			ft_lstend_ls(&info[i], v);
+		ft_lstend_ls(&info[i], v);
 		i++;
 	}
-	//ft_ls_sort(info, ls);
+	ft_ls_sort(info, ls->flag, v->tmp);
 }
 
 t_stls			*ft_ls_info(t_stls *ls, int i)

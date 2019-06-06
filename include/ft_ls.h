@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/29 17:20:28 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/06 22:42:50 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ enum ls_flags
 	F_L = 64,
 	F_R = 128,
 	F_RR = 256,
-	F_S = 512,
+	F_SS = 512,
 	F_T = 1024,
 	F_U = 2048,
 	F_UU = 4096
@@ -51,21 +51,24 @@ enum ls_error
 	ALLOC_F
 };
 
-typedef struct			s_arg
+typedef struct			s_infols
 {
 	char				*name;
 	char				type;
-	char				right;
+	char				rights[10];
+	unsigned long		link;
+	char				*owner;
+	char				*group;
 	off_t				size;
-	time_t				time;
-}						t_arg;
+	time_t				date;
+}						t_infols;
 
 typedef struct			s_stls
 {
 	char				*ex;
 	int					nbe;
 	int					flag;
-	t_arg				*arg;
+	t_infols			*arg;
 }						t_stls;
 
 typedef struct 			s_var
@@ -79,27 +82,16 @@ typedef struct 			s_var
 	unsigned long		blk;
 }						t_var;
 
-typedef struct			s_infols
-{
-	char				*name;
-	char				type;
-	char				rights[10];
-	unsigned long		link;
-	off_t				size;
-	char				*owner;
-	char				*group;
-	time_t				date;
-}						t_infols;
-
 
 
 t_stls					*ft_ls_info(t_stls *ls, int i);
 int						ft_ls_error(int err, char *str);
 void					ft_ls_opts(int ac, char **av, t_stls *ls);
 int						ft_ls_core(t_stls *ls);
-void					ft_ls_sort(t_infols *info, t_stls *ls);
+void					ft_ls_sort(t_infols *info, int flag, int nbe);
 t_stls					*ft_ls_print(t_infols *info, t_stls *ls, t_var *v, int j);
 void					ft_ls_list(t_list **mem, t_list **list, char *name);
 time_t					ft_ls_time(struct stat *stat, int flag);
+void					ft_ls_fill(t_infols *info, t_stls *ls, char *dir, t_var *v);
 
 #endif

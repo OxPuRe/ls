@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 13:04:01 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/20 17:22:48 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/06 21:22:10 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ static int		ft_cmpsize(const void *f1, const void *f2)
 	return (ft_strcmp(fl1->name, fl2->name));
 }
 
-void			ft_ls_sort(t_infols *info, t_stls *ls)
+void			ft_ls_sort(t_infols *info, int flag, int nbe)
 {
-	if ((ls->flag & F_S))
-		ft_qsort(info, ls->nbe, sizeof(t_infols *), &ft_cmpsize);
+	if ((flag & F_SS))
+		ft_qsort(info, nbe, sizeof(t_infols), &ft_cmpsize);
 	else
-		ft_qsort(info, ls->nbe, sizeof(t_infols *), &ft_cmpstring);
+		ft_qsort(info, nbe, sizeof(t_infols), &ft_cmpstring);
 }

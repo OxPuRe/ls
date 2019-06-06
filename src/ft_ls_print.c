@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/05/29 17:44:25 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/06 22:53:45 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_stls				*ft_ls_rec(t_list *mem, int nbe, t_stls *ls)
 	lsr->ex = ls->ex;
 	lsr->flag = ls->flag;
 	lsr->nbe = nbe;
-	lsr->arg = malloc(sizeof(t_arg) * nbe);
+	lsr->arg = malloc(sizeof(t_infols) * nbe);
 	while (i < nbe)
 	{
 		lsr->arg[i].name = mem->content;
@@ -45,18 +45,24 @@ t_stls			*ft_ls_print(t_infols *info, t_stls *ls, t_var *v, int j)
 	nbe = 0;
 	while (i < v->tmp)
 	{
-		printf("%s\n", info[i].name);
+		if ((ls->flag & F_L))
+			printf("%c%s  %lu %s  %s %5lld [date] %s", info[i].type, info[i].rights, info[i].link, info[i].owner, info[i].group, info[i].size, info[i].name);
+		else
+			printf("%s\n", info[i].name);
 		if ((ls->flag & F_RR) != 0 && info[i].type == 'd')
 		{
 			if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
 					(info[i].name[1] == '.' && info[i].name[2] == 0))))
 			{
-				ft_ls_list(&mem, &list, ft_strjoin(ls->arg[j].name, info[i].name));
+				ft_ls_list(&mem, &list, ft_strjoin(ls->arg[j].name,
+							info[i].name));
 				nbe++;
 			}
 		}
+		free(info[i].name);
 		i++;
 	}
+	free(info);
 	if (mem)
 		return (ft_ls_rec(mem, nbe, ls));
 	else
