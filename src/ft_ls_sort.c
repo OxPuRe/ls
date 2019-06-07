@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 13:04:01 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/06 21:22:10 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/07 01:57:39 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ static int		ft_cmpsize(const void *f1, const void *f2)
 	t_infols	*fl1;
 	t_infols	*fl2;
 
-	fl1 = *((t_infols **)f1);
-	fl2 = *((t_infols **)f2);
+	fl1 = ((t_infols *)f1);
+	fl2 = ((t_infols *)f2);
 	if (fl1->size != fl2->size)
 		return ((fl1->size > fl2->size) ? -1 : 1);
 	return (ft_strcmp(fl1->name, fl2->name));

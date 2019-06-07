@@ -6,15 +6,15 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/06 19:48:26 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/07 02:12:51 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int				ft_ls_core(t_stls *ls)
+int				ft_ls_core(t_ls *ls)
 {
-	t_stls		*lsr;
+	t_ls		*lsr;
 	int			i;
 
 	i = 0;

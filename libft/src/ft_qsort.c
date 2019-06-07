@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_sort_ls.c                                       :+:      :+:    :+:   */
+/*   ft_qsort.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/29 15:16:22 by auverneu          #+#    #+#             */
-/*   Updated: 2018/06/01 13:00:29 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/07 01:48:04 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
-static int		ft_partition(t_list *tab, int begin, int end, int (*compar)(const void*, const void*))
+static int		ft_partition(t_list *tab, int begin, int end,
+								int (*compar)(const void*, const void*))
 {
 	void		*pivot;
 	int			i;
@@ -36,9 +37,10 @@ static int		ft_partition(t_list *tab, int begin, int end, int (*compar)(const vo
 	return (i);
 }
 
-void	ft_sort(t_list *tab, int begin, int end, int(*compar)(const void*, const void*))
+void			ft_sort(t_list *tab, int begin, int end,
+					int (*compar)(const void*, const void*))
 {
-	int	p;
+	int			p;
 
 	if (begin < end)
 	{
@@ -48,10 +50,10 @@ void	ft_sort(t_list *tab, int begin, int end, int(*compar)(const void*, const vo
 	}
 }
 
-void	ft_qsort(void *base, size_t nmemb, size_t size,
-					int(*compar)(const void*, const void*))
+void			ft_qsort(void *base, size_t nmemb, size_t size,
+					int (*compar)(const void *, const void *))
 {
-	t_list	tab;
+	t_list		tab;
 
 	tab.content = base;
 	tab.content_size = size;

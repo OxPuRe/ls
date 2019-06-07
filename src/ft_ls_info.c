@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/06 21:39:40 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/07 07:29:50 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,34 @@ void				ft_lstend_ls(t_infols *info, t_var *v)
 	struct group	*group;
 
 	info->link = (unsigned long)v->st.st_nlink;
-	v->s_link = ft_max((ft_intlen((int)info->link)), v->s_link);
+	v->s.s.s_lk = ft_max((ft_intlen((int)info->link)), v->s.s.s_lk);
 	user = getpwuid(v->st.st_uid);
 	group = getgrgid(v->st.st_gid);
 	info->owner = user->pw_name;
+	v->s.s.s_own = ft_max((ft_strlen(info->owner)), v->s.s.s_own);
 	info->group = group->gr_name;
+	v->s.s.s_grp = ft_max((ft_strlen(info->group)), v->s.s.s_grp);
 	info->size = v->st.st_size;
-	v->s_size = ft_max((ft_intlen((int)info->size)), v->s_size);
+	v->s.s.s_sz = ft_max((ft_intlen((int)info->size)), v->s.s.s_sz);
 	info->date = v->st.st_mtime;
 	v->blk += v->st.st_blocks;
+}
+
+void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
+								t_var *v)
+{
+	int				i;
+
+	i = 0;
+	while (i < v->s.s.tmp)
+	{
+		lstat(ft_strjoin(dir, info[i].name), &v->st);
+		ft_lstbegin_ls(&info[i], v->st.st_mode);
+		ft_lstend_ls(&info[i], v);
+		i++;
+	}
+	if ((ls->flag & F_F) == 0)
+		ft_ls_sort(info, ls->flag, v->s.s.tmp);
 }
 
 void				ft_ls_convert(t_list *mem, t_infols *info, int nbe)
@@ -70,23 +89,7 @@ void				ft_ls_convert(t_list *mem, t_infols *info, int nbe)
 	}
 }
 
-void				ft_ls_fill(t_infols *info, t_stls *ls, char *dir,
-								t_var *v)
-{
-	int				i;
-
-	i = 0;
-	while (i < v->tmp)
-	{
-		lstat(ft_strjoin(dir, info[i].name), &v->st);
-		ft_lstbegin_ls(&info[i], v->st.st_mode);
-		ft_lstend_ls(&info[i], v);
-		i++;
-	}
-	ft_ls_sort(info, ls->flag, v->tmp);
-}
-
-t_stls			*ft_ls_info(t_stls *ls, int i)
+t_ls				*ft_ls_info(t_ls *ls, int i)
 {
 	t_list			*list;
 	t_list			*mem;
@@ -95,15 +98,16 @@ t_stls			*ft_ls_info(t_stls *ls, int i)
 
 	list = NULL;
 	mem = NULL;
-	v.tmp = 0;
+	v.s.init = 0;
+	v.blk = 0;
 	v.rep = opendir(ls->arg[i].name);
 	while ((v.rep_i = readdir(v.rep)) != NULL)
 	{
 		ft_ls_list(&mem, &list, v.rep_i->d_name);
-		v.tmp += 1;
+		v.s.s.tmp += 1;
 	}
-	info = malloc(sizeof(t_infols) * v.tmp);
-	ft_ls_convert(mem, info, v.tmp);
+	info = malloc(sizeof(t_infols) * v.s.s.tmp);
+	ft_ls_convert(mem, info, v.s.s.tmp);
 	ls->arg[i].name = ft_strjoin(ls->arg[i].name, "/");
 	ft_ls_fill(info, ls, ls->arg[i].name, &v);
 	return (ft_ls_print(info, ls, &v, i));

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/06 19:12:10 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/07 00:14:42 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int					ft_ls_error(int err, char *str)
 
 int					main(int ac, char **av)
 {
-	t_stls			ls;
+	t_ls			ls;
 
 	ls.ex = av[0];
 	ls.flag = 0;

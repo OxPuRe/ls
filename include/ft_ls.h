@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/06 22:42:50 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/07 05:38:38 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <stdlib.h>
 # include <libft.h>
 # include <limits.h>
+# include <stdint.h>
 
 # define LS_OPTS "1aAcdflrRStuU"
 
@@ -69,29 +70,38 @@ typedef struct			s_stls
 	int					nbe;
 	int					flag;
 	t_infols			*arg;
-}						t_stls;
+}						t_ls;
+
 
 typedef struct 			s_var
 {
 	struct stat			st;
 	struct dirent		*rep_i;
 	DIR					*rep;
-	int					tmp;
-	int					s_link;
-	int					s_size;
-	unsigned long		blk;
+	quad_t				blk;
+	union				{
+		struct			{
+			uint8_t		s_lk:8;
+			uint8_t		s_own:8;
+			uint8_t		s_grp:8;
+			uint8_t		s_sz:8;
+			uint8_t		s_min:8;
+			uint8_t		s_maj:8;
+			uint16_t	tmp:16;
+		}				s;
+		uint64_t		init;
+	}					s;
 }						t_var;
 
 
-
-t_stls					*ft_ls_info(t_stls *ls, int i);
+t_ls					*ft_ls_info(t_ls *ls, int i);
 int						ft_ls_error(int err, char *str);
-void					ft_ls_opts(int ac, char **av, t_stls *ls);
-int						ft_ls_core(t_stls *ls);
+void					ft_ls_opts(int ac, char **av, t_ls *ls);
+int						ft_ls_core(t_ls *ls);
 void					ft_ls_sort(t_infols *info, int flag, int nbe);
-t_stls					*ft_ls_print(t_infols *info, t_stls *ls, t_var *v, int j);
+t_ls					*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j);
 void					ft_ls_list(t_list **mem, t_list **list, char *name);
 time_t					ft_ls_time(struct stat *stat, int flag);
-void					ft_ls_fill(t_infols *info, t_stls *ls, char *dir, t_var *v);
+void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v);
 
 #endif

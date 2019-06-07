@@ -6,19 +6,19 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/06 22:53:45 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/07 07:33:30 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_stls				*ft_ls_rec(t_list *mem, int nbe, t_stls *ls)
+t_ls				*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 {
 	int				i;
-	t_stls			*lsr;
+	t_ls			*lsr;
 
 	i = 0;
-	lsr = malloc(sizeof(t_stls));
+	lsr = malloc(sizeof(t_ls));
 	lsr->ex = ls->ex;
 	lsr->flag = ls->flag;
 	lsr->nbe = nbe;
@@ -32,7 +32,7 @@ t_stls				*ft_ls_rec(t_list *mem, int nbe, t_stls *ls)
 	return (lsr);
 }
 
-t_stls			*ft_ls_print(t_infols *info, t_stls *ls, t_var *v, int j)
+t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 {
 	int			i;
 	int			nbe;
@@ -43,10 +43,15 @@ t_stls			*ft_ls_print(t_infols *info, t_stls *ls, t_var *v, int j)
 	list = NULL;
 	mem = NULL;
 	nbe = 0;
-	while (i < v->tmp)
+	if ((ls->flag & F_L))
+		printf("total %lld\n", v->blk);
+	while (i < v->s.s.tmp)
 	{
 		if ((ls->flag & F_L))
-			printf("%c%s  %lu %s  %s %5lld [date] %s", info[i].type, info[i].rights, info[i].link, info[i].owner, info[i].group, info[i].size, info[i].name);
+			printf("%c%-10s %*lu %-*s %-*s %*lld [date] %s\n", info[i].type,
+					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
+					info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
+					info[i].size, info[i].name);
 		else
 			printf("%s\n", info[i].name);
 		if ((ls->flag & F_RR) != 0 && info[i].type == 'd')
