@@ -6,13 +6,13 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/07 07:33:01 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/09 05:10:30 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
+static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 {
 	int			j;
 	int			l;
@@ -22,8 +22,8 @@ void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 	j = 0;
 	ls->nbe = (ac - i) ? (ac - i) : 1;
 	v.s.s.tmp = ls->nbe;
-	ls->arg = malloc(sizeof(t_infols) * ls->nbe);
-	// TODO : err malloc
+	if (!(ls->arg = malloc(sizeof(t_infols) * ls->nbe)))
+		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	if ((ac - i) != 0)
 	{
 		while (i < ac)
@@ -41,39 +41,40 @@ void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 	ft_ls_fill(ls->arg, ls, "./", &v);
 }
 
-void			ft_recup_flag(t_ls *ls, char **av, int i, int j)
+static void			ft_recup_flag(char *av, t_ls *ls)
 {
-	char		*ret;
+	char			*chr;
+	int				rot;
 
-	if (av[i][1] == '-')
-		return ;
-	while (av[i][j])
+	if (ft_strequ(av, LS_H_OPT))
+		ls_exit(LS_E_HELP, NULL, ls);
+	av++;
+	while (*av)
 	{
-		if ((ret = ft_strchr(LS_OPTS, av[i][j])))
-			ls->flag |= (int)1U << (ret - LS_OPTS);
-		else
-			ft_ls_error(ILL_OPT, &(av[i][j]));
-		j++;
+		chr = ft_strchr(LS_OPTS, *av);
+		if (chr == NULL)
+			ls_exit(LS_E_ARG, av, ls);
+		rot = (int)(chr - LS_OPTS);
+		if (*av == 'u' || *av == 'U' || *av == 'c')
+			ls->flag &= ~(LS_F_STATUS | LS_F_ACCESS | LS_F_CREATION);
+		ls->flag |= 1U << rot;
+		av++;
 	}
 }
 
 void			ft_ls_opts(int ac, char **av, t_ls *ls)
 {
 	int			i;
-	int			j;
 
 	i = 1;
-	j = 1;
-	while (i < ac)
+	while (i < ac && *(av[i]) == '-' && ft_strlen(av[i]) != 1 &&
+			!ft_strequ(av[i], "--"))
 	{
-		if (av[i][0] == '-')
-			ft_recup_flag(ls, av, i, j);
-		else
-			break ;
-		if (av[i++ + 1])
-			j = 1;
-		else
-			break ;
+		ft_recup_flag(av[i++], ls);
 	}
+	if (ft_strequ(av[i], "--"))
+		i++;
+	if (ls->flag & LS_F_NOSORT)
+		ls->flag |= LS_F_ALL;
 	ft_recup_arg(ls, av, ac, i);
 }

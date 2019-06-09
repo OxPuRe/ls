@@ -6,22 +6,11 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/07 00:14:42 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/09 00:21:24 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_ls.h>
-
-int					ft_ls_error(int err, char *str)
-{
-	if (err == ILL_OPT)
-		printf("%s%c\n%s", "ft_ls: illegal option -- ", str[0], "usage: ft_ls [-1aAcdflrRStuU] [file ...]\n");
-	else if (err == ALLOC_F)
-		printf("test");
-	return (-1);
-}
-
-
 
 int					main(int ac, char **av)
 {

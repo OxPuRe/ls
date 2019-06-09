@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/07 07:33:30 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/09 05:42:39 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,26 +43,30 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 	list = NULL;
 	mem = NULL;
 	nbe = 0;
-	if ((ls->flag & F_L))
+	if ((ls->flag & LS_F_LONG))
 		printf("total %lld\n", v->blk);
 	while (i < v->s.s.tmp)
 	{
-		if ((ls->flag & F_L))
+		if (info[i].name[0] == '.' &&
+				((ls->flag & LS_F_ALL) || (ls->flag & LS_F_AALL)))
+		{
+		if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
+				(info[i].name[1] == '.' && info[i].name[2] == 0))))
+		{
+			if ((ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
+			{
+				ft_ls_list(&mem, &list, ft_strjoin(ls->arg[j].name,
+							info[i].name));
+				nbe++;
+			}
+		}
+		if ((ls->flag & LS_F_LONG))
 			printf("%c%-10s %*lu %-*s %-*s %*lld [date] %s\n", info[i].type,
 					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
 					info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
 					info[i].size, info[i].name);
 		else
 			printf("%s\n", info[i].name);
-		if ((ls->flag & F_RR) != 0 && info[i].type == 'd')
-		{
-			if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
-					(info[i].name[1] == '.' && info[i].name[2] == 0))))
-			{
-				ft_ls_list(&mem, &list, ft_strjoin(ls->arg[j].name,
-							info[i].name));
-				nbe++;
-			}
 		}
 		free(info[i].name);
 		i++;

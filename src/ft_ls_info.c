@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/07 07:29:50 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/09 01:35:29 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 		ft_lstend_ls(&info[i], v);
 		i++;
 	}
-	if ((ls->flag & F_F) == 0)
+	if ((ls->flag & LS_F_NOSORT) == 0)
 		ft_ls_sort(info, ls->flag, v->s.s.tmp);
 }
 
