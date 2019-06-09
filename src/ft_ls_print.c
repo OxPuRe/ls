@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/09 05:42:39 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/09 23:40:13 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,6 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 		printf("total %lld\n", v->blk);
 	while (i < v->s.s.tmp)
 	{
-		if (info[i].name[0] == '.' &&
-				((ls->flag & LS_F_ALL) || (ls->flag & LS_F_AALL)))
-		{
 		if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
 				(info[i].name[1] == '.' && info[i].name[2] == 0))))
 		{
@@ -67,7 +64,6 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 					info[i].size, info[i].name);
 		else
 			printf("%s\n", info[i].name);
-		}
 		free(info[i].name);
 		i++;
 	}

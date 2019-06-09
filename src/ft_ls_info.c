@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/09 01:35:29 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/10 00:34:03 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,15 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 	v.rep = opendir(ls->arg[i].name);
 	while ((v.rep_i = readdir(v.rep)) != NULL)
 	{
-		ft_ls_list(&mem, &list, v.rep_i->d_name);
-		v.s.s.tmp += 1;
+		if (v.rep_i->d_name[0] != '.' ||
+			(!(v.rep_i->d_name[0] == '.' && (v.rep_i->d_name[1] == 0 ||
+			(v.rep_i->d_name[1] == '.' && v.rep_i->d_name[2] == 0))) &&
+			ls->flag & LS_F_AALL) ||
+			ls->flag & LS_F_ALL)
+		{
+			ft_ls_list(&mem, &list, v.rep_i->d_name);
+			v.s.s.tmp += 1;
+		}
 	}
 	info = malloc(sizeof(t_infols) * v.s.s.tmp);
 	ft_ls_convert(mem, info, v.s.s.tmp);
