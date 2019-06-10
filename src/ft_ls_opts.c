@@ -6,13 +6,13 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/09 05:10:30 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/10 03:06:00 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
+static void		ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 {
 	int			j;
 	int			l;
@@ -32,8 +32,8 @@ static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 			l = ft_strlen(ls->arg[j].name) - 1;
 			ls->arg[j].name[l] = (ls->arg[j].name[l] == '/') ?
 										'\0' : ls->arg[j].name[l];
-			i++;
 			j++;
+			i++;
 		}
 	}
 	else
@@ -41,10 +41,10 @@ static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 	ft_ls_fill(ls->arg, ls, "./", &v);
 }
 
-static void			ft_recup_flag(char *av, t_ls *ls)
+static void		ft_recup_flag(char *av, t_ls *ls)
 {
-	char			*chr;
-	int				rot;
+	char		*chr;
+	int			rot;
 
 	if (ft_strequ(av, LS_H_OPT))
 		ls_exit(LS_E_HELP, NULL, ls);

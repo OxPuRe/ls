@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/25 15:59:29 by auverneu          #+#    #+#             */
-/*   Updated: 2018/05/15 14:31:55 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/10 00:56:50 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,11 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
-typedef struct 		s_vlst
+typedef struct		s_vlst
 {
 	struct s_list	*head;
 	struct s_list	*end;
 }					t_vlst;
-
 
 typedef struct		s_strc
 {
@@ -155,7 +154,7 @@ t_file				*create(char *format);
 t_list				*ft_lstdup(t_list *lst);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 t_list				*ft_lstnew(void const *content, size_t content_size);
-t_list    			*ft_lstend(t_list *lst);
+t_list				*ft_lstend(t_list *lst);
 void				ft_lstqsort(t_list **lsthead, int (*compar)(const void *,
 						const void *));
 
@@ -214,8 +213,7 @@ void				reset_flag(t_file *prtf);
 int					ft_max(int a, int b);
 int					ft_min(int a, int b);
 void				*ft_memset_int(void *b, int c, size_t len);
-
-void                ft_memswap(void *x, void *y, size_t size);
+void				ft_memswap(void *x, void *y, size_t size);
 void				ft_qsort(void *base, size_t nmemb, size_t size,
 							int(*compar)(const void*, const void*));
 #endif

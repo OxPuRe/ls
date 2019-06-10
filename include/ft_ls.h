@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/09 05:10:50 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/10 00:48:01 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,7 @@ typedef struct			s_stls
 	t_infols			*arg;
 }						t_ls;
 
-
-typedef struct 			s_var
+typedef struct			s_var
 {
 	struct stat			st;
 	struct dirent		*rep_i;
@@ -128,7 +127,6 @@ typedef struct 			s_var
 	}					s;
 }						t_var;
 
-
 t_ls					*ft_ls_info(t_ls *ls, int i);
 int						ft_ls_error(int err, char *str);
 void					ft_ls_opts(int ac, char **av, t_ls *ls);
@@ -137,7 +135,8 @@ void					ft_ls_sort(t_infols *info, int flag, int nbe);
 t_ls					*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j);
 void					ft_ls_list(t_list **mem, t_list **list, char *name);
 time_t					ft_ls_time(struct stat *stat, int flag);
-void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v);
+void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
+									t_var *v);
 void					ls_exit(int mode, void *arg, t_ls *ls);
 
 #endif

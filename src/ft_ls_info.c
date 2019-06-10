@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/10 00:34:03 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/10 00:41:43 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,18 +102,16 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 	v.blk = 0;
 	v.rep = opendir(ls->arg[i].name);
 	while ((v.rep_i = readdir(v.rep)) != NULL)
-	{
 		if (v.rep_i->d_name[0] != '.' ||
 			(!(v.rep_i->d_name[0] == '.' && (v.rep_i->d_name[1] == 0 ||
 			(v.rep_i->d_name[1] == '.' && v.rep_i->d_name[2] == 0))) &&
-			ls->flag & LS_F_AALL) ||
-			ls->flag & LS_F_ALL)
+			ls->flag & LS_F_AALL) || ls->flag & LS_F_ALL)
 		{
 			ft_ls_list(&mem, &list, v.rep_i->d_name);
 			v.s.s.tmp += 1;
 		}
-	}
-	info = malloc(sizeof(t_infols) * v.s.s.tmp);
+	if (!(info = malloc(sizeof(t_infols) * v.s.s.tmp)))
+		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	ft_ls_convert(mem, info, v.s.s.tmp);
 	ls->arg[i].name = ft_strjoin(ls->arg[i].name, "/");
 	ft_ls_fill(info, ls, ls->arg[i].name, &v);

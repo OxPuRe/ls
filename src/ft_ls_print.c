@@ -6,16 +6,16 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/09 23:40:13 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/10 00:46:37 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_ls				*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
+t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 {
-	int				i;
-	t_ls			*lsr;
+	int			i;
+	t_ls		*lsr;
 
 	i = 0;
 	lsr = malloc(sizeof(t_ls));
