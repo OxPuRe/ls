@@ -6,15 +6,15 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/10 00:54:33 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/10 00:54:53 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/13 01:57:21 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list     *ft_lstend(t_list *lst)
+t_list	*ft_lstend(t_list *lst)
 {
-    while (lst && lst->next)
-        lst = lst->next;
-    return (lst);
+	while (lst && lst->next)
+		lst = lst->next;
+	return (lst);
 }
