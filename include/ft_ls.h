@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/10 00:48:01 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/18 01:24:18 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,10 @@ typedef struct			s_infols
 	unsigned long		link;
 	char				*owner;
 	char				*group;
-	off_t				size;
+	union				{
+		off_t			size;
+		dev_t			dev;
+	}					s;
 	time_t				date;
 }						t_infols;
 
@@ -137,6 +140,6 @@ void					ft_ls_list(t_list **mem, t_list **list, char *name);
 time_t					ft_ls_time(struct stat *stat, int flag);
 void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 									t_var *v);
-void					ls_exit(int mode, void *arg, t_ls *ls);
+void					*ls_exit(int mode, void *arg, t_ls *ls);
 
 #endif

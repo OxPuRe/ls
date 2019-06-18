@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/10 03:16:57 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/17 21:55:31 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void		ft_ls_list(t_list **mem, t_list **list, char *name)
 	}
 }
 
-void		ls_exit(int mode, void *arg, t_ls *ls)
+void		*ls_exit(int mode, void *arg, t_ls *ls)
 {
 	if (mode == LS_E_STD_EXIT || mode == LS_E_STD)
 	{
@@ -58,4 +58,5 @@ void		ls_exit(int mode, void *arg, t_ls *ls)
 		dprintf(1, "%s: help:\n" LS_HELP, ls->ex);
 		exit(0);
 	}
+	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/10 00:41:43 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/18 01:29:59 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@ void				ft_lstbegin_ls(t_infols *info, mode_t st_mode)
 		info->type = '-';
 	else if (st_mode & S_IFDIR)
 		info->type = 'd';
+	else if (st_mode & S_IFCHR)
+		info->type = 'c';
+	else if (st_mode & S_IFBLK)
+		info->type = 'b';
 	else if (st_mode & S_IFLNK)
 		info->type = 'l';
 	else if (st_mode & S_IFIFO)
 		info->type = 'p';
 	else if (st_mode & S_IFSOCK)
 		info->type = 's';
-	else if (st_mode & S_IFCHR)
-		info->type = 'c';
-	else if (st_mode & S_IFBLK)
-		info->type = 'b';
 	info->rights[0] = (st_mode & S_IRUSR) ? 'r' : '-';
 	info->rights[1] = (st_mode & S_IWUSR) ? 'w' : '-';
 	info->rights[2] = (st_mode & S_IXUSR) ? 'x' : '-';
@@ -53,8 +53,11 @@ void				ft_lstend_ls(t_infols *info, t_var *v)
 	v->s.s.s_own = ft_max((ft_strlen(info->owner)), v->s.s.s_own);
 	info->group = group->gr_name;
 	v->s.s.s_grp = ft_max((ft_strlen(info->group)), v->s.s.s_grp);
-	info->size = v->st.st_size;
-	v->s.s.s_sz = ft_max((ft_intlen((int)info->size)), v->s.s.s_sz);
+	if (info->type == 'c' || info->type == 'b')
+		info->s.dev = v->st.st_rdev;
+	else
+		info->s.size = v->st.st_size;
+	v->s.s.s_sz = ft_max((ft_intlen((int)info->s.size)), v->s.s.s_sz);
 	info->date = v->st.st_mtime;
 	v->blk += v->st.st_blocks;
 }
@@ -100,7 +103,8 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 	mem = NULL;
 	v.s.init = 0;
 	v.blk = 0;
-	v.rep = opendir(ls->arg[i].name);
+	if (!(v.rep = opendir(ls->arg[i].name)))
+		return (ls_exit(LS_E_STD, ls->arg[i].name, ls));
 	while ((v.rep_i = readdir(v.rep)) != NULL)
 		if (v.rep_i->d_name[0] != '.' ||
 			(!(v.rep_i->d_name[0] == '.' && (v.rep_i->d_name[1] == 0 ||
@@ -113,7 +117,8 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 	if (!(info = malloc(sizeof(t_infols) * v.s.s.tmp)))
 		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	ft_ls_convert(mem, info, v.s.s.tmp);
-	ls->arg[i].name = ft_strjoin(ls->arg[i].name, "/");
+	if (ls->arg[i].name[ft_strlen(ls->arg[i].name) - 1] != '/')
+		ls->arg[i].name = ft_strjoin(ls->arg[i].name, "/");
 	ft_ls_fill(info, ls, ls->arg[i].name, &v);
 	return (ft_ls_print(info, ls, &v, i));
 }
