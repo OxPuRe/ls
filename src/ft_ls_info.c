@@ -6,37 +6,36 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/18 01:29:59 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/19 01:50:03 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void				ft_lstbegin_ls(t_infols *info, mode_t st_mode)
+void				ft_lstbegin_ls(t_infols *info, mode_t mode)
 {
-	if (st_mode & S_IFREG)
-		info->type = '-';
-	else if (st_mode & S_IFDIR)
-		info->type = 'd';
-	else if (st_mode & S_IFCHR)
-		info->type = 'c';
-	else if (st_mode & S_IFBLK)
-		info->type = 'b';
-	else if (st_mode & S_IFLNK)
-		info->type = 'l';
-	else if (st_mode & S_IFIFO)
-		info->type = 'p';
-	else if (st_mode & S_IFSOCK)
-		info->type = 's';
-	info->rights[0] = (st_mode & S_IRUSR) ? 'r' : '-';
-	info->rights[1] = (st_mode & S_IWUSR) ? 'w' : '-';
-	info->rights[2] = (st_mode & S_IXUSR) ? 'x' : '-';
-	info->rights[3] = (st_mode & S_IRGRP) ? 'r' : '-';
-	info->rights[4] = (st_mode & S_IWGRP) ? 'w' : '-';
-	info->rights[5] = (st_mode & S_IXGRP) ? 'x' : '-';
-	info->rights[6] = (st_mode & S_IROTH) ? 'r' : '-';
-	info->rights[7] = (st_mode & S_IWOTH) ? 'w' : '-';
-	info->rights[8] = (st_mode & S_IXOTH) ? 'x' : '-';
+	info->type = '-';
+	info->type = (S_ISDIR(mode)) ? 'd' : info->type;
+	info->type = (S_ISCHR(mode)) ? 'c' : info->type;
+	info->type = (S_ISBLK(mode)) ? 'b' : info->type;
+	info->type = (S_ISFIFO(mode)) ? 'p' : info->type;
+	info->type = (S_ISLNK(mode)) ? 'l' : info->type;
+	info->type = (S_ISSOCK(mode)) ? 's' : info->type;
+	info->rights[0] = (mode & S_IRUSR) ? 'r' : '-';
+	info->rights[1] = (mode & S_IWUSR) ? 'w' : '-';
+	info->rights[2] = (mode & S_IXUSR) ? 'x' : '-';
+	if (mode & S_ISUID)
+		info->rights[2] = (info->rights[2] == 'x') ? 's' : 'S';
+	info->rights[3] = (mode & S_IRGRP) ? 'r' : '-';
+	info->rights[4] = (mode & S_IWGRP) ? 'w' : '-';
+	info->rights[5] = (mode & S_IXGRP) ? 'x' : '-';
+	if (mode & S_ISGID)
+		info->rights[5] = (info->rights[5] == 'x') ? 's' : 'S';
+	info->rights[6] = (mode & S_IROTH) ? 'r' : '-';
+	info->rights[7] = (mode & S_IWOTH) ? 'w' : '-';
+	info->rights[8] = (mode & S_IXOTH) ? 'x' : '-';
+	if (mode & S_ISVTX)
+		info->rights[8] = (info->rights[8] == 'x') ? 't' : 'T';
 	info->rights[9] = '\0';
 }
 
@@ -62,6 +61,33 @@ void				ft_lstend_ls(t_infols *info, t_var *v)
 	v->blk += v->st.st_blocks;
 }
 
+static void			*ls_get_l_path(char *dir, t_infols *info, t_var *v, t_ls *ls)
+{
+	size_t			size;
+	char			*str;
+
+	size = v->st.st_size > 0 ? (size_t)(v->st.st_size + 1) : LS_SL_BUFF;
+	while (1)
+	{
+		str = (char *)malloc(sizeof(char) * size);
+		if (str == NULL)
+			ls_exit(LS_E_STD_EXIT, NULL, ls);
+		if (readlink(ft_strjoin(dir, info->name), str, size) == -1)
+			return (ls_exit(LS_E_STD, info->name, ls));
+		(v->st.st_size > 0) ? str[size - 1] = '\0' : (0);
+		if (ft_strnlen(str, size) == size)
+		{
+			size += LS_SL_BUFF;
+			free(str);
+		}
+		else
+			break ;
+	}
+	info->name = ft_strjoin(info->name, " -> ");
+	info->name = ft_strjoin(info->name, str);
+	return (NULL);
+}
+
 void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 								t_var *v)
 {
@@ -73,6 +99,10 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 		lstat(ft_strjoin(dir, info[i].name), &v->st);
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
 		ft_lstend_ls(&info[i], v);
+		if (ls->flag & LS_F_LONG && info[i].type == 'l')
+		{
+			ls_get_l_path(dir, &info[i], v, ls);
+		}
 		i++;
 	}
 	if ((ls->flag & LS_F_NOSORT) == 0)

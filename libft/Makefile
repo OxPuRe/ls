@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/04/25 18:12:25 by auverneu         ###   ########.fr        #
+#    Updated: 2019/06/18 23:05:41 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,6 +77,7 @@ SRC_NAME = flag_aff.c\
 	ft_strjoin.c\
 	ft_strlcat.c\
 	ft_strlen.c\
+	ft_strnlen.c\
 	ft_strmap.c\
 	ft_strmapi.c\
 	ft_strncat.c\

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/18 01:24:18 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/19 01:24:01 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 
 # define LS_OPTS "aAcdflrRStuU"
 # define LS_H_OPT	"--help"
+# define LS_SL_BUFF	(size_t)1024
 # define LS_SW_TIME	(time_t)15778432
 
 # define LS_H_1				"-a\tShow hidden file.\n"

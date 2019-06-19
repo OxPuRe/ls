@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/25 15:59:29 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/10 00:56:50 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/18 23:05:09 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ size_t				ft_ilen_base(unsigned int x, unsigned int base);
 size_t				ft_nbinstr(char const *s);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
 size_t				ft_strlen(const char *str);
+size_t				ft_strnlen(const char *s, size_t maxlen);
 size_t				ft_wclen(wchar_t w);
 size_t				ft_wcstrlen(wchar_t *w);
 

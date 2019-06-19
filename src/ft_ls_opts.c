@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/18 03:07:40 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/18 23:50:57 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 			lstat(ft_strjoin("./", av[i]), &v.st);
 			l = ft_strlen(av[i]) - 1;
 			if (v.st.st_mode & S_IFDIR || av[i][l] == '/')
+			{
 				ls->arg[j++].name = ft_strdup(av[i++]);
+			}
 			else
 				file[jf++].name = ft_strdup(av[i++]);
 		}

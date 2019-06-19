@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/18 01:25:10 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/19 01:22:45 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 		}
 		if ((ls->flag & LS_F_LONG))
 		{
+			printf("~%c~ ", info->type);
 			if (info->type == 'c' || info->type == 'b')
-				printf("%c%-10s %*lu %-*s %-*s %*d %d [date] %s\n", info[i].type,
+				printf("%c%-10s %*lu %-*s %-*s %*d, %d [dt] %s\n", info[i].type,
 					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
 					info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
 					minor(info[i].s.dev), major(info[i].s.dev), info[i].name);
