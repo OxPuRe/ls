@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/19 01:24:01 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/20 08:10:15 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ typedef struct			s_infols
 		off_t			size;
 		dev_t			dev;
 	}					s;
-	time_t				date;
+	struct timespec		tme_spec;
+	char				date[13];
 }						t_infols;
 
 typedef struct			s_stls

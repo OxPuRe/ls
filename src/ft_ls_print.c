@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/19 01:22:45 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/20 08:10:54 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,30 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	return (lsr);
 }
 
+static void			ls_get_time(t_infols *info)
+{
+	time_t			tm;
+	char			*strt_year;
+	char			*end_tme;
+	char			*str_tme;
+
+	str_tme = ctime(&(info->tme_spec.tv_sec));
+	ft_strncpy(info->date, str_tme + 4, 12);
+	info->date[12] = 0;
+	time(&tm);
+	if ((info->tme_spec.tv_sec < (tm - LS_SW_TIME)) ||
+		(info->tme_spec.tv_sec > (tm + LS_SW_TIME)))
+	{
+		end_tme = ft_strchr(str_tme, '\n');
+		strt_year = end_tme - 1;
+		while (ft_isdigit(*strt_year))
+			strt_year--;
+		strt_year++;
+		ft_strncpy(info->date + 8, strt_year, end_tme - strt_year);
+		info->date[11] = 0;
+	}
+}
+
 t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 {
 	int			i;
@@ -43,7 +67,7 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 	list = NULL;
 	mem = NULL;
 	nbe = 0;
-	if ((ls->flag & LS_F_LONG))
+	if ((ls->flag & LS_F_LONG) && ls->arg->type == 'd')
 		printf("total %lld\n", v->blk);
 	while (i < v->s.s.tmp)
 	{
@@ -59,17 +83,18 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 		}
 		if ((ls->flag & LS_F_LONG))
 		{
-			printf("~%c~ ", info->type);
-			if (info->type == 'c' || info->type == 'b')
-				printf("%c%-10s %*lu %-*s %-*s %*d, %d [dt] %s\n", info[i].type,
+			ls_get_time(&info[i]);
+			if (info[i].type == 'c' || info[i].type == 'b')
+				printf("%c%-10s %*lu %-*s %-*s %*d, %d %s %s\n", info[i].type,
 					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
 					info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
-					minor(info[i].s.dev), major(info[i].s.dev), info[i].name);
+					major(info[i].s.dev), minor(info[i].s.dev), info[i].date,
+					info[i].name);
 			else
-				printf("%c%-10s %*lu %-*s %-*s %*lld [date] %s\n", info[i].type,
+				printf("%c%-10s %*lu %-*s %-*s %*lld %s %s\n", info[i].type,
 					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
 					info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
-					info[i].s.size, info[i].name);
+					info[i].s.size, info[i].date, info[i].name);
 		}
 		else
 			printf("%s\n", info[i].name);

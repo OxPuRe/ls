@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/19 01:50:03 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/20 08:03:45 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,23 @@ void				ft_lstbegin_ls(t_infols *info, mode_t mode)
 	info->rights[9] = '\0';
 }
 
-void				ft_lstend_ls(t_infols *info, t_var *v)
+static void			ls_get_time(t_var *v, t_ls *ls, t_infols *info)
+{
+	if (ls->flag & LS_F_ACCESS)
+		ft_memcpy(&(info->tme_spec), &(v->st.st_atimespec),
+			sizeof(struct timespec));
+	else if (ls->flag & LS_F_STATUS)
+		ft_memcpy(&(info->tme_spec), &(v->st.st_ctimespec),
+			sizeof(struct timespec));
+	else if (ls->flag & LS_F_CREATION)
+		ft_memcpy(&(info->tme_spec), &(v->st.st_birthtimespec),
+			sizeof(struct timespec));
+	else
+		ft_memcpy(&(info->tme_spec), &(v->st.st_mtimespec),
+			sizeof(struct timespec));
+}
+
+void				ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls)
 {
 	struct passwd	*user;
 	struct group	*group;
@@ -57,7 +73,8 @@ void				ft_lstend_ls(t_infols *info, t_var *v)
 	else
 		info->s.size = v->st.st_size;
 	v->s.s.s_sz = ft_max((ft_intlen((int)info->s.size)), v->s.s.s_sz);
-	info->date = v->st.st_mtime;
+	ls_get_time(v, ls, info);
+	//printf("Test\n");
 	v->blk += v->st.st_blocks;
 }
 
@@ -98,7 +115,7 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 	{
 		lstat(ft_strjoin(dir, info[i].name), &v->st);
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
-		ft_lstend_ls(&info[i], v);
+		ft_lstend_ls(&info[i], v, ls);
 		if (ls->flag & LS_F_LONG && info[i].type == 'l')
 		{
 			ls_get_l_path(dir, &info[i], v, ls);
@@ -147,8 +164,7 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 	if (!(info = malloc(sizeof(t_infols) * v.s.s.tmp)))
 		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	ft_ls_convert(mem, info, v.s.s.tmp);
-	if (ls->arg[i].name[ft_strlen(ls->arg[i].name) - 1] != '/')
-		ls->arg[i].name = ft_strjoin(ls->arg[i].name, "/");
+	ls->arg[i].name = ft_strjoin(ls->arg[i].name, "/");
 	ft_ls_fill(info, ls, ls->arg[i].name, &v);
 	return (ft_ls_print(info, ls, &v, i));
 }

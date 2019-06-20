@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/18 23:50:57 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/20 05:41:10 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@ static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 {
 	int				j;
 	int				jf;
-	int				l;
+	char			*tmp;
 	t_var			v;
 	t_infols		*file;
 
+	v.s.init = 0;
 	v.blk = 0;
 	j = 0;
 	jf = 0;
@@ -33,9 +34,12 @@ static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 	{
 		while (i < ac)
 		{
-			lstat(ft_strjoin("./", av[i]), &v.st);
-			l = ft_strlen(av[i]) - 1;
-			if (v.st.st_mode & S_IFDIR || av[i][l] == '/')
+			if (av[i][0] == '/')
+				tmp = ft_strjoin("", av[i]);
+			else
+				tmp = ft_strjoin("./", av[i]);
+			lstat(tmp, &v.st);
+			if (S_ISDIR(v.st.st_mode) || av[i][ft_strlen(av[i]) - 1] == '/')
 			{
 				ls->arg[j++].name = ft_strdup(av[i++]);
 			}
@@ -44,7 +48,10 @@ static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 		}
 	}
 	else
+	{
 		ls->arg[0].name = ft_strdup(".");
+		j++;
+	}
 	if (jf > 0)
 	{
 		v.s.s.tmp = jf;
@@ -57,8 +64,10 @@ static void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 			printf("\n");
 		v.s.s.tmp = j;
 		ls->nbe = j;
-		ft_ls_fill(ls->arg, ls, "./", &v);
+		ft_ls_fill(ls->arg, ls, "", &v);
 	}
+	else
+		exit(0);
 }
 
 static void		ft_recup_flag(char *av, t_ls *ls)
