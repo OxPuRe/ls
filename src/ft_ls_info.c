@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/20 08:03:45 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/22 03:48:50 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,16 +69,21 @@ void				ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls)
 	info->group = group->gr_name;
 	v->s.s.s_grp = ft_max((ft_strlen(info->group)), v->s.s.s_grp);
 	if (info->type == 'c' || info->type == 'b')
-		info->s.dev = v->st.st_rdev;
+	{
+		info->size = v->st.st_size;
+		info->minor = minor(v->st.st_rdev);
+		info->major = major(v->st.st_rdev);
+		v->s.s.s_min = ft_max((ft_intlen((int)info->minor)), v->s.s.s_min);
+		v->s.s.s_maj = ft_max((ft_intlen((int)info->major)), v->s.s.s_maj);
+	}
 	else
-		info->s.size = v->st.st_size;
-	v->s.s.s_sz = ft_max((ft_intlen((int)info->s.size)), v->s.s.s_sz);
+		info->size = v->st.st_size;
+	v->s.s.s_sz = ft_max((ft_intlen((int)info->size)), v->s.s.s_sz);
 	ls_get_time(v, ls, info);
-	//printf("Test\n");
 	v->blk += v->st.st_blocks;
 }
 
-static void			*ls_get_l_path(char *dir, t_infols *info, t_var *v, t_ls *ls)
+static void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 {
 	size_t			size;
 	char			*str;
@@ -118,7 +123,7 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 		ft_lstend_ls(&info[i], v, ls);
 		if (ls->flag & LS_F_LONG && info[i].type == 'l')
 		{
-			ls_get_l_path(dir, &info[i], v, ls);
+			ls_get_l_pth(dir, &info[i], v, ls);
 		}
 		i++;
 	}

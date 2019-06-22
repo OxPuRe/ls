@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/20 08:10:54 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/22 03:51:09 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,14 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 	list = NULL;
 	mem = NULL;
 	nbe = 0;
+	if (v->s.s.s_min < v->s.s.s_maj)
+		v->s.s.s_min = v->s.s.s_maj;
+	else
+		v->s.s.s_maj = v->s.s.s_min;
+	if (v->s.s.s_sz > (v->s.s.s_min + v->s.s.s_maj + 2))
+		v->s.s.s_maj = v->s.s.s_sz - v->s.s.s_min - 2;
+	else
+		v->s.s.s_sz = v->s.s.s_min + v->s.s.s_maj + 2;
 	if ((ls->flag & LS_F_LONG) && ls->arg->type == 'd')
 		printf("total %lld\n", v->blk);
 	while (i < v->s.s.tmp)
@@ -85,16 +93,16 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 		{
 			ls_get_time(&info[i]);
 			if (info[i].type == 'c' || info[i].type == 'b')
-				printf("%c%-10s %*lu %-*s %-*s %*d, %d %s %s\n", info[i].type,
+				printf("%c%-10s %*lu %-*s %-*s %*d, %*d %s %s\n", info[i].type,
 					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
-					info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
-					major(info[i].s.dev), minor(info[i].s.dev), info[i].date,
-					info[i].name);
+					info[i].owner, v->s.s.s_grp + 1, info[i].group,
+					v->s.s.s_maj, info[i].major, v->s.s.s_min, info[i].minor,
+					info[i].date, info[i].name);
 			else
 				printf("%c%-10s %*lu %-*s %-*s %*lld %s %s\n", info[i].type,
 					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
 					info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
-					info[i].s.size, info[i].date, info[i].name);
+					info[i].size, info[i].date, info[i].name);
 		}
 		else
 			printf("%s\n", info[i].name);
