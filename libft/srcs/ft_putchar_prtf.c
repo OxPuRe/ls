@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/03 22:48:23 by auverneu          #+#    #+#             */
-/*   Updated: 2016/05/12 13:37:59 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/24 21:24:29 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 void	ft_putchar_prtf(char c, t_file *prtf)
 {
-	write(1, &c, 1);
+	write(prtf->fd, &c, 1);
 	(prtf->print)++;
 }

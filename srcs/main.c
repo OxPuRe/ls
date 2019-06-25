@@ -1,35 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls_core.c                                       :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/20 02:47:26 by auverneu         ###   ########.fr       */
+/*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
+/*   Updated: 2019/06/25 05:35:10 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ls.h"
+#include <ft_ls.h>
 
-int				ft_ls_core(t_ls *ls)
+int					main(int ac, char **av)
 {
-	t_ls		*lsr;
-	int			i;
+	t_ls			ls;
 
-	i = 0;
-	while (i < ls->nbe)
-	{
-		if (ft_strcmp(ls->arg[i].name, ".") && ls->nbe > 1)
-			ft_printf("%s:\n", ls->arg[i].name);
-		lsr = ft_ls_info(ls, i);
-		if (lsr != NULL && ls->flag & LS_F_RECURSIVE)
-		{
-			ft_ls_core(lsr);
-		}
-		i++;
-		if (i < ls->nbe)
-			printf("\n");
-	}
+	ls.ex = &av[0][2];
+	ls.flag = 0;
+	ft_ls_opts(ac, av, &ls);
+	ft_ls_core(&ls);
 	return (0);
 }

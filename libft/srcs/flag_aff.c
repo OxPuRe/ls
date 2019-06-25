@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/16 18:18:37 by auverneu          #+#    #+#             */
-/*   Updated: 2016/09/12 20:32:20 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/24 21:26:15 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ void	print(t_file *prtf)
 {
 	if ((ft_strchr("cC", *prtf->form)) && *prtf->i == 0)
 	{
-		write(1, "\0", 1);
+		write(prtf->fd, "\0", 1);
 		prtf->print += 1;
 	}
 	else
-		ft_putstr(prtf->i);
+		ft_putstr_fd(prtf->i, prtf->fd);
 }
 
 void	display_o(t_file *prtf, int *i)
@@ -58,7 +58,7 @@ void	display_prec(t_file *prtf, int i, int j)
 	if (F_HASH == 1)
 	{
 		if (prtf->flag[3] == 1 && prtf->flag[15] != 1)
-			ft_putchar('+');
+			ft_putchar_fd('+', prtf->fd);
 		if ((ft_strchr("oO", *prtf->form) != NULL) && (((F_NBPREC <= i &&
 			F_ZERO == 0 && ft_atoi(prtf->i) != 0) || ((ft_atoi(prtf->i) == 0) &&
 			F_PREC == 1 && F_NBPREC == 0))))
@@ -110,12 +110,12 @@ void	flag_sharp(t_file *prtf)
 		ft_putchar_prtf('0', prtf);
 	else if (*prtf->form == 'x' || *prtf->form == 'p')
 	{
-		ft_putstr("0x");
+		ft_putstr_fd("0x", prtf->fd);
 		prtf->print += 2;
 	}
 	else if (*prtf->form == 'X')
 	{
-		ft_putstr("0X");
+		ft_putstr_fd("0X", prtf->fd);
 		prtf->print += 2;
 	}
 }

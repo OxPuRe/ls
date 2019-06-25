@@ -6,15 +6,15 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/05/17 19:40:56 by auverneu         ###   ########.fr        #
+#    Updated: 2019/06/24 21:54:14 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_ls
 CC = clang
-INC_PATH = include
-SRC_PATH = src
-OBJ_PATH = obj
+INC_PATH = includes
+SRC_PATH = srcs
+OBJ_PATH = objs
 LIBS_NAME = libft
 SRC_NAME = main.c\
 	ft_ls_core.c\

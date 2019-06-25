@@ -6,15 +6,15 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/16 18:14:32 by auverneu          #+#    #+#             */
-/*   Updated: 2016/09/02 08:29:36 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/24 21:13:57 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
-void			ft_print(t_file *prtf)
+void	ft_print(t_file *prtf)
 {
-	int		i;
+	int i;
 
 	i = (int)ft_strlen(prtf->i);
 	prtf->mem = prtf->i;

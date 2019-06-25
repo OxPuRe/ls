@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_revert.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/17 23:21:19 by auverneu         ###   ########.fr       */
+/*   Created: 2019/06/24 22:43:19 by auverneu          #+#    #+#             */
+/*   Updated: 2019/06/24 22:43:50 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ft_ls.h>
+#include "libft.h"
 
-int					main(int ac, char **av)
+/*
+** This function revert the given array
+** Return:	The original array.
+*/
+
+void				*ft_revert(void *arr, size_t nitems, size_t width)
 {
-	t_ls			ls;
+	unsigned char	*arr1;
+	unsigned char	*arr2;
 
-	ls.ex = &av[0][2];
-	ls.flag = 0;
-	ft_ls_opts(ac, av, &ls);
-	ft_ls_core(&ls);
-	return (0);
+	arr1 = (unsigned char *)arr;
+	arr2 = (unsigned char *)arr + ((nitems - 1) * width);
+	while (arr1 < arr2)
+	{
+		ft_memswap(arr1, arr2, width);
+		arr1 += width;
+		arr2 -= width;
+	}
+	return (arr);
 }

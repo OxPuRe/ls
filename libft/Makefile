@@ -6,15 +6,15 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/06/18 23:05:41 by auverneu         ###   ########.fr        #
+#    Updated: 2019/06/24 22:48:01 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 CC = clang
-INC_PATH = include
-SRC_PATH = src
-OBJ_PATH = obj
+INC_PATH = includes
+SRC_PATH = srcs
+OBJ_PATH = objs
 SRC_NAME = flag_aff.c\
 	flag.c\
 	ft_atoi.c\
@@ -63,6 +63,7 @@ SRC_NAME = flag_aff.c\
 	ft_putstr_fd.c\
 	ft_putstr.c\
 	ft_reverse.c\
+	ft_revert.c\
 	ft_strcasestr.c\
 	ft_strcat.c\
 	ft_strchr.c\

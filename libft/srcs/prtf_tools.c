@@ -6,13 +6,13 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/19 18:22:09 by auverneu          #+#    #+#             */
-/*   Updated: 2016/09/02 09:01:36 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/24 21:20:16 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
-t_file	*create(char *format)
+t_file	*create(char *format, int fd)
 {
 	t_file	*new;
 
@@ -22,6 +22,7 @@ t_file	*create(char *format)
 		reset_flag(new);
 		new->form = format;
 		new->print = 0;
+		new->fd = fd;
 		new->i = NULL;
 	}
 	return (new);

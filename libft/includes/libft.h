@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/25 15:59:29 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/18 23:05:09 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/24 22:44:41 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ typedef struct		s_file
 	char			*mem;
 	int				print;
 	int				flag[16];
+	int				fd;
 }					t_file;
 
 char				**ft_strsplit(char const *s, char c);
@@ -131,6 +132,7 @@ int					ft_llonglen_base(long long n, int base);
 int					ft_llonglen(long long n);
 int					ft_memcmp(const void *s1, const void *s2, size_t n);
 int					ft_printf(const char *format, ...);
+int					ft_dprintf(int fd, const char *format, ...);
 int					ft_strcmp(const char *s1, const char *s2);
 int					ft_strequ(char const *s1, char const *s2);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -150,7 +152,7 @@ size_t				ft_strnlen(const char *s, size_t maxlen);
 size_t				ft_wclen(wchar_t w);
 size_t				ft_wcstrlen(wchar_t *w);
 
-t_file				*create(char *format);
+t_file				*create(char *format, int fd);
 
 t_list				*ft_lstdup(t_list *lst);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
@@ -168,6 +170,7 @@ void				*ft_memchr(const void *s, int c, size_t n);
 void				*ft_memcpy(void *dst, const void *src, size_t n);
 void				*ft_memmove(void *dst, const void *src, size_t n);
 void				*ft_memset(void *b, int c, size_t len);
+void				*ft_revert(void *arr, size_t nitems, size_t width);
 
 void				display_o(t_file *prtf, int *i);
 void				display_prec(t_file *prtf, int i, int j);

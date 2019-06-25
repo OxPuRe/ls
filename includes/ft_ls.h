@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/22 03:00:38 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/25 05:36:08 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <limits.h>
 # include <stdint.h>
 
-# define LS_OPTS "aAcdflrRStuU"
+# define LS_OPTS "1aAcdflrRStuU"
 # define LS_H_OPT	"--help"
 # define LS_SL_BUFF	(size_t)1024
 # define LS_SW_TIME	(time_t)15778432
@@ -48,7 +48,8 @@
 
 enum
 {
-	LS_POS_ALL = 0,
+	LS_POS_LINE = 0,
+	LS_POS_ALL,
 	LS_POS_ALMOSTALL,
 	LS_POS_STATUS,
 	LS_POS_DIR,
@@ -64,6 +65,7 @@ enum
 
 enum
 {
+	LS_F_LINE = 1U << LS_POS_LINE,
 	LS_F_ALL = 1U << LS_POS_ALL,
 	LS_F_AALL = 1U << LS_POS_ALMOSTALL,
 	LS_F_STATUS = 1U << LS_POS_STATUS,
@@ -106,7 +108,6 @@ typedef struct			s_stls
 {
 	char				*ex;
 	int					nbe;
-	unsigned int		error;
 	unsigned int		flag;
 	t_infols			*arg;
 }						t_ls;
@@ -114,7 +115,7 @@ typedef struct			s_stls
 typedef struct			s_var
 {
 	struct stat			st;
-	struct dirent		*rep_i;
+	struct dirent		*ri;
 	DIR					*rep;
 	quad_t				blk;
 	union				{
@@ -141,6 +142,8 @@ void					ft_ls_list(t_list **mem, t_list **list, char *name);
 time_t					ft_ls_time(struct stat *stat, int flag);
 void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 							t_var *v);
+void					ft_ls_convert(t_list *mem, t_infols *info, int nbe);
+void					ls_get_tspc(t_var *v, t_ls *ls, t_infols *info);
 void					*ls_exit(int mode, void *arg, t_ls *ls);
 
 #endif

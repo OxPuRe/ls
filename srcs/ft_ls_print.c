@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/22 03:51:09 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/25 03:57:09 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 {
 	int			i;
 	t_ls		*lsr;
+	t_var		v;
 
+	v.s.init = 0;
 	i = 0;
 	lsr = malloc(sizeof(t_ls));
 	lsr->ex = ls->ex;
@@ -26,18 +28,19 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	while (i < nbe)
 	{
 		lsr->arg[i].name = mem->content;
+		lsr->arg[i].type = 'd';
 		mem = mem->next;
 		i++;
 	}
 	return (lsr);
 }
 
-static void			ls_get_time(t_infols *info)
+static void		ls_get_time(t_infols *info)
 {
-	time_t			tm;
-	char			*strt_year;
-	char			*end_tme;
-	char			*str_tme;
+	time_t		tm;
+	char		*strt_year;
+	char		*end_tme;
+	char		*str_tme;
 
 	str_tme = ctime(&(info->tme_spec.tv_sec));
 	ft_strncpy(info->date, str_tme + 4, 12);
@@ -56,27 +59,37 @@ static void			ls_get_time(t_infols *info)
 	}
 }
 
-t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
+static void		display(t_infols *info, t_ls *ls, t_var *v, int i)
+{
+	if ((ls->flag & LS_F_LONG))
+	{
+		ls_get_time(&info[i]);
+		if (info[i].type == 'c' || info[i].type == 'b')
+			ft_printf("%c%-10s %*lu %-*s %-*s %*d, %*d %s %s\n",
+				info[i].type, info[i].rights, v->s.s.s_lk, info[i].link,
+				v->s.s.s_own + 1, info[i].owner, v->s.s.s_grp + 1,
+				info[i].group, v->s.s.s_maj, info[i].major, v->s.s.s_min,
+				info[i].minor, info[i].date, info[i].name);
+		else
+			ft_printf("%c%-10s %*lu %-*s %-*s %*lld %s %s\n", info[i].type,
+				info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
+				info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
+				info[i].size, info[i].date, info[i].name);
+	}
+	else
+		ft_printf("%s\n", info[i].name);
+	free(info[i].name);
+}
+
+static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 {
 	int			i;
-	int			nbe;
 	t_list		*list;
 	t_list		*mem;
 
 	i = 0;
 	list = NULL;
 	mem = NULL;
-	nbe = 0;
-	if (v->s.s.s_min < v->s.s.s_maj)
-		v->s.s.s_min = v->s.s.s_maj;
-	else
-		v->s.s.s_maj = v->s.s.s_min;
-	if (v->s.s.s_sz > (v->s.s.s_min + v->s.s.s_maj + 2))
-		v->s.s.s_maj = v->s.s.s_sz - v->s.s.s_min - 2;
-	else
-		v->s.s.s_sz = v->s.s.s_min + v->s.s.s_maj + 2;
-	if ((ls->flag & LS_F_LONG) && ls->arg->type == 'd')
-		printf("total %lld\n", v->blk);
 	while (i < v->s.s.tmp)
 	{
 		if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
@@ -86,32 +99,35 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 			{
 				ft_ls_list(&mem, &list, ft_strjoin(ls->arg[j].name,
 							info[i].name));
-				nbe++;
+				v->blk++;
 			}
 		}
-		if ((ls->flag & LS_F_LONG))
-		{
-			ls_get_time(&info[i]);
-			if (info[i].type == 'c' || info[i].type == 'b')
-				printf("%c%-10s %*lu %-*s %-*s %*d, %*d %s %s\n", info[i].type,
-					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
-					info[i].owner, v->s.s.s_grp + 1, info[i].group,
-					v->s.s.s_maj, info[i].major, v->s.s.s_min, info[i].minor,
-					info[i].date, info[i].name);
-			else
-				printf("%c%-10s %*lu %-*s %-*s %*lld %s %s\n", info[i].type,
-					info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
-					info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
-					info[i].size, info[i].date, info[i].name);
-		}
-		else
-			printf("%s\n", info[i].name);
-		free(info[i].name);
+		display(info, ls, v, i);
 		i++;
 	}
+	return (mem);
+}
+
+t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
+{
+	t_list		*mem;
+
+	mem = NULL;
+	if (v->s.s.s_min < v->s.s.s_maj)
+		v->s.s.s_min = v->s.s.s_maj;
+	else
+		v->s.s.s_maj = v->s.s.s_min;
+	if (v->s.s.s_sz > (v->s.s.s_min + v->s.s.s_maj + 2))
+		v->s.s.s_maj = v->s.s.s_sz - v->s.s.s_min - 2;
+	else
+		v->s.s.s_sz = v->s.s.s_min + v->s.s.s_maj + 2;
+	if ((ls->flag & LS_F_LONG) && ls->arg->type == 'd')
+		ft_printf("total %lld\n", v->blk);
+	v->blk = 0;
+	mem = loop(info, ls, v, j);
 	free(info);
 	if (mem)
-		return (ft_ls_rec(mem, nbe, ls));
+		return (ft_ls_rec(mem, (int)v->blk, ls));
 	else
 		return (NULL);
 }
