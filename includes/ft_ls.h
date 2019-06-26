@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/25 05:36:08 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/26 06:50:45 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,8 @@ typedef struct			s_var
 	struct dirent		*ri;
 	DIR					*rep;
 	quad_t				blk;
+	int					nbf;
+	int					nbd;
 	union				{
 		struct			{
 			uint8_t		s_lk:8;
@@ -145,5 +147,7 @@ void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 void					ft_ls_convert(t_list *mem, t_infols *info, int nbe);
 void					ls_get_tspc(t_var *v, t_ls *ls, t_infols *info);
 void					*ls_exit(int mode, void *arg, t_ls *ls);
+void					ft_recup_arg(t_ls *ls, char **av, int ac, int i);
+void					ft_ls_del(void *content, size_t size);
 
 #endif

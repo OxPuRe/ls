@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/25 03:57:09 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/26 06:53:42 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	int			i;
 	t_ls		*lsr;
 	t_var		v;
+	t_list		*first;
 
 	v.s.init = 0;
 	i = 0;
@@ -25,6 +26,7 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	lsr->flag = ls->flag;
 	lsr->nbe = nbe;
 	lsr->arg = malloc(sizeof(t_infols) * nbe);
+	first = mem;
 	while (i < nbe)
 	{
 		lsr->arg[i].name = mem->content;
@@ -32,6 +34,7 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 		mem = mem->next;
 		i++;
 	}
+	ft_lstdel(&first, ft_ls_del);
 	return (lsr);
 }
 
@@ -86,6 +89,7 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 	int			i;
 	t_list		*list;
 	t_list		*mem;
+	char		*tmp;
 
 	i = 0;
 	list = NULL;
@@ -97,8 +101,9 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 		{
 			if ((ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
 			{
-				ft_ls_list(&mem, &list, ft_strjoin(ls->arg[j].name,
-							info[i].name));
+				tmp = ft_strjoin(ls->arg[j].name, info[i].name);
+				ft_ls_list(&mem, &list, tmp);
+				free(tmp);
 				v->blk++;
 			}
 		}

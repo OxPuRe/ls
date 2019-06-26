@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/24 21:52:19 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/26 07:03:12 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,6 @@ int				ft_ls_core(t_ls *ls)
 		if (i < ls->nbe)
 			ft_printf("\n");
 	}
+	free(ls);
 	return (0);
 }

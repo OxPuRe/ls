@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/25 05:39:45 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/26 06:19:29 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,38 +71,43 @@ static void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 {
 	size_t			size;
 	char			*str;
+	char			*tmp;
 
 	size = v->st.st_size > 0 ? (size_t)(v->st.st_size + 1) : LS_SL_BUFF;
 	while (1)
 	{
-		str = (char *)malloc(sizeof(char) * size);
-		if (str == NULL)
+		if (!(str = (char *)malloc(sizeof(char) * size)))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
-		if (readlink(ft_strjoin(dir, info->name), str, size) == -1)
+		tmp = ft_strjoin(dir, info->name);
+		if (readlink(tmp, str, size) == -1)
 			return (ls_exit(LS_E_STD, info->name, ls));
 		(v->st.st_size > 0) ? str[size - 1] = '\0' : (0);
+		free(tmp);
 		if (ft_strnlen(str, size) == size)
-		{
 			size += LS_SL_BUFF;
-			free(str);
-		}
 		else
 			break ;
 	}
-	info->name = ft_strjoin(info->name, " -> ");
-	info->name = ft_strjoin(info->name, str);
+	tmp = ft_strjoin(info->name, " -> ");
+	free(info->name);
+	info->name = ft_strjoin(tmp, str);
+	free(str);
+	free(tmp);
 	return (NULL);
 }
 
 void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 {
 	int				i;
+	char			*tmp;
 
 	i = 0;
 	v->blk = 0;
 	while (i < v->s.s.tmp)
 	{
-		lstat(ft_strjoin(dir, info[i].name), &v->st);
+		tmp = ft_strjoin(dir, info[i].name);
+		lstat(tmp, &v->st);
+		free(tmp);
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
 		ft_lstend_ls(&info[i], v, ls);
 		if (ls->flag & LS_F_LONG && info[i].type == 'l')
@@ -121,6 +126,7 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 	t_list			*mem;
 	t_var			v;
 	t_infols		*info;
+	char			*tmp;
 
 	list = NULL;
 	mem = NULL;
@@ -136,10 +142,13 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 			ft_ls_list(&mem, &list, v.ri->d_name);
 			v.s.s.tmp += 1;
 		}
+	closedir(v.rep);
 	if (!(info = malloc(sizeof(t_infols) * v.s.s.tmp)))
 		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	ft_ls_convert(mem, info, v.s.s.tmp);
-	ls->arg[i].name = ft_strjoin(ls->arg[i].name, "/");
+	tmp = ft_strjoin(ls->arg[i].name, "/");
+	free(ls->arg[i].name);
+	ls->arg[i].name = tmp;
 	ft_ls_fill(info, ls, ls->arg[i].name, &v);
 	return (ft_ls_print(info, ls, &v, i));
 }

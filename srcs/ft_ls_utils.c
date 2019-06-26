@@ -6,49 +6,32 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/25 05:36:27 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/26 06:37:46 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
+void		ft_ls_del(void *content, size_t size)
+{
+	(void)content;
+	(void)size;
+}
+
 void		ft_ls_convert(t_list *mem, t_infols *info, int nbe)
 {
 	int		i;
+	t_list	*first;
 
 	i = 0;
+	first = mem;
 	while (i < nbe)
 	{
 		info[i].name = mem->content;
 		mem = mem->next;
 		i++;
 	}
-}
-
-void		ls_get_tspc(t_var *v, t_ls *ls, t_infols *info)
-{
-	if (ls->flag & LS_F_ACCESS)
-		ft_memcpy(&(info->tme_spec), &(v->st.st_atimespec),
-			sizeof(struct timespec));
-	else if (ls->flag & LS_F_STATUS)
-		ft_memcpy(&(info->tme_spec), &(v->st.st_ctimespec),
-			sizeof(struct timespec));
-	else if (ls->flag & LS_F_CREATION)
-		ft_memcpy(&(info->tme_spec), &(v->st.st_birthtimespec),
-			sizeof(struct timespec));
-	else
-		ft_memcpy(&(info->tme_spec), &(v->st.st_mtimespec),
-			sizeof(struct timespec));
-}
-
-time_t		ft_ls_time(struct stat *stat, int flag)
-{
-	if (!(flag & LS_F_CREATION))
-		return (stat->st_birthtimespec.tv_sec);
-	else if (!(flag & LS_F_ACCESS))
-		return (stat->st_atimespec.tv_sec);
-	else
-		return (stat->st_mtimespec.tv_sec);
+	ft_lstdel(&first, ft_ls_del);
 }
 
 void		ft_ls_list(t_list **mem, t_list **list, char *name)

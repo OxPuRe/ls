@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/06/24 22:48:01 by auverneu         ###   ########.fr        #
+#    Updated: 2019/06/25 21:04:14 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -148,5 +148,7 @@ fclean: clean
 re: fclean all
 
 norme:
+	@printf "\e[92m"
 	@norminette $(SRC)
 	@norminette $(INC_PATH)
+	@printf "\e[0m\n"

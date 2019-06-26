@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/06/24 21:54:14 by auverneu         ###   ########.fr        #
+#    Updated: 2019/06/26 00:31:16 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,8 @@ SRC_NAME = main.c\
 	ft_ls_print.c\
 	ft_ls_sort.c\
 	ft_ls_opts.c\
+	ft_ls_time.c\
+	ft_ls_get_arg.c\
 	ft_ls_utils.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
@@ -63,8 +65,8 @@ fclean: clean
 re: fclean all
 
 norme:
-	@printf "\e[31m"
-	@norminette $(SRC) | grep -Eiw -B1 "Warning|Error" || true
-	@norminette $(INC_PATH) | grep -Eiw -B1 "Warning|Error" || true
+	@printf "\e[92m"
+	@norminette $(SRC)
+	@norminette $(INC_PATH)
 	@printf "\e[0m\n"
 	@$(foreach LIB, $(LIBS_NAME), make -C $(LIB) norme;)
