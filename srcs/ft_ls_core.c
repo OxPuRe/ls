@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/26 07:03:12 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/27 07:15:44 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int				ft_ls_core(t_ls *ls)
 	i = 0;
 	while (i < ls->nbe)
 	{
+	ft_printf("~%s~\n", ls->arg[i].name);
 		if (ft_strcmp(ls->arg[i].name, ".") && ls->nbe > 1)
 			ft_printf("%s:\n", ls->arg[i].name);
 		lsr = ft_ls_info(ls, i);

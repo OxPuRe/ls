@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/26 06:50:45 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/27 05:33:29 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void					ft_ls_sort(t_infols *info, int flag, int nbe);
 t_ls					*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j);
 void					ft_ls_list(t_list **mem, t_list **list, char *name);
 time_t					ft_ls_time(struct stat *stat, int flag);
-void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
+void					ft_ls_fill(t_infols *info, t_ls *ls, char **dir,
 							t_var *v);
 void					ft_ls_convert(t_list *mem, t_infols *info, int nbe);
 void					ls_get_tspc(t_var *v, t_ls *ls, t_infols *info);

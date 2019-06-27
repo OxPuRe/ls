@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/26 06:53:42 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/06/27 06:42:33 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ static void		display(t_infols *info, t_ls *ls, t_var *v, int i)
 	}
 	else
 		ft_printf("%s\n", info[i].name);
-	free(info[i].name);
 }
 
 static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
@@ -89,25 +88,26 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 	int			i;
 	t_list		*list;
 	t_list		*mem;
-	char		*tmp;
 
 	i = 0;
 	list = NULL;
 	mem = NULL;
 	while (i < v->s.s.tmp)
 	{
+		display(info, ls, v, i);
 		if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
 				(info[i].name[1] == '.' && info[i].name[2] == 0))))
 		{
 			if ((ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
 			{
-				tmp = ft_strjoin(ls->arg[j].name, info[i].name);
-				ft_ls_list(&mem, &list, tmp);
-				free(tmp);
+				if (!(info[i].name = ft_strxjoin("00", ls->arg[j].name,
+					info[i].name)))
+					ls_exit(LS_E_STD_EXIT, NULL, ls);
+				ft_ls_list(&mem, &list, info[i].name);
 				v->blk++;
 			}
 		}
-		display(info, ls, v, i);
+		//free(info[i].name);
 		i++;
 	}
 	return (mem);
