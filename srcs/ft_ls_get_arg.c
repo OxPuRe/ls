@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 20:57:52 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/27 05:38:10 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/01 01:59:58 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void		ft_file(int jf, t_var *v, t_infols *file, t_ls *ls)
 	{
 		dir = ft_strdup(".");
 		v->s.s.tmp = jf;
-		ft_ls_fill(file, ls, &dir, v);
+		ft_ls_fill(file, ls, dir, v);
 		ft_ls_print(file, ls, v, 0);
 	}
 	else
@@ -38,7 +38,7 @@ static void		ft_dir(int j, int jf, t_var *v, t_ls *ls)
 		v->s.s.tmp = j;
 		ls->nbe = j;
 		dir = ft_strdup(".");
-		ft_ls_fill(ls->arg, ls, &dir, v);
+		ft_ls_fill(ls->arg, ls, dir, v);
 	}
 	else
 		exit(0);

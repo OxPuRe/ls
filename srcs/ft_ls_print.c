@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/27 06:42:33 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/10 03:51:11 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,17 +97,15 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 		display(info, ls, v, i);
 		if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
 				(info[i].name[1] == '.' && info[i].name[2] == 0))))
-		{
 			if ((ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
 			{
-				if (!(info[i].name = ft_strxjoin("00", ls->arg[j].name,
+				if (!(info[i].name = ft_strxjoin("001", ls->arg[j].name, "/",
 					info[i].name)))
 					ls_exit(LS_E_STD_EXIT, NULL, ls);
 				ft_ls_list(&mem, &list, info[i].name);
 				v->blk++;
 			}
-		}
-		//free(info[i].name);
+		free(info[i].name);
 		i++;
 	}
 	return (mem);
@@ -131,6 +129,7 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 	v->blk = 0;
 	mem = loop(info, ls, v, j);
 	free(info);
+	free(ls->arg[j].name);
 	if (mem)
 		return (ft_ls_rec(mem, (int)v->blk, ls));
 	else

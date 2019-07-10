@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/27 06:30:01 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/10 02:19:32 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,8 @@ static void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 	{
 		if (!(str = (char *)malloc(sizeof(char) * size)))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
-		tmp = ft_strjoin(dir, info->name);
+		if (!(tmp = ft_strxjoin("000", dir, "/", info->name)))
+			ls_exit(LS_E_STD_EXIT, NULL, ls);
 		if (readlink(tmp, str, size) == -1)
 			return (ls_exit(LS_E_STD, info->name, ls));
 		(v->st.st_size > 0) ? str[size - 1] = '\0' : (0);
@@ -88,36 +89,30 @@ static void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 		else
 			break ;
 	}
-	tmp = ft_strjoin(info->name, " -> ");
-	free(info->name);
-	info->name = ft_strjoin(tmp, str);
-	free(str);
-	free(tmp);
+	if (!(info->name = ft_strxjoin("101", info->name, " -> ", str)))
+		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	return (NULL);
 }
 
-void				ft_ls_fill(t_infols *info, t_ls *ls, char **dir, t_var *v)
+void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 {
 	int				i;
 	char			*tmp;
 
 	i = 0;
 	v->blk = 0;
-	tmp = *dir;
-	if (!(*dir = ft_strxjoin("00", tmp, "/")))
-		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	while (i < v->s.s.tmp)
 	{
-		if (!(tmp = ft_strxjoin("00", *dir, info[i].name)))
-			ls_exit(LS_E_STD_EXIT, NULL, ls);	
-	ft_printf("[%s]\n", tmp);
-		lstat(tmp, &v->st);
+		if (!(tmp = ft_strxjoin("000", dir, "/", info[i].name)))
+			ls_exit(LS_E_STD_EXIT, NULL, ls);
+		if (lstat(tmp, &v->st) == -1)
+			ls_exit(LS_E_STD_EXIT, tmp, ls);
 		free(tmp);
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
 		ft_lstend_ls(&info[i], v, ls);
 		if (ls->flag & LS_F_LONG && info[i].type == 'l')
 		{
-			ls_get_l_pth(*dir, &info[i], v, ls);
+			ls_get_l_pth(dir, &info[i], v, ls);
 		}
 		i++;
 	}
@@ -150,6 +145,6 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 	if (!(info = malloc(sizeof(t_infols) * v.s.s.tmp)))
 		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	ft_ls_convert(mem, info, v.s.s.tmp);
-	ft_ls_fill(info, ls, &ls->arg[i].name, &v);
+	ft_ls_fill(info, ls, ls->arg[i].name, &v);
 	return (ft_ls_print(info, ls, &v, i));
 }
