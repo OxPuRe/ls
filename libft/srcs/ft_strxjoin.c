@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/27 00:43:56 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/02 23:56:58 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/11 23:09:25 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static char	*ft_xjoin(char **args, char *mode, size_t *nb)
 {
 	char	*ret;
 
+	ret = NULL;
 	ret = (char *)malloc(sizeof(char) * nb[1]);
 	if (ret == NULL)
 		return (NULL);
@@ -48,6 +49,8 @@ char		*ft_strxjoin(char *mode, ...)
 	size_t	nb[3];
 	va_list ap;
 
+	args = NULL;
+	ret = NULL;
 	va_start(ap, mode);
 	nb[0] = ft_strlen(mode);
 	args = (char **)malloc(sizeof(char *) * nb[0]);

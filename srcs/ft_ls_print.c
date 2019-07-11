@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/11 20:33:33 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/11 23:01:43 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	{
 		lsr->arg[i].name = ft_strdup(mem->content);
 		lsr->arg[i].type = 'd';
-		printf("print %s %s\n", lsr->arg[i].name, mem->content);
 		mem = mem->next;
 		i++;
 	}
@@ -89,24 +88,26 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 	int			i;
 	t_list		*list;
 	t_list		*mem;
+	char		*tmp;
 
 	i = 0;
 	list = NULL;
 	mem = NULL;
 	while (i < v->s.s.tmp)
 	{
+		tmp = info[i].name;
 		display(info, ls, v, i);
 		if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
 				(info[i].name[1] == '.' && info[i].name[2] == 0))))
 			if ((ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
 			{
-				if (!(info[i].name = ft_strxjoin("000", ls->arg[j].name, "/",
-					info[i].name)))
+				if (!(info[i].name = ft_strxjoin("001", ls->arg[j].name, "/",
+					tmp)))
 					ls_exit(LS_E_STD_EXIT, NULL, ls);
 				ft_ls_list(&mem, &list, info[i].name);
 				v->blk++;
 			}
-		//free(info[i].name);
+		free(info[i].name);
 		i++;
 	}
 	return (mem);
@@ -129,8 +130,8 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 		ft_printf("total %lld\n", v->blk);
 	v->blk = 0;
 	mem = loop(info, ls, v, j);
-	//free(info);
-	//free(ls->arg[j].name);
+	free(info);
+	free(ls->arg[j].name);
 	if (mem)
 		return (ft_ls_rec(mem, (int)v->blk, ls));
 	else
