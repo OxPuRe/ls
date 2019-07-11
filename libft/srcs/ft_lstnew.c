@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: auverneu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/12 22:38:13 by auverneu          #+#    #+#             */
-/*   Updated: 2015/12/13 17:50:37 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/11 19:48:37 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ t_list	*ft_lstnew(void const *content, size_t content_size)
 {
 	t_list	*lst;
 
+	lst = NULL;
 	if ((lst = (t_list *)ft_memalloc(sizeof(t_list))))
 	{
 		if (content)

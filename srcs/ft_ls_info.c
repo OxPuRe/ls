@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/10 02:19:32 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/11 20:29:01 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,10 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 
 	i = 0;
 	v->blk = 0;
+	printf("{%d}\n", v->s.s.tmp);
 	while (i < v->s.s.tmp)
 	{
+	// printf("[%s %s]\n", dir, info[i].name);
 		if (!(tmp = ft_strxjoin("000", dir, "/", info[i].name)))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
 		if (lstat(tmp, &v->st) == -1)
@@ -138,6 +140,7 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 		(v.ri->d_name[1] == 0 || (v.ri->d_name[1] == '.' &&
 		v.ri->d_name[2] == 0))) && ls->flag & LS_F_AALL) || ls->flag & LS_F_ALL)
 		{
+			ft_printf(" ICI %s\n", v.ri->d_name);
 			ft_ls_list(&mem, &list, v.ri->d_name);
 			v.s.s.tmp += 1;
 		}
