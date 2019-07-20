@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/10 00:33:58 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/20 19:27:04 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void		ft_ls_del(void *content, size_t size)
 {
-	(void)content;
+	free(content);
 	(void)size;
 }
 
@@ -27,7 +27,7 @@ void		ft_ls_convert(t_list *mem, t_infols *info, int nbe)
 	first = mem;
 	while (i < nbe)
 	{
-		info[i].name = mem->content;
+		info[i].name = ft_strdup(mem->content);
 		mem = mem->next;
 		i++;
 	}
@@ -38,12 +38,12 @@ void		ft_ls_list(t_list **mem, t_list **list, char *name)
 {
 	if (*mem == NULL)
 	{
-		*mem = ft_lstnew(name, ft_strlen(name) + 1);
+		*mem = ft_lstnew(name, sizeof(char) * (ft_strlen(name) + 1));
 		*list = *mem;
 	}
 	else
 	{
-		(*list)->next = ft_lstnew(name, ft_strlen(name) + 1);
+		(*list)->next = ft_lstnew(name, sizeof(char) * (ft_strlen(name) + 1));
 		*list = (*list)->next;
 	}
 }

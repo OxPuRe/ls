@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/10 02:19:32 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/21 01:07:49 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ void				ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls)
 	v->s.s.s_lk = ft_max((ft_intlen((int)info->link)), v->s.s.s_lk);
 	user = getpwuid(v->st.st_uid);
 	group = getgrgid(v->st.st_gid);
-	info->owner = user->pw_name;
+	info->owner = ft_strdup(user->pw_name);
 	v->s.s.s_own = ft_max((ft_strlen(info->owner)), v->s.s.s_own);
-	info->group = group->gr_name;
+	info->group = ft_strdup(group->gr_name);
 	v->s.s.s_grp = ft_max((ft_strlen(info->group)), v->s.s.s_grp);
 	if (info->type == 'c' || info->type == 'b')
 	{
@@ -78,7 +78,7 @@ static void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 	{
 		if (!(str = (char *)malloc(sizeof(char) * size)))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
-		if (!(tmp = ft_strxjoin("000", dir, "/", info->name)))
+		if (!(tmp = ft_pathjoin(dir, info->name)))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
 		if (readlink(tmp, str, size) == -1)
 			return (ls_exit(LS_E_STD, info->name, ls));
@@ -103,7 +103,7 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 	v->blk = 0;
 	while (i < v->s.s.tmp)
 	{
-		if (!(tmp = ft_strxjoin("000", dir, "/", info[i].name)))
+		if (!(tmp = ft_pathjoin(dir, info[i].name)))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
 		if (lstat(tmp, &v->st) == -1)
 			ls_exit(LS_E_STD_EXIT, tmp, ls);

@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/06/26 00:31:16 by auverneu         ###   ########.fr        #
+#    Updated: 2019/07/21 01:26:19 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ) | $(LIBS)
 	@printf "\e[32;4m[Linking]:\e[0m %s\n" $@
-	@$(CC) $(CFLAGS) $(CPPFLAGS) $(OBJ) -o $(NAME) $(CLFLAGS)
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(CLFLAGS) $(OBJ) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
 	@$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<

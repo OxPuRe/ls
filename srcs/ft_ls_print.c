@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/10 03:51:11 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/21 01:34:46 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	first = mem;
 	while (i < nbe)
 	{
-		lsr->arg[i].name = mem->content;
+		lsr->arg[i].name = ft_strdup(mem->content);
 		lsr->arg[i].type = 'd';
 		mem = mem->next;
 		i++;
@@ -81,6 +81,8 @@ static void		display(t_infols *info, t_ls *ls, t_var *v, int i)
 	}
 	else
 		ft_printf("%s\n", info[i].name);
+	free(info[i].owner);
+	free(info[i].group);
 }
 
 static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
