@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/01 01:53:27 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/23 01:07:05 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,5 +149,9 @@ void					ls_get_tspc(t_var *v, t_ls *ls, t_infols *info);
 void					*ls_exit(int mode, void *arg, t_ls *ls);
 void					ft_recup_arg(t_ls *ls, char **av, int ac, int i);
 void					ft_ls_del(void *content, size_t size);
+void					*ls_get_l_pth(char *dir, t_infols *info, t_var *v,
+										t_ls *ls);
+void					ft_lstbegin_ls(t_infols *info, mode_t mode);
+void					ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls);
 
 #endif

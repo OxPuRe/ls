@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/21 01:34:46 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/23 03:14:11 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,15 +68,15 @@ static void		display(t_infols *info, t_ls *ls, t_var *v, int i)
 	{
 		ls_get_time(&info[i]);
 		if (info[i].type == 'c' || info[i].type == 'b')
-			ft_printf("%c%-10s %*lu %-*s %-*s %*d, %*d %s %s\n",
+			ft_printf("%c%-10s %*lu %-*s  %-*s %*d, %*d %s %s\n",
 				info[i].type, info[i].rights, v->s.s.s_lk, info[i].link,
-				v->s.s.s_own + 1, info[i].owner, v->s.s.s_grp + 1,
+				v->s.s.s_own, info[i].owner, v->s.s.s_grp,
 				info[i].group, v->s.s.s_maj, info[i].major, v->s.s.s_min,
 				info[i].minor, info[i].date, info[i].name);
 		else
-			ft_printf("%c%-10s %*lu %-*s %-*s %*lld %s %s\n", info[i].type,
-				info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own + 1,
-				info[i].owner, v->s.s.s_grp + 1, info[i].group, v->s.s.s_sz,
+			ft_printf("%c%-10s %*lu %-*s  %-*s  %*lld %s %s\n", info[i].type,
+				info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own,
+				info[i].owner, v->s.s.s_grp, info[i].group, v->s.s.s_sz,
 				info[i].size, info[i].date, info[i].name);
 	}
 	else
@@ -90,6 +90,7 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 	int			i;
 	t_list		*list;
 	t_list		*mem;
+	char		*tmp;
 
 	i = 0;
 	list = NULL;
@@ -101,9 +102,10 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 				(info[i].name[1] == '.' && info[i].name[2] == 0))))
 			if ((ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
 			{
-				if (!(info[i].name = ft_strxjoin("001", ls->arg[j].name, "/",
-					info[i].name)))
+				tmp = info[i].name;
+				if (!(info[i].name = ft_pathjoin(ls->arg[j].name, tmp)))
 					ls_exit(LS_E_STD_EXIT, NULL, ls);
+				free(tmp);
 				ft_ls_list(&mem, &list, info[i].name);
 				v->blk++;
 			}
@@ -122,9 +124,11 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 		v->s.s.s_min = v->s.s.s_maj;
 	else
 		v->s.s.s_maj = v->s.s.s_min;
-	if (v->s.s.s_sz > (v->s.s.s_min + v->s.s.s_maj + 2))
+	if (v->s.s.s_sz > (v->s.s.s_min + v->s.s.s_maj + 2) &&
+		(v->s.s.s_min + v->s.s.s_maj) >= 2)
 		v->s.s.s_maj = v->s.s.s_sz - v->s.s.s_min - 2;
-	else
+	else if (v->s.s.s_sz < (v->s.s.s_min + v->s.s.s_maj + 2) &&
+		(v->s.s.s_min + v->s.s.s_maj) >= 2)
 		v->s.s.s_sz = v->s.s.s_min + v->s.s.s_maj + 2;
 	if ((ls->flag & LS_F_LONG) && ls->arg->type == 'd')
 		ft_printf("total %lld\n", v->blk);

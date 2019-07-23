@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/21 01:07:49 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/23 03:09:25 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,15 @@ void				ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls)
 		v->s.s.s_maj = ft_max((ft_intlen((int)info->major)), v->s.s.s_maj);
 	}
 	else
+	{
 		info->size = v->st.st_size;
-	v->s.s.s_sz = ft_max((ft_intlen((int)info->size)), v->s.s.s_sz);
+		v->s.s.s_sz = ft_max(ft_intlen((int)info->size), v->s.s.s_sz);
+	}
 	ls_get_tspc(v, ls, info);
 	v->blk += v->st.st_blocks;
 }
 
-static void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
+void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 {
 	size_t			size;
 	char			*str;
