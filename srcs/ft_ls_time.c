@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/26 00:30:09 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/26 00:30:47 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/24 08:47:34 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,4 @@ void		ls_get_tspc(t_var *v, t_ls *ls, t_infols *info)
 	else
 		ft_memcpy(&(info->tme_spec), &(v->st.st_mtimespec),
 			sizeof(struct timespec));
-}
-
-time_t		ft_ls_time(struct stat *stat, int flag)
-{
-	if (!(flag & LS_F_CREATION))
-		return (stat->st_birthtimespec.tv_sec);
-	else if (!(flag & LS_F_ACCESS))
-		return (stat->st_atimespec.tv_sec);
-	else
-		return (stat->st_mtimespec.tv_sec);
 }

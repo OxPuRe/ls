@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/23 03:14:11 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/24 09:13:03 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	lsr->ex = ls->ex;
 	lsr->flag = ls->flag;
 	lsr->nbe = nbe;
+	lsr->aff_dir = ls->aff_dir;
 	lsr->arg = malloc(sizeof(t_infols) * nbe);
 	first = mem;
 	while (i < nbe)
@@ -41,48 +42,50 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 static void		ls_get_time(t_infols *info)
 {
 	time_t		tm;
-	char		*strt_year;
-	char		*end_tme;
 	char		*str_tme;
+	char		**d;
+	int			i;
 
+	i = 0;
 	str_tme = ctime(&(info->tme_spec.tv_sec));
-	ft_strncpy(info->date, str_tme + 4, 12);
-	info->date[12] = 0;
+	d = ft_strsplit(str_tme, 32);
 	time(&tm);
+	d[3][5] = 0;
+	d[4][ft_strlen(d[4]) - 1] = 0;
 	if ((info->tme_spec.tv_sec < (tm - LS_SW_TIME)) ||
 		(info->tme_spec.tv_sec > (tm + LS_SW_TIME)))
+		ft_printf("%s %2s  %s ", d[1], d[2], d[4]);
+	else
+		ft_printf("%s %2s %5s ", d[1], d[2], d[3]);
+	while (i < 4)
 	{
-		end_tme = ft_strchr(str_tme, '\n');
-		strt_year = end_tme - 1;
-		while (ft_isdigit(*strt_year))
-			strt_year--;
-		strt_year++;
-		ft_strncpy(info->date + 8, strt_year, end_tme - strt_year);
-		info->date[11] = 0;
+		free(d[i]);
+		i++;
 	}
+	free(d);
 }
 
 static void		display(t_infols *info, t_ls *ls, t_var *v, int i)
 {
 	if ((ls->flag & LS_F_LONG))
 	{
-		ls_get_time(&info[i]);
 		if (info[i].type == 'c' || info[i].type == 'b')
-			ft_printf("%c%-10s %*lu %-*s  %-*s %*d, %*d %s %s\n",
+			ft_printf("%c%-10s %*lu %-*s  %-*s %*d, %*d ",
 				info[i].type, info[i].rights, v->s.s.s_lk, info[i].link,
 				v->s.s.s_own, info[i].owner, v->s.s.s_grp,
 				info[i].group, v->s.s.s_maj, info[i].major, v->s.s.s_min,
-				info[i].minor, info[i].date, info[i].name);
+				info[i].minor);
 		else
-			ft_printf("%c%-10s %*lu %-*s  %-*s  %*lld %s %s\n", info[i].type,
+			ft_printf("%c%-10s %*lu %-*s  %-*s  %*lld ", info[i].type,
 				info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own,
 				info[i].owner, v->s.s.s_grp, info[i].group, v->s.s.s_sz,
-				info[i].size, info[i].date, info[i].name);
+				info[i].size);
+		ls_get_time(&info[i]);
 	}
-	else
-		ft_printf("%s\n", info[i].name);
+	ft_printf("%s\n", info[i].name);
 	free(info[i].owner);
 	free(info[i].group);
+	ls->aff_dir = 1;
 }
 
 static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)

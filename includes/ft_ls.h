@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/23 01:07:05 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/24 09:08:30 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ typedef struct			s_infols
 	int					minor;
 	int					major;
 	struct timespec		tme_spec;
-	char				date[13];
 }						t_infols;
 
 typedef struct			s_stls
@@ -109,6 +108,7 @@ typedef struct			s_stls
 	char				*ex;
 	int					nbe;
 	unsigned int		flag;
+	int					aff_dir;
 	t_infols			*arg;
 }						t_ls;
 
@@ -141,7 +141,6 @@ int						ft_ls_core(t_ls *ls);
 void					ft_ls_sort(t_infols *info, int flag, int nbe);
 t_ls					*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j);
 void					ft_ls_list(t_list **mem, t_list **list, char *name);
-time_t					ft_ls_time(struct stat *stat, int flag);
 void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 							t_var *v);
 void					ft_ls_convert(t_list *mem, t_infols *info, int nbe);
