@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/23 03:09:25 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/25 04:58:47 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,14 @@ void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 		if (!(tmp = ft_pathjoin(dir, info->name)))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
 		if (readlink(tmp, str, size) == -1)
-			return (ls_exit(LS_E_STD, info->name, ls));
-		(v->st.st_size > 0) ? str[size - 1] = '\0' : (0);
+			return (ls_exit(LS_E_STD_EXIT, info->name, ls));
 		free(tmp);
+		(v->st.st_size > 0) ? str[size - 1] = '\0' : (0);
 		if (ft_strnlen(str, size) == size)
+		{
+			free(str);
 			size += LS_SL_BUFF;
+		}
 		else
 			break ;
 	}
@@ -105,17 +108,20 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 	v->blk = 0;
 	while (i < v->s.s.tmp)
 	{
-		if (!(tmp = ft_pathjoin(dir, info[i].name)))
-			ls_exit(LS_E_STD_EXIT, NULL, ls);
+		if (info[i].name[0] == '/')
+			tmp = ft_strdup(info[i].name);
+		else
+		{
+			if (!(tmp = ft_pathjoin(dir, info[i].name)))
+				ls_exit(LS_E_STD_EXIT, NULL, ls);
+		}
 		if (lstat(tmp, &v->st) == -1)
-			ls_exit(LS_E_STD_EXIT, tmp, ls);
+			ls_exit(LS_E_STD, tmp, ls);
 		free(tmp);
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
 		ft_lstend_ls(&info[i], v, ls);
 		if (ls->flag & LS_F_LONG && info[i].type == 'l')
-		{
 			ls_get_l_pth(dir, &info[i], v, ls);
-		}
 		i++;
 	}
 	if ((ls->flag & LS_F_NOSORT) == 0)

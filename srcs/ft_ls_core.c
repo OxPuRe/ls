@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/24 09:13:01 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/25 05:33:58 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ int				ft_ls_core(t_ls *ls)
 	i = 0;
 	while (i < ls->nbe)
 	{
-		if (!(ls->arg[i].name[0] == '.' && ls->arg[i].name[1] == 0) &&
-			(ls->nbe > 1 || ls->aff_dir))
+		if (ls->nbe > 1 || ls->aff_dir)
 			ft_printf("%s:\n", ls->arg[i].name);
 		lsr = ft_ls_info(ls, i);
 		if (lsr != NULL && ls->flag & LS_F_RECURSIVE)
@@ -36,3 +35,5 @@ int				ft_ls_core(t_ls *ls)
 	free(ls);
 	return (0);
 }
+
+/* !(ls->arg[i].name[0] == '.' && ls->arg[i].name[1] == 0) && */

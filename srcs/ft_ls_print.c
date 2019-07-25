@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/24 09:13:03 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/25 05:38:08 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
 	else if (v->s.s.s_sz < (v->s.s.s_min + v->s.s.s_maj + 2) &&
 		(v->s.s.s_min + v->s.s.s_maj) >= 2)
 		v->s.s.s_sz = v->s.s.s_min + v->s.s.s_maj + 2;
-	if ((ls->flag & LS_F_LONG) && ls->arg->type == 'd')
+	if ((ls->flag & LS_F_LONG) && ls->arg->type == 'd' && v->s.s.tmp)
 		ft_printf("total %lld\n", v->blk);
 	v->blk = 0;
 	mem = loop(info, ls, v, j);

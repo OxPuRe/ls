@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/20 19:27:04 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/25 04:43:42 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void		ft_ls_list(t_list **mem, t_list **list, char *name)
 
 void		*ls_exit(int mode, void *arg, t_ls *ls)
 {
+	ls->aff_dir = 1;
 	if (mode == LS_E_STD_EXIT || mode == LS_E_STD)
 	{
 		ft_dprintf(2, "%s: ", ls->ex);

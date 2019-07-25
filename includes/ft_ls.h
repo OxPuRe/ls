@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/24 09:08:30 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/25 04:44:25 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,8 @@ typedef struct			s_stls
 {
 	char				*ex;
 	int					nbe;
-	unsigned int		flag;
-	int					aff_dir;
+	unsigned int		flag:13;
+	char				aff_dir:1;
 	t_infols			*arg;
 }						t_ls;
 
