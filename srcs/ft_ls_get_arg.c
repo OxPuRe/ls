@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 20:57:52 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/25 05:31:20 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/26 07:21:16 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ static void		ft_dir(int j, int jf, t_var *v, t_ls *ls)
 				ls_exit(LS_E_STD_EXIT, ls->arg[i].name, ls);
 			ft_lstbegin_ls(&ls->arg[i], v->st.st_mode);
 			ft_lstend_ls(&ls->arg[i], v, ls);
-			if (ls->flag & LS_F_LONG && ls->arg[i].type == 'l')
-				ls_get_l_pth(".", &ls->arg[i], v, ls);
 			i++;
 		}
 		if ((ls->flag & LS_F_NOSORT) == 0)
@@ -56,16 +54,17 @@ static void		ft_dir(int j, int jf, t_var *v, t_ls *ls)
 		exit(0);
 }
 
-static int		ft_get_stat(char *av, t_var *v, t_ls *ls)
+static void		ft_arg_err(char **tab, int e, t_ls *ls)
 {
-	int			ret;
+	int			i;
 
-	ret = lstat(av, &v->st);
-	if (ret == -1)
+	i = 0;
+	ft_qsort(tab, e, sizeof(char *), &ft_strvcmp);
+	while (i < e)
 	{
-		ls_exit(LS_E_STD, av, ls);
+		ls_exit(LS_E_STD, tab[i], ls);
+		i++;
 	}
-	return (ret);
 }
 
 void			ft_check_av(int i, int ac, char **av, t_ls *ls)
@@ -86,14 +85,23 @@ void			ft_check_av(int i, int ac, char **av, t_ls *ls)
 void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 {
 	t_var		v;
+	t_var		vl;
 	t_infols	*file;
 	t_infols	*dir;
+	char		**tab;
+	int			e;
+	char		*lnk;
 
 	v.s.init = 0;
 	v.nbd = 0;
 	v.nbf = 0;
+	e = 0;
 	ls->nbe = (ac - i) ? (ac - i) : 1;
 	v.s.s.tmp = ls->nbe;
+	tab = NULL;
+	if (!(tab = malloc(sizeof(char *) * ac)))
+		ls_exit(LS_E_STD_EXIT, NULL, ls);
+	tab[0] = NULL;
 	if (!(dir = malloc(sizeof(t_infols) * ls->nbe)))
 		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	if (!(file = malloc(sizeof(t_infols) * ls->nbe)))
@@ -102,7 +110,7 @@ void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 	if ((ac - i) != 0)
 		while (i < ac)
 		{
-			if ((ft_get_stat(av[i], &v, ls)) == 0)
+			if ((lstat(av[i], &v.st)) == 0)
 			{
 				if ((S_ISDIR(v.st.st_mode) ||
 				av[i][ft_strlen(av[i]) - 1] == '/') && !(ls->flag & LS_F_DIR))
@@ -110,16 +118,33 @@ void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 					dir[v.nbd].name = ft_strdup(av[i]);
 					v.nbd++;
 				}
-				else
+				else if ((S_ISLNK(v.st.st_mode)))
 				{
-					file[v.nbf].name = ft_strdup(av[i]);
-					v.nbf++;
+					lnk = ls_get_lnk(".", av[i], &v, ls);
+					lstat(lnk, &vl.st);
+					if (S_ISDIR(vl.st.st_mode) && !(ls->flag & LS_F_LONG))
+						dir[v.nbd++].name = ft_strdup(av[i]);
+					else
+						file[v.nbf++].name = ft_strdup(av[i]);
 				}
+				else
+					file[v.nbf++].name = ft_strdup(av[i]);
+			}
+			else
+			{
+				tab[e++] = av[i];
 			}
 			i++;
 		}
 	else
-		dir[v.nbd++].name = ft_strdup(".");
+	{
+		if ((ls->flag & LS_F_DIR))
+			file[v.nbf++].name = ft_strdup(".");
+		else
+			dir[v.nbd++].name = ft_strdup(".");
+	}
+	if (e)
+		ft_arg_err(tab, e, ls);
 	ft_file(v.nbf, &v, file, ls);
 	ls->arg = dir;
 	ft_dir(v.nbd, v.nbf, &v, ls);

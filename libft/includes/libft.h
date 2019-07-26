@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/25 15:59:29 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/20 19:19:41 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/26 03:27:17 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ int					ft_llonglen(long long n);
 int					ft_memcmp(const void *s1, const void *s2, size_t n);
 int					ft_printf(const char *format, ...);
 int					ft_dprintf(int fd, const char *format, ...);
+int					ft_strvcmp(const void *s1, const void *s2);
 int					ft_strcmp(const char *s1, const char *s2);
 int					ft_strequ(char const *s1, char const *s2);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);

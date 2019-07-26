@@ -1,37 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls_core.c                                       :+:      :+:    :+:   */
+/*   ft_strvcmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/26 02:06:08 by auverneu         ###   ########.fr       */
+/*   Created: 2015/11/23 16:47:31 by auverneu          #+#    #+#             */
+/*   Updated: 2019/07/26 04:28:59 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ls.h"
+#include <libft.h>
 
-int				ft_ls_core(t_ls *ls)
+int			ft_strvcmp(const void *s1, const void *s2)
 {
-	t_ls		*lsr;
-	int			i;
+	char	**ss1;
+	char	**ss2;
 
-	i = 0;
-	while (i < ls->nbe)
-	{
-		if (ls->nbe > 1 || ls->aff_dir)
-			ft_printf("%s:\n", ls->arg[i].name);
-		lsr = ft_ls_info(ls, i);
-		if (lsr != NULL && ls->flag & LS_F_RECURSIVE)
-		{
-			ft_printf("\n");
-			ft_ls_core(lsr);
-		}
-		i++;
-		if (i < ls->nbe)
-			ft_printf("\n");
-	}
-	free(ls);
-	return (0);
+	ss1 = ((char **)s1);
+	ss2 = ((char **)s2);
+	return (ft_strcmp(*ss1, *ss2));
 }

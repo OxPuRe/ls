@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/25 04:58:47 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/26 07:27:40 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void				ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls)
 	v->blk += v->st.st_blocks;
 }
 
-void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
+char				*ls_get_lnk(char *dir, char *name, t_var *v, t_ls *ls)
 {
 	size_t			size;
 	char			*str;
@@ -80,10 +80,15 @@ void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 	{
 		if (!(str = (char *)malloc(sizeof(char) * size)))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
-		if (!(tmp = ft_pathjoin(dir, info->name)))
-			ls_exit(LS_E_STD_EXIT, NULL, ls);
+		if (name[0] == '/')
+			tmp = ft_strdup(name);
+		else
+		{
+			if (!(tmp = ft_pathjoin(dir, name)))
+				ls_exit(LS_E_STD_EXIT, NULL, ls);
+		}
 		if (readlink(tmp, str, size) == -1)
-			return (ls_exit(LS_E_STD_EXIT, info->name, ls));
+			ls_exit(LS_E_STD_EXIT, name, ls);
 		free(tmp);
 		(v->st.st_size > 0) ? str[size - 1] = '\0' : (0);
 		if (ft_strnlen(str, size) == size)
@@ -94,9 +99,7 @@ void			*ls_get_l_pth(char *dir, t_infols *info, t_var *v, t_ls *ls)
 		else
 			break ;
 	}
-	if (!(info->name = ft_strxjoin("101", info->name, " -> ", str)))
-		ls_exit(LS_E_STD_EXIT, NULL, ls);
-	return (NULL);
+	return (str);
 }
 
 void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
@@ -121,7 +124,11 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
 		ft_lstend_ls(&info[i], v, ls);
 		if (ls->flag & LS_F_LONG && info[i].type == 'l')
-			ls_get_l_pth(dir, &info[i], v, ls);
+		{
+			tmp = ls_get_lnk(dir, info[i].name, v, ls);
+			if (!(info[i].name = ft_strxjoin("101", info[i].name, " -> ", tmp)))
+				ls_exit(LS_E_STD_EXIT, NULL, ls);
+		}
 		i++;
 	}
 	if ((ls->flag & LS_F_NOSORT) == 0)

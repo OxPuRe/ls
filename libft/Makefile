@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/07/20 19:51:52 by auverneu         ###   ########.fr        #
+#    Updated: 2019/07/26 03:27:37 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,6 +83,7 @@ SRC_NAME = flag_aff.c\
 	ft_strmap.c\
 	ft_strmapi.c\
 	ft_strncat.c\
+	ft_strvcmp.c\
 	ft_strncmp.c\
 	ft_strncpy.c\
 	ft_strnequ.c\
