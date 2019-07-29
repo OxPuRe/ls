@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/25 04:43:42 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/29 03:51:43 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,27 +48,38 @@ void		ft_ls_list(t_list **mem, t_list **list, char *name)
 	}
 }
 
-void		*ls_exit(int mode, void *arg, t_ls *ls)
+char		*ls_get_lnk(char *dir, char *name, t_var *v, t_ls *ls)
 {
-	ls->aff_dir = 1;
-	if (mode == LS_E_STD_EXIT || mode == LS_E_STD)
+	size_t	size;
+	char	*str;
+	char	*tmp;
+
+	size = v->st.st_size > 0 ? (size_t)(v->st.st_size + 1) : LS_SL_BUFF;
+	while (1)
 	{
-		ft_dprintf(2, "%s: ", ls->ex);
-		perror((char *)arg);
-		if (mode == LS_E_STD_EXIT)
-			exit(1);
+		if (!(str = (char *)malloc(sizeof(char) * size)))
+			ls_exit(LS_E_STD_EXIT, NULL, ls);
+		tmp = ls_get_tmp(name, dir, ls);
+		if (readlink(tmp, str, size) == -1)
+			ls_exit(LS_E_STD_EXIT, name, ls);
+		free(tmp);
+		(v->st.st_size > 0) ? str[size - 1] = '\0' : (0);
+		if (ft_strnlen(str, size) == size)
+		{
+			free(str);
+			size += LS_SL_BUFF;
+		}
+		else
+			break ;
 	}
-	else if (mode == LS_E_ARG)
-	{
-		ft_dprintf(2, "%s: illegal option -- %c\n"
-			"usage: ft_ls [-" LS_OPTS " " LS_H_OPT "] [file ...]\n",
-			ls->ex, *(char *)arg);
-		exit(1);
-	}
-	else if (mode == LS_E_HELP)
-	{
-		ft_dprintf(1, "%s: help:\n" LS_HELP, ls->ex);
-		exit(0);
-	}
-	return (NULL);
+	return (str);
+}
+
+void		*ft_malloc_ls(size_t size, t_ls *ls)
+{
+	void	*ret;
+
+	if (!(ret = malloc(size)))
+		ls_exit(LS_E_STD_EXIT, NULL, ls);
+	return (ret);
 }

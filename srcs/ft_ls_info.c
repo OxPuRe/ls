@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/26 07:27:40 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/29 03:51:53 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,12 @@ void				ft_lstbegin_ls(t_infols *info, mode_t mode)
 
 void				ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls)
 {
-	struct passwd	*user;
-	struct group	*group;
-
 	info->link = (unsigned long)v->st.st_nlink;
 	v->s.s.s_lk = ft_max((ft_intlen((int)info->link)), v->s.s.s_lk);
-	user = getpwuid(v->st.st_uid);
-	group = getgrgid(v->st.st_gid);
-	info->owner = ft_strdup(user->pw_name);
-	v->s.s.s_own = ft_max((ft_strlen(info->owner)), v->s.s.s_own);
-	info->group = ft_strdup(group->gr_name);
-	v->s.s.s_grp = ft_max((ft_strlen(info->group)), v->s.s.s_grp);
+	info->owner = getpwuid(v->st.st_uid);
+	v->s.s.s_own = ft_max((ft_strlen(info->owner->pw_name)), v->s.s.s_own);
+	info->group = getgrgid(v->st.st_gid);
+	v->s.s.s_grp = ft_max((ft_strlen(info->group->gr_name)), v->s.s.s_grp);
 	if (info->type == 'c' || info->type == 'b')
 	{
 		info->size = v->st.st_size;
@@ -69,37 +64,18 @@ void				ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls)
 	v->blk += v->st.st_blocks;
 }
 
-char				*ls_get_lnk(char *dir, char *name, t_var *v, t_ls *ls)
+char				*ls_get_tmp(char *name, char *dir, t_ls *ls)
 {
-	size_t			size;
-	char			*str;
 	char			*tmp;
 
-	size = v->st.st_size > 0 ? (size_t)(v->st.st_size + 1) : LS_SL_BUFF;
-	while (1)
+	if (name[0] == '/')
+		tmp = ft_strdup(name);
+	else
 	{
-		if (!(str = (char *)malloc(sizeof(char) * size)))
+		if (!(tmp = ft_pathjoin(dir, name, 1, "/")))
 			ls_exit(LS_E_STD_EXIT, NULL, ls);
-		if (name[0] == '/')
-			tmp = ft_strdup(name);
-		else
-		{
-			if (!(tmp = ft_pathjoin(dir, name)))
-				ls_exit(LS_E_STD_EXIT, NULL, ls);
-		}
-		if (readlink(tmp, str, size) == -1)
-			ls_exit(LS_E_STD_EXIT, name, ls);
-		free(tmp);
-		(v->st.st_size > 0) ? str[size - 1] = '\0' : (0);
-		if (ft_strnlen(str, size) == size)
-		{
-			free(str);
-			size += LS_SL_BUFF;
-		}
-		else
-			break ;
 	}
-	return (str);
+	return (tmp);
 }
 
 void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
@@ -111,13 +87,7 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 	v->blk = 0;
 	while (i < v->s.s.tmp)
 	{
-		if (info[i].name[0] == '/')
-			tmp = ft_strdup(info[i].name);
-		else
-		{
-			if (!(tmp = ft_pathjoin(dir, info[i].name)))
-				ls_exit(LS_E_STD_EXIT, NULL, ls);
-		}
+		tmp = ls_get_tmp(info[i].name, dir, ls);
 		if (lstat(tmp, &v->st) == -1)
 			ls_exit(LS_E_STD, tmp, ls);
 		free(tmp);
@@ -126,7 +96,7 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 		if (ls->flag & LS_F_LONG && info[i].type == 'l')
 		{
 			tmp = ls_get_lnk(dir, info[i].name, v, ls);
-			if (!(info[i].name = ft_strxjoin("101", info[i].name, " -> ", tmp)))
+			if (!(info[i].name = ft_pathjoin(info[i].name, tmp, 4, " -> ")))
 				ls_exit(LS_E_STD_EXIT, NULL, ls);
 		}
 		i++;

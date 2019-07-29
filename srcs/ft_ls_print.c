@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/25 05:38:08 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/29 02:58:16 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void		ls_get_time(t_infols *info)
 		ft_printf("%s %2s  %s ", d[1], d[2], d[4]);
 	else
 		ft_printf("%s %2s %5s ", d[1], d[2], d[3]);
-	while (i < 4)
+	while (i < 5)
 	{
 		free(d[i]);
 		i++;
@@ -72,19 +72,17 @@ static void		display(t_infols *info, t_ls *ls, t_var *v, int i)
 		if (info[i].type == 'c' || info[i].type == 'b')
 			ft_printf("%c%-10s %*lu %-*s  %-*s %*d, %*d ",
 				info[i].type, info[i].rights, v->s.s.s_lk, info[i].link,
-				v->s.s.s_own, info[i].owner, v->s.s.s_grp,
-				info[i].group, v->s.s.s_maj, info[i].major, v->s.s.s_min,
-				info[i].minor);
+				v->s.s.s_own, info[i].owner->pw_name, v->s.s.s_grp,
+				info[i].group->gr_name, v->s.s.s_maj, info[i].major,
+				v->s.s.s_min, info[i].minor);
 		else
 			ft_printf("%c%-10s %*lu %-*s  %-*s  %*lld ", info[i].type,
 				info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own,
-				info[i].owner, v->s.s.s_grp, info[i].group, v->s.s.s_sz,
-				info[i].size);
+				info[i].owner->pw_name, v->s.s.s_grp, info[i].group->gr_name,
+				v->s.s.s_sz, info[i].size);
 		ls_get_time(&info[i]);
 	}
 	ft_printf("%s\n", info[i].name);
-	free(info[i].owner);
-	free(info[i].group);
 	ls->aff_dir = 1;
 }
 
@@ -106,14 +104,13 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 			if ((ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
 			{
 				tmp = info[i].name;
-				if (!(info[i].name = ft_pathjoin(ls->arg[j].name, tmp)))
+				if (!(info[i].name = ft_pathjoin(ls->arg[j].name, tmp, 1, "/")))
 					ls_exit(LS_E_STD_EXIT, NULL, ls);
 				free(tmp);
 				ft_ls_list(&mem, &list, info[i].name);
 				v->blk++;
 			}
-		free(info[i].name);
-		i++;
+		free(info[i++].name);
 	}
 	return (mem);
 }

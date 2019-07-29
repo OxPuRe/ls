@@ -1,38 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls_core.c                                       :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/29 02:01:07 by auverneu         ###   ########.fr       */
+/*   Created: 2015/11/24 23:22:05 by thplessi          #+#    #+#             */
+/*   Updated: 2019/07/29 02:06:14 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ls.h"
+#include "libft.h"
 
-int				ft_ls_core(t_ls *ls)
+/*
+** man 3 strndup
+*/
+
+char		*ft_strndup(const char *s1, size_t n)
 {
-	t_ls		*lsr;
-	int			i;
+	char	*s2;
+	size_t	len;
 
-	i = 0;
-	while (i < ls->nbe)
+	len = ft_strnlen(s1, n);
+	s2 = (char *)malloc(sizeof(char) * (len + 1));
+	if (s2)
 	{
-		if (ls->nbe > 1 || ls->aff_dir)
-			ft_printf("%s:\n", ls->arg[i].name);
-		lsr = ft_ls_info(ls, i);
-		if (lsr != NULL && ls->flag & LS_F_RECURSIVE)
-		{
-			ft_printf("\n");
-			ft_ls_core(lsr);
-		}
-		i++;
-		if (i < ls->nbe)
-			ft_printf("\n");
+		ft_strncpy(s2, s1, len);
+		s2[len] = '\0';
 	}
-	free(ls->arg);
-	free(ls);
-	return (0);
+	return (s2);
 }

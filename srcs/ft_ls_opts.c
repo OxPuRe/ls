@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/06/25 21:17:56 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/29 03:42:30 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,21 @@ static void		ft_recup_flag(char *av, t_ls *ls)
 	}
 }
 
+void			ft_check_av(int i, int ac, char **av, t_ls *ls)
+{
+	t_var		v;
+
+	while (i < ac)
+	{
+		if (!ft_strcmp(av[i], ""))
+		{
+			lstat(av[i], &v.st);
+			ls_exit(LS_E_STD_EXIT, "fts_open", ls);
+		}
+		i++;
+	}
+}
+
 void			ft_ls_opts(int ac, char **av, t_ls *ls)
 {
 	int			i;
@@ -49,5 +64,6 @@ void			ft_ls_opts(int ac, char **av, t_ls *ls)
 		i++;
 	if (ls->flag & LS_F_NOSORT)
 		ls->flag |= LS_F_ALL;
+	ft_check_av(i, ac, av, ls);
 	ft_recup_arg(ls, av, ac, i);
 }

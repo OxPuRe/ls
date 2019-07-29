@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/26 06:07:00 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/29 05:06:15 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ typedef struct			s_infols
 	char				type;
 	char				rights[10];
 	unsigned long		link;
-	char				*owner;
-	char				*group;
+	struct passwd		*owner;
+	struct group		*group;
 	off_t				size;
 	int					minor;
 	int					major;
@@ -120,6 +120,15 @@ typedef struct			s_var
 	quad_t				blk;
 	int					nbf;
 	int					nbd;
+	union				{
+		struct			{
+
+			uint8_t		f:8;
+			uint8_t		d:8;
+			uint16_t	e:16;
+		}				n;
+		uint32_t		init;
+	}					n;
 	union				{
 		struct			{
 			uint8_t		s_lk:8;
@@ -147,6 +156,8 @@ void					ft_ls_convert(t_list *mem, t_infols *info, int nbe);
 void					ls_get_tspc(t_var *v, t_ls *ls, t_infols *info);
 void					*ls_exit(int mode, void *arg, t_ls *ls);
 void					ft_recup_arg(t_ls *ls, char **av, int ac, int i);
+char					*ls_get_tmp(char *name, char *dir, t_ls *ls);
+void					*ft_malloc_ls(size_t size, t_ls *ls);
 void					ft_ls_del(void *content, size_t size);
 char					*ls_get_lnk(char *dir, char *name, t_var *v, t_ls *ls);
 void					ft_lstbegin_ls(t_infols *info, mode_t mode);

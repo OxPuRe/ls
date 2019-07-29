@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 20:57:52 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/26 07:21:16 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/29 05:07:55 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static void		ft_file(int jf, t_var *v, t_infols *file, t_ls *ls)
 	}
 	else
 		free(file);
+	free(ls->arg);
 }
 
 static void		ft_dir(int j, int jf, t_var *v, t_ls *ls)
@@ -59,93 +60,64 @@ static void		ft_arg_err(char **tab, int e, t_ls *ls)
 	int			i;
 
 	i = 0;
-	ft_qsort(tab, e, sizeof(char *), &ft_strvcmp);
-	while (i < e)
+	if (e)
 	{
-		ls_exit(LS_E_STD, tab[i], ls);
-		i++;
+		ft_qsort(tab, e, sizeof(char *), &ft_strvcmp);
+		while (i < e)
+		{
+			ls_exit(LS_E_STD, tab[i], ls);
+			i++;
+		}
 	}
+	free(tab);
 }
 
-void			ft_check_av(int i, int ac, char **av, t_ls *ls)
+static void		ft_test(char *av, t_ls *ls, t_infols **arg, t_var *v)
 {
-	t_var		v;
+	char		*lnk;
+	t_var		vl;
 
-	while (i < ac)
+	if ((S_ISDIR(v->st.st_mode) || av[ft_strlen(av) - 1] == '/') &&
+	!(ls->flag & LS_F_DIR))
+		arg[1][v->n.n.d++].name = ft_strdup(av);
+	else if ((S_ISLNK(v->st.st_mode)))
 	{
-		if (!ft_strcmp(av[i], ""))
-		{
-			lstat(av[i], &v.st);
-			ls_exit(LS_E_STD_EXIT, "fts_open", ls);
-		}
-		i++;
+		lnk = ls_get_lnk(".", av, v, ls);
+		lstat(lnk, &vl.st);
+		if (S_ISDIR(vl.st.st_mode) && !(ls->flag & LS_F_LONG))
+			arg[1][v->n.n.d++].name = ft_strdup(av);
+		else
+			arg[0][v->n.n.f++].name = ft_strdup(av);
 	}
+	else
+		arg[0][v->n.n.f++].name = ft_strdup(av);
 }
 
 void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 {
 	t_var		v;
-	t_var		vl;
-	t_infols	*file;
-	t_infols	*dir;
+	t_infols	*arg[2];
 	char		**tab;
-	int			e;
-	char		*lnk;
 
 	v.s.init = 0;
-	v.nbd = 0;
-	v.nbf = 0;
-	e = 0;
+	v.n.init = 0;
 	ls->nbe = (ac - i) ? (ac - i) : 1;
 	v.s.s.tmp = ls->nbe;
 	tab = NULL;
-	if (!(tab = malloc(sizeof(char *) * ac)))
-		ls_exit(LS_E_STD_EXIT, NULL, ls);
-	tab[0] = NULL;
-	if (!(dir = malloc(sizeof(t_infols) * ls->nbe)))
-		ls_exit(LS_E_STD_EXIT, NULL, ls);
-	if (!(file = malloc(sizeof(t_infols) * ls->nbe)))
-		ls_exit(LS_E_STD_EXIT, NULL, ls);
-	ft_check_av(i, ac, av, ls);
+	tab = (char **)ft_malloc_ls(sizeof(char *) * ac, ls);
+	arg[1] = (t_infols*)ft_malloc_ls(sizeof(t_infols) * ls->nbe, ls);
+	arg[0] = (t_infols*)ft_malloc_ls(sizeof(t_infols) * ls->nbe, ls);
 	if ((ac - i) != 0)
 		while (i < ac)
-		{
 			if ((lstat(av[i], &v.st)) == 0)
-			{
-				if ((S_ISDIR(v.st.st_mode) ||
-				av[i][ft_strlen(av[i]) - 1] == '/') && !(ls->flag & LS_F_DIR))
-				{
-					dir[v.nbd].name = ft_strdup(av[i]);
-					v.nbd++;
-				}
-				else if ((S_ISLNK(v.st.st_mode)))
-				{
-					lnk = ls_get_lnk(".", av[i], &v, ls);
-					lstat(lnk, &vl.st);
-					if (S_ISDIR(vl.st.st_mode) && !(ls->flag & LS_F_LONG))
-						dir[v.nbd++].name = ft_strdup(av[i]);
-					else
-						file[v.nbf++].name = ft_strdup(av[i]);
-				}
-				else
-					file[v.nbf++].name = ft_strdup(av[i]);
-			}
+				ft_test(av[i++], ls, arg, &v);
 			else
-			{
-				tab[e++] = av[i];
-			}
-			i++;
-		}
+				tab[v.n.n.e++] = av[i++];
 	else
-	{
-		if ((ls->flag & LS_F_DIR))
-			file[v.nbf++].name = ft_strdup(".");
-		else
-			dir[v.nbd++].name = ft_strdup(".");
-	}
-	if (e)
-		ft_arg_err(tab, e, ls);
-	ft_file(v.nbf, &v, file, ls);
-	ls->arg = dir;
-	ft_dir(v.nbd, v.nbf, &v, ls);
+		arg[(ls->flag & LS_F_DIR) ? 0 : 1]
+		[(ls->flag & LS_F_DIR) ? v.n.n.f++ : v.n.n.d++].name = ft_strdup(".");
+	ft_arg_err(tab, v.n.n.e, ls);
+	ft_file(v.n.n.f, &v, arg[0], ls);
+	ls->arg = arg[1];
+	ft_dir(v.n.n.d, v.n.n.f, &v, ls);
 }

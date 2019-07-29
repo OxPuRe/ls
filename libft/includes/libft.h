@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/25 15:59:29 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/26 03:27:17 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/07/29 02:06:50 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,10 @@ char				*ft_strtrim(char const *s);
 char				*ft_strtrimc(char const *s, char c);
 char				*ft_strupper(char *str);
 char				*ft_ulltoa_base(uintmax_t n, int base);
+char				*ft_strndup(const char *s1, size_t n);
 char				*ft_strxjoin(char *mode, ...);
-char				*ft_pathjoin(const char *s1, const char *s2);
+char				*ft_pathjoin(const char *s1, const char *s2, int m,
+									const char *mid);
 
 int					ft_atoi(char *str);
 int					ft_gnl(int const fd, char **line);
