@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/29 02:58:16 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/02 10:05:51 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 {
 	int			i;
 	t_ls		*lsr;
-	t_var		v;
 	t_list		*first;
 
-	v.s.init = 0;
 	i = 0;
 	lsr = malloc(sizeof(t_ls));
 	lsr->ex = ls->ex;
@@ -30,8 +28,8 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	first = mem;
 	while (i < nbe)
 	{
-		lsr->arg[i].name = ft_strdup(mem->content);
-		lsr->arg[i].type = 'd';
+		lsr->arg[i] = *(t_infols *)mem->content;
+	printf("%d {%s}\n", i, lsr->arg[i].name);
 		mem = mem->next;
 		i++;
 	}
@@ -72,13 +70,13 @@ static void		display(t_infols *info, t_ls *ls, t_var *v, int i)
 		if (info[i].type == 'c' || info[i].type == 'b')
 			ft_printf("%c%-10s %*lu %-*s  %-*s %*d, %*d ",
 				info[i].type, info[i].rights, v->s.s.s_lk, info[i].link,
-				v->s.s.s_own, info[i].owner->pw_name, v->s.s.s_grp,
-				info[i].group->gr_name, v->s.s.s_maj, info[i].major,
+				v->s.s.s_own, info[i].owner, v->s.s.s_grp,
+				info[i].group, v->s.s.s_maj, info[i].major,
 				v->s.s.s_min, info[i].minor);
 		else
 			ft_printf("%c%-10s %*lu %-*s  %-*s  %*lld ", info[i].type,
 				info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own,
-				info[i].owner->pw_name, v->s.s.s_grp, info[i].group->gr_name,
+				info[i].owner, v->s.s.s_grp, info[i].group,
 				v->s.s.s_sz, info[i].size);
 		ls_get_time(&info[i]);
 	}
@@ -110,6 +108,8 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 				ft_ls_list(&mem, &list, info[i].name);
 				v->blk++;
 			}
+		free(info[i].owner);
+		free(info[i].group);
 		free(info[i++].name);
 	}
 	return (mem);

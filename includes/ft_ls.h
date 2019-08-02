@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/29 05:06:15 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/02 09:59:29 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ typedef struct			s_infols
 	char				type;
 	char				rights[10];
 	unsigned long		link;
-	struct passwd		*owner;
-	struct group		*group;
+	char				*owner;
+	char				*group;
 	off_t				size;
 	int					minor;
 	int					major;
@@ -149,6 +149,8 @@ void					ft_ls_opts(int ac, char **av, t_ls *ls);
 int						ft_ls_core(t_ls *ls);
 void					ft_ls_sort(t_infols *info, int flag, int nbe);
 t_ls					*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j);
+void					ft_ls_list_rec(t_list **mem, t_list **list,
+							t_infols *info);
 void					ft_ls_list(t_list **mem, t_list **list, char *name);
 void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
 							t_var *v);

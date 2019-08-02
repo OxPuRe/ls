@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/29 03:51:53 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/02 10:05:29 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,21 @@ void				ft_lstbegin_ls(t_infols *info, mode_t mode)
 
 void				ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls)
 {
+	struct passwd		*usr;
+	struct group		*grp;
+
 	info->link = (unsigned long)v->st.st_nlink;
 	v->s.s.s_lk = ft_max((ft_intlen((int)info->link)), v->s.s.s_lk);
-	info->owner = getpwuid(v->st.st_uid);
-	v->s.s.s_own = ft_max((ft_strlen(info->owner->pw_name)), v->s.s.s_own);
-	info->group = getgrgid(v->st.st_gid);
-	v->s.s.s_grp = ft_max((ft_strlen(info->group->gr_name)), v->s.s.s_grp);
+	if ((usr = getpwuid(v->st.st_uid)))
+		info->owner = ft_strdup(usr->pw_name);
+	else
+		info->owner = ft_itoa(v->st.st_uid);
+	v->s.s.s_own = ft_max((ft_strlen(info->owner)), v->s.s.s_own);
+	if ((grp = getgrgid(v->st.st_gid)))
+		info->group = ft_strdup(grp->gr_name);
+	else
+		info->group = ft_itoa(v->st.st_gid);
+	v->s.s.s_grp = ft_max((ft_strlen(info->group)), v->s.s.s_grp);
 	if (info->type == 'c' || info->type == 'b')
 	{
 		info->size = v->st.st_size;
