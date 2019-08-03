@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/02 09:59:29 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/03 03:53:31 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,15 +92,15 @@ enum
 typedef struct			s_infols
 {
 	char				*name;
-	char				type;
-	char				rights[10];
-	unsigned long		link;
 	char				*owner;
 	char				*group;
+	unsigned long		link;
 	off_t				size;
 	int					minor;
 	int					major;
 	struct timespec		tme_spec;
+	char				type;
+	char				rights[10];
 }						t_infols;
 
 typedef struct			s_stls

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/02 09:34:42 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/03 04:06:13 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ void		ft_ls_list_rec(t_list **mem, t_list **list, t_infols *info)
 {
 	if (*mem == NULL)
 	{
-		*mem = ft_lstnew(info, sizeof(t_infols *));
+		*mem = ft_lstnew(info, sizeof(t_infols));
 		*list = *mem;
 	}
 	else
 	{
-		(*list)->next = ft_lstnew(info, sizeof(t_infols *));
+		(*list)->next = ft_lstnew(info, sizeof(t_infols));
 		*list = (*list)->next;
 	}
 }

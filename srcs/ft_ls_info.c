@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/02 10:05:29 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/03 07:55:12 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,9 @@ char				*ls_get_tmp(char *name, char *dir, t_ls *ls)
 	if (name[0] == '/')
 		tmp = ft_strdup(name);
 	else
-	{
-		if (!(tmp = ft_pathjoin(dir, name, 1, "/")))
-			ls_exit(LS_E_STD_EXIT, NULL, ls);
-	}
+		tmp = ft_pathjoin(dir, name, 1, "/");
+	if (!tmp)
+		ls_exit(LS_E_STD_EXIT, NULL, ls);
 	return (tmp);
 }
 
@@ -91,18 +90,23 @@ void				ft_ls_fill(t_infols *info, t_ls *ls, char *dir, t_var *v)
 {
 	int				i;
 	char			*tmp;
+	int				ret;
 
 	i = 0;
 	v->blk = 0;
 	while (i < v->s.s.tmp)
 	{
 		tmp = ls_get_tmp(info[i].name, dir, ls);
-		if (lstat(tmp, &v->st) == -1)
-			ls_exit(LS_E_STD, tmp, ls);
+		ret = lstat(tmp, &v->st);
 		free(tmp);
+		if (ret == -1)
+		{
+			i++;
+			continue ;
+		}
 		ft_lstbegin_ls(&info[i], v->st.st_mode);
 		ft_lstend_ls(&info[i], v, ls);
-		if (ls->flag & LS_F_LONG && info[i].type == 'l')
+		if ((ls->flag & LS_F_LONG) && info[i].type == 'l')
 		{
 			tmp = ls_get_lnk(dir, info[i].name, v, ls);
 			if (!(info[i].name = ft_pathjoin(info[i].name, tmp, 4, " -> ")))
@@ -125,8 +129,11 @@ t_ls				*ft_ls_info(t_ls *ls, int i)
 	mem = NULL;
 	v.s.init = 0;
 	v.blk = 0;
+	ft_printf("[%s  %s]\n", ls->arg[i].name, ls->arg[i].rights);
 	if (!(v.rep = opendir(ls->arg[i].name)))
 		return (ls_exit(LS_E_STD, ls->arg[i].name, ls));
+	if (stat(ls->arg[i].name, &v.st) == -1)
+		return (NULL);
 	while ((v.ri = readdir(v.rep)) != NULL)
 		if (v.ri->d_name[0] != '.' || (!(v.ri->d_name[0] == '.' &&
 		(v.ri->d_name[1] == 0 || (v.ri->d_name[1] == '.' &&

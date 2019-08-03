@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 20:57:52 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/29 05:07:55 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/03 01:52:33 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ void			ft_recup_arg(t_ls *ls, char **av, int ac, int i)
 	v.n.init = 0;
 	ls->nbe = (ac - i) ? (ac - i) : 1;
 	v.s.s.tmp = ls->nbe;
-	tab = NULL;
 	tab = (char **)ft_malloc_ls(sizeof(char *) * ac, ls);
 	arg[1] = (t_infols*)ft_malloc_ls(sizeof(t_infols) * ls->nbe, ls);
 	arg[0] = (t_infols*)ft_malloc_ls(sizeof(t_infols) * ls->nbe, ls);

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/02 09:24:30 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/03 05:57:31 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int				ft_ls_core(t_ls *ls)
 	{
 		if (ls->nbe > 1 || ls->aff_dir)
 			ft_printf("%s:\n", ls->arg[i].name);
+		//if (ls->arg[i].rights[2] != '-' && ls->arg[i].rights[2] != 'S')
 		lsr = ft_ls_info(ls, i);
 		if (lsr != NULL && ls->flag & LS_F_RECURSIVE)
 		{

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/02 10:05:51 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/03 04:05:23 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@ t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
 	first = mem;
 	while (i < nbe)
 	{
-		lsr->arg[i] = *(t_infols *)mem->content;
-	printf("%d {%s}\n", i, lsr->arg[i].name);
+		ft_memcpy(lsr->arg + i, mem->content, sizeof(t_infols));
+	//printf("{%s: %s}\n", ((t_infols*)mem->content)->name, ((t_infols*)mem->content)->rights);
+	//printf("[%s: %s]\n", lsr->arg[i].name, lsr->arg[i].rights);
 		mem = mem->next;
 		i++;
 	}
@@ -98,19 +99,21 @@ static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
 	{
 		display(info, ls, v, i);
 		if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
-				(info[i].name[1] == '.' && info[i].name[2] == 0))))
-			if ((ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
-			{
+				(info[i].name[1] == '.' && info[i].name[2] == 0))) &&
+				(ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
+		{
 				tmp = info[i].name;
 				if (!(info[i].name = ft_pathjoin(ls->arg[j].name, tmp, 1, "/")))
 					ls_exit(LS_E_STD_EXIT, NULL, ls);
 				free(tmp);
-				ft_ls_list(&mem, &list, info[i].name);
+				ft_ls_list_rec(&mem, &list, info + i);
 				v->blk++;
-			}
+		}
+		else
+			free(info[i].name);
 		free(info[i].owner);
 		free(info[i].group);
-		free(info[i++].name);
+		i++;
 	}
 	return (mem);
 }
