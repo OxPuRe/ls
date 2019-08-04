@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/03 03:53:31 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/04 11:08:03 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,80 +89,76 @@ enum
 	LS_E_HELP,
 };
 
-typedef struct			s_infols
+typedef struct			s_info
 {
 	char				*name;
+	struct stat			stat;
+	struct timespec		timespec;
+	off_t				size;
 	char				*owner;
 	char				*group;
-	unsigned long		link;
-	off_t				size;
-	int					minor;
-	int					major;
-	struct timespec		tme_spec;
-	char				type;
-	char				rights[10];
-}						t_infols;
+	char				mode[11];
+}						t_info;
 
 typedef struct			s_stls
 {
 	char				*ex;
-	int					nbe;
+	size_t				nbe;
 	unsigned int		flag:13;
 	char				aff_dir:1;
-	t_infols			*arg;
+	t_info				*arg;
 }						t_ls;
 
 typedef struct			s_var
 {
-	struct stat			st;
-	struct dirent		*ri;
-	DIR					*rep;
-	quad_t				blk;
-	int					nbf;
-	int					nbd;
+	DIR					*op;
+	struct dirent		*rd;
+	t_info				elem;
+}						t_var;
+
+typedef struct			s_av
+{
+	struct stat 		stat;
 	union				{
 		struct			{
-
 			uint8_t		f:8;
 			uint8_t		d:8;
 			uint16_t	e:16;
 		}				n;
 		uint32_t		init;
 	}					n;
+}						t_av;
+
+typedef struct			s_print
+{
+	size_t				nbe;
+	quad_t				block;
 	union				{
 		struct			{
-			uint8_t		s_lk:8;
-			uint8_t		s_own:8;
-			uint8_t		s_grp:8;
-			uint8_t		s_sz:8;
-			uint8_t		s_min:8;
-			uint8_t		s_maj:8;
-			uint16_t	tmp:16;
+			uint16_t	own:16;
+			uint16_t	grp:16;
+			uint8_t		lk:8;
+			uint8_t		sz:8;
+			uint8_t		min:8;
+			uint8_t		maj:8;
 		}				s;
 		uint64_t		init;
 	}					s;
-}						t_var;
+}						t_print;
 
-t_ls					*ft_ls_info(t_ls *ls, int i);
-int						ft_ls_error(int err, char *str);
-void					ft_ls_opts(int ac, char **av, t_ls *ls);
-int						ft_ls_core(t_ls *ls);
-void					ft_ls_sort(t_infols *info, int flag, int nbe);
-t_ls					*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j);
-void					ft_ls_list_rec(t_list **mem, t_list **list,
-							t_infols *info);
-void					ft_ls_list(t_list **mem, t_list **list, char *name);
-void					ft_ls_fill(t_infols *info, t_ls *ls, char *dir,
-							t_var *v);
-void					ft_ls_convert(t_list *mem, t_infols *info, int nbe);
-void					ls_get_tspc(t_var *v, t_ls *ls, t_infols *info);
-void					*ls_exit(int mode, void *arg, t_ls *ls);
-void					ft_recup_arg(t_ls *ls, char **av, int ac, int i);
 char					*ls_get_tmp(char *name, char *dir, t_ls *ls);
-void					*ft_malloc_ls(size_t size, t_ls *ls);
-void					ft_ls_del(void *content, size_t size);
-char					*ls_get_lnk(char *dir, char *name, t_var *v, t_ls *ls);
-void					ft_lstbegin_ls(t_infols *info, mode_t mode);
-void					ft_lstend_ls(t_infols *info, t_var *v, t_ls *ls);
+char					*ls_print_link(char *name, int mode, t_ls *ls);
+int						ls_core(t_ls *ls);
+int						ls_error(int err, char *str);
+void					*ls_exit(int mode, void *arg, t_ls *ls);
+void					*ls_malloc(size_t size, t_ls *ls);
+void					ls_del(void *content, size_t size);
+void					ls_display(t_info *info, t_print *print, t_ls *ls,
+									t_ls *lsr);
+void					ls_info(t_info *info, t_print *p, t_ls *ls);
+void					ls_list(t_list **mem, t_list **list, t_info *info);
+void					ls_opts(int ac, char **av, t_ls *ls);
+void					ls_recup_arg(t_ls *ls, char **av);
+void					ls_sort(t_info *info, int flag, int nbe);
 
 #endif

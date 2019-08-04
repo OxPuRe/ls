@@ -6,39 +6,62 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/03 04:05:23 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/04 12:43:06 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_ls			*ft_ls_rec(t_list *mem, int nbe, t_ls *ls)
+static void		ls_rec(t_list *mem, t_ls *ls, t_ls *lsr)
 {
-	int			i;
-	t_ls		*lsr;
+	size_t		i;
 	t_list		*first;
 
 	i = 0;
-	lsr = malloc(sizeof(t_ls));
 	lsr->ex = ls->ex;
 	lsr->flag = ls->flag;
-	lsr->nbe = nbe;
 	lsr->aff_dir = ls->aff_dir;
-	lsr->arg = malloc(sizeof(t_infols) * nbe);
+	lsr->arg = (t_info*)ls_malloc(sizeof(t_info) * lsr->nbe, ls);
 	first = mem;
-	while (i < nbe)
+	while (i < lsr->nbe)
 	{
-		ft_memcpy(lsr->arg + i, mem->content, sizeof(t_infols));
-	//printf("{%s: %s}\n", ((t_infols*)mem->content)->name, ((t_infols*)mem->content)->rights);
-	//printf("[%s: %s]\n", lsr->arg[i].name, lsr->arg[i].rights);
+		ft_memcpy(lsr->arg + i, mem->content, sizeof(t_info));
 		mem = mem->next;
 		i++;
 	}
-	ft_lstdel(&first, ft_ls_del);
-	return (lsr);
+	ft_lstdel(&first, ls_del);
 }
 
-static void		ls_get_time(t_infols *info)
+char		*ls_print_link(char *name, int mode, t_ls *ls)
+{
+	size_t		size;
+	char		*str;
+	char		*tmp;
+
+	size = LS_SL_BUFF;
+	while (42)
+	{
+		str = (char *)ls_malloc(sizeof(char) * size, ls);
+		tmp = ls_get_tmp(name, ls->arg->name, ls);
+		if (readlink(tmp, str, size) == -1)
+			ls_exit(LS_E_STD_EXIT, name, ls);
+		free(tmp);
+		if (ft_strnlen(str, size) == size)
+		{
+			free(str);
+			size += LS_SL_BUFF;
+		}
+		else
+			break ;
+	}
+	if (mode)
+		return (str);
+	ft_printf(" -> %s", str);
+	free(str);
+	return (NULL);
+}
+
+static void		ls_print_time(t_info *info)
 {
 	time_t		tm;
 	char		*str_tme;
@@ -46,13 +69,13 @@ static void		ls_get_time(t_infols *info)
 	int			i;
 
 	i = 0;
-	str_tme = ctime(&(info->tme_spec.tv_sec));
+	str_tme = ctime(&(info->timespec.tv_sec));
 	d = ft_strsplit(str_tme, 32);
 	time(&tm);
 	d[3][5] = 0;
 	d[4][ft_strlen(d[4]) - 1] = 0;
-	if ((info->tme_spec.tv_sec < (tm - LS_SW_TIME)) ||
-		(info->tme_spec.tv_sec > (tm + LS_SW_TIME)))
+	if ((info->timespec.tv_sec < (tm - LS_SW_TIME)) ||
+		(info->timespec.tv_sec > (tm + LS_SW_TIME)))
 		ft_printf("%s %2s  %s ", d[1], d[2], d[4]);
 	else
 		ft_printf("%s %2s %5s ", d[1], d[2], d[3]);
@@ -64,83 +87,57 @@ static void		ls_get_time(t_infols *info)
 	free(d);
 }
 
-static void		display(t_infols *info, t_ls *ls, t_var *v, int i)
+static void		ls_print(t_info *info, t_print *print, t_ls *ls)
 {
 	if ((ls->flag & LS_F_LONG))
 	{
-		if (info[i].type == 'c' || info[i].type == 'b')
-			ft_printf("%c%-10s %*lu %-*s  %-*s %*d, %*d ",
-				info[i].type, info[i].rights, v->s.s.s_lk, info[i].link,
-				v->s.s.s_own, info[i].owner, v->s.s.s_grp,
-				info[i].group, v->s.s.s_maj, info[i].major,
-				v->s.s.s_min, info[i].minor);
+		if (info->mode[0] == 'c' || info->mode[0] == 'b')
+			ft_printf("%-11s %*lu %-*s  %-*s %*d, %*d ", info->mode,
+				print->s.s.lk, info->stat.st_nlink, print->s.s.own, info->owner,
+				print->s.s.grp, info->group, print->s.s.maj,
+				major(info->stat.st_rdev), print->s.s.min,
+				minor(info->stat.st_rdev));
 		else
-			ft_printf("%c%-10s %*lu %-*s  %-*s  %*lld ", info[i].type,
-				info[i].rights, v->s.s.s_lk, info[i].link, v->s.s.s_own,
-				info[i].owner, v->s.s.s_grp, info[i].group,
-				v->s.s.s_sz, info[i].size);
-		ls_get_time(&info[i]);
+			ft_printf("%-11s %*lu %-*s  %-*s  %*lld ", info->mode,
+			print->s.s.lk, info->stat.st_nlink, print->s.s.own, info->owner,
+			print->s.s.grp, info->group, print->s.s.sz, info->size);
+		ls_print_time(info);
 	}
-	ft_printf("%s\n", info[i].name);
+	ft_printf("%s", info->name);
+	if ((ls->flag & LS_F_LONG) && info->mode[0] == 'l')
+		ls_print_link(info->name, 0, ls);
+	ft_printf("\n");
 	ls->aff_dir = 1;
 }
 
-static t_list	*loop(t_infols *info, t_ls *ls, t_var *v, int j)
+void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 {
-	int			i;
-	t_list		*list;
-	t_list		*mem;
+	t_list		*elem;
+	t_list		*first;
 	char		*tmp;
+	size_t		i;
 
 	i = 0;
-	list = NULL;
-	mem = NULL;
-	while (i < v->s.s.tmp)
+	while (i < print->nbe)
 	{
-		display(info, ls, v, i);
+		ls_print(&info[i], print, ls);
 		if (!(info[i].name[0] == '.' && (info[i].name[1] == 0 ||
 				(info[i].name[1] == '.' && info[i].name[2] == 0))) &&
-				(ls->flag & LS_F_RECURSIVE) != 0 && info[i].type == 'd')
+				(ls->flag & LS_F_RECURSIVE) != 0 && info[i].mode[0] == 'd')
 		{
-				tmp = info[i].name;
-				if (!(info[i].name = ft_pathjoin(ls->arg[j].name, tmp, 1, "/")))
-					ls_exit(LS_E_STD_EXIT, NULL, ls);
-				free(tmp);
-				ft_ls_list_rec(&mem, &list, info + i);
-				v->blk++;
+			tmp = info[i].name;
+			if (!(info[i].name = ft_pathjoin(ls->arg->name, tmp, 1, "/")))
+				ls_exit(LS_E_STD_EXIT, NULL, ls);
+			free(tmp);
+			ls_list(&first, &elem, info);
+			lsr->nbe++;
 		}
-		else
-			free(info[i].name);
 		free(info[i].owner);
 		free(info[i].group);
 		i++;
 	}
-	return (mem);
-}
-
-t_ls			*ft_ls_print(t_infols *info, t_ls *ls, t_var *v, int j)
-{
-	t_list		*mem;
-
-	mem = NULL;
-	if (v->s.s.s_min < v->s.s.s_maj)
-		v->s.s.s_min = v->s.s.s_maj;
-	else
-		v->s.s.s_maj = v->s.s.s_min;
-	if (v->s.s.s_sz > (v->s.s.s_min + v->s.s.s_maj + 2) &&
-		(v->s.s.s_min + v->s.s.s_maj) >= 2)
-		v->s.s.s_maj = v->s.s.s_sz - v->s.s.s_min - 2;
-	else if (v->s.s.s_sz < (v->s.s.s_min + v->s.s.s_maj + 2) &&
-		(v->s.s.s_min + v->s.s.s_maj) >= 2)
-		v->s.s.s_sz = v->s.s.s_min + v->s.s.s_maj + 2;
-	if ((ls->flag & LS_F_LONG) && ls->arg->type == 'd' && v->s.s.tmp)
-		ft_printf("total %lld\n", v->blk);
-	v->blk = 0;
-	mem = loop(info, ls, v, j);
 	free(info);
-	free(ls->arg[j].name);
-	if (mem)
-		return (ft_ls_rec(mem, (int)v->blk, ls));
-	else
-		return (NULL);
+	free(ls->arg->name);
+	if (lsr->nbe)
+		ls_rec(first, ls, lsr);
 }

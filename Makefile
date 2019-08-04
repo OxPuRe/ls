@@ -6,7 +6,7 @@
 #    By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/08 04:38:21 by auverneu          #+#    #+#              #
-#    Updated: 2019/08/03 04:14:27 by auverneu         ###   ########.fr        #
+#    Updated: 2019/08/04 11:17:02 by auverneu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,6 @@ SRC_NAME = main.c\
 	ft_ls_print.c\
 	ft_ls_sort.c\
 	ft_ls_opts.c\
-	ft_ls_time.c\
 	ft_ls_get_arg.c\
 	ft_ls_utils.c
 OBJ_NAME = $(SRC_NAME:.c=.o)

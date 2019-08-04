@@ -6,13 +6,13 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/07/29 03:42:30 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/04 11:38:20 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void		ft_recup_flag(char *av, t_ls *ls)
+static void		ls_recup_flag(char *av, t_ls *ls)
 {
 	char		*chr;
 	int			rot;
@@ -35,22 +35,22 @@ static void		ft_recup_flag(char *av, t_ls *ls)
 	}
 }
 
-void			ft_check_av(int i, int ac, char **av, t_ls *ls)
+static void		ls_check_av(int i, int ac, char **av, t_ls *ls)
 {
-	t_var		v;
+	struct stat	err;
 
 	while (i < ac)
 	{
 		if (!ft_strcmp(av[i], ""))
 		{
-			lstat(av[i], &v.st);
+			lstat(av[i], &err);
 			ls_exit(LS_E_STD_EXIT, "fts_open", ls);
 		}
 		i++;
 	}
 }
 
-void			ft_ls_opts(int ac, char **av, t_ls *ls)
+void			ls_opts(int ac, char **av, t_ls *ls)
 {
 	int			i;
 
@@ -58,12 +58,14 @@ void			ft_ls_opts(int ac, char **av, t_ls *ls)
 	while (i < ac && *(av[i]) == '-' && ft_strlen(av[i]) != 1 &&
 		!ft_strequ(av[i], "--"))
 	{
-		ft_recup_flag(av[i++], ls);
+		ls_recup_flag(av[i], ls);
+		i++;
 	}
 	if (ft_strequ(av[i], "--"))
 		i++;
 	if (ls->flag & LS_F_NOSORT)
 		ls->flag |= LS_F_ALL;
-	ft_check_av(i, ac, av, ls);
-	ft_recup_arg(ls, av, ac, i);
+	ls_check_av(i, ac, av, ls);
+	ls->nbe = (ac - i);
+	ls_recup_arg(ls, av + i);
 }
