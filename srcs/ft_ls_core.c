@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/04 12:47:20 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/05 14:53:48 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,18 @@ static void		ls_read(t_info *info, t_print *print, t_ls *ls)
 	t_var		v;
 
 	print->nbe = 0;
-	if (!(v.op = opendir(ls->arg->name)))
-		ls_exit(LS_E_STD, ls->arg->name, ls);
+	if (!(v.op = opendir(*ls->path)))
+		ls_exit(LS_E_STD, *ls->path, ls);
 	while ((v.rd = readdir(v.op)) != NULL)
 		if (v.rd->d_name[0] != '.' || (!(v.rd->d_name[0] == '.' &&
 		(v.rd->d_name[1] == 0 || (v.rd->d_name[1] == '.' &&
 		v.rd->d_name[2] == 0))) && ls->flag & LS_F_AALL) || ls->flag & LS_F_ALL)
 		{
-			tmp = ls_get_tmp(ls->arg->name, v.rd->d_name, ls);
+			tmp = ft_strxjoin("0000", "./", *ls->path, "/", v.rd->d_name, ls);
+ft_printf("[%s]\n", tmp);
 			if (lstat(tmp, &v.elem.stat))
 			{
-				v.elem.name = v.rd->d_name;
+				ft_strcpy(v.elem.name, v.rd->d_name);
 				ls_list(&first, &elem, &v.elem);
 				print->nbe += 1;
 			}
@@ -83,7 +84,7 @@ int				ls_core(t_ls *ls)
 	while (i < ls->nbe)
 	{
 		if (ls->nbe > 1 || ls->aff_dir)
-			ft_printf("%s:\n", ls->arg->name);
+			ft_printf("%s:\n", *ls->path);
 		ls_read(&info, &print, ls);
 		if (print.nbe)
 		{
@@ -96,7 +97,7 @@ int				ls_core(t_ls *ls)
 			ft_printf("\n");
 			ls_core(&lsr);
 		}
-		ls->arg++;
+		ls->path++;
 		i++;
 		if (i < ls->nbe)
 			ft_printf("\n");

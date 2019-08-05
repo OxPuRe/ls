@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/04 12:43:06 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/05 10:57:10 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,13 @@ static void		ls_rec(t_list *mem, t_ls *ls, t_ls *lsr)
 	lsr->ex = ls->ex;
 	lsr->flag = ls->flag;
 	lsr->aff_dir = ls->aff_dir;
-	lsr->arg = (t_info*)ls_malloc(sizeof(t_info) * lsr->nbe, ls);
+	lsr->path = (char **)ls_malloc(sizeof(char *) * lsr->nbe, ls);
 	first = mem;
 	while (i < lsr->nbe)
 	{
-		ft_memcpy(lsr->arg + i, mem->content, sizeof(t_info));
+		if (!(lsr->path[i] = ft_pathjoin(*ls->path,
+			((t_info *)mem->content)->name, 1, "/")))
+			ls_exit(LS_E_STD_EXIT, NULL, ls);
 		mem = mem->next;
 		i++;
 	}
@@ -42,7 +44,7 @@ char		*ls_print_link(char *name, int mode, t_ls *ls)
 	while (42)
 	{
 		str = (char *)ls_malloc(sizeof(char) * size, ls);
-		tmp = ls_get_tmp(name, ls->arg->name, ls);
+		tmp = ls_get_tmp(name, *ls->path, ls);
 		if (readlink(tmp, str, size) == -1)
 			ls_exit(LS_E_STD_EXIT, name, ls);
 		free(tmp);
@@ -114,7 +116,6 @@ void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 {
 	t_list		*elem;
 	t_list		*first;
-	char		*tmp;
 	size_t		i;
 
 	i = 0;
@@ -125,10 +126,6 @@ void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 				(info[i].name[1] == '.' && info[i].name[2] == 0))) &&
 				(ls->flag & LS_F_RECURSIVE) != 0 && info[i].mode[0] == 'd')
 		{
-			tmp = info[i].name;
-			if (!(info[i].name = ft_pathjoin(ls->arg->name, tmp, 1, "/")))
-				ls_exit(LS_E_STD_EXIT, NULL, ls);
-			free(tmp);
 			ls_list(&first, &elem, info);
 			lsr->nbe++;
 		}
@@ -137,7 +134,7 @@ void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 		i++;
 	}
 	free(info);
-	free(ls->arg->name);
+	free(ls->path);
 	if (lsr->nbe)
 		ls_rec(first, ls, lsr);
 }

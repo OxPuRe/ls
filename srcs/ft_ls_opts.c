@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:27:13 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/04 11:38:20 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/05 05:20:37 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,5 @@ void			ls_opts(int ac, char **av, t_ls *ls)
 		ls->flag |= LS_F_ALL;
 	ls_check_av(i, ac, av, ls);
 	ls->nbe = (ac - i);
-	ls_recup_arg(ls, av + i);
+	ls_recup_arg(av + i, ls);
 }

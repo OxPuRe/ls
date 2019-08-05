@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 20:57:52 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/04 12:48:10 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/05 10:40:47 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,21 @@ static void		ls_file(int nbf, t_info *file, t_ls *ls)
 		ls_info(&file[print.nbe], &print, ls);
 		print.nbe++;
 	}
-	ls->arg = (t_info*)ls_malloc(sizeof(t_info), ls);
+	ls->path = (char**)ls_malloc(sizeof(char *), ls);
 	if (nbf > 0)
 	{
-		ls->arg[0].name = ft_strdup(".");
+		if (!(ls->path[0] = ft_strdup(".")))
+			ls_exit(LS_E_STD_EXIT, NULL, ls);
 		ls_display(file, &print, ls, &lsr);
 	}
 	else
 		free(file);
-	free(ls->arg);
+	free(ls->path);
 }
 
-static void		ls_dir(t_av *nb, t_ls *ls)
+static void		ls_dir(t_av *nb, t_info *dir, t_ls *ls)
 {
-	int			i;
+	size_t		i;
 	t_print		print;
 
 	print.s.init = 0;
@@ -49,13 +50,18 @@ static void		ls_dir(t_av *nb, t_ls *ls)
 			ft_printf("\n");
 		ls->nbe = nb->n.n.d;
 		i = 0;
-		while (i < (int)ls->nbe)
+		while (i < ls->nbe)
+			ls_info(&dir[i++], &print, ls);
+		if ((ls->flag & LS_F_NOSORT) == 0)
+			ls_sort(dir, ls->flag, ls->nbe);
+		i = 0;
+		ls->path = (char**)ls_malloc(sizeof(char *) * ls->nbe, ls);
+		while (i < ls->nbe)
 		{
-			ls_info(&ls->arg[i], &print, ls);
+			if (!(ls->path[i] = ft_strdup(dir[i].name)))
+				ls_exit(LS_E_STD_EXIT, NULL, ls);
 			i++;
 		}
-		if ((ls->flag & LS_F_NOSORT) == 0)
-			ls_sort(ls->arg, ls->flag, ls->nbe);
 		ls_core(ls);
 	}
 	else
@@ -88,7 +94,7 @@ static void		ls_test(char *av, t_info **arg, t_av *e, t_ls *ls)
 	if ((S_ISDIR(e->stat.st_mode) || av[ft_strlen(av) - 1] == '/') &&
 	!(ls->flag & LS_F_DIR))
 	{
-		arg[1][e->n.n.d].name = av;
+		ft_strcpy(arg[1][e->n.n.d].name, av);
 		arg[1][e->n.n.d++].stat = e->stat;
 	}
 	else if (S_ISLNK(e->stat.st_mode))
@@ -98,23 +104,23 @@ static void		ls_test(char *av, t_info **arg, t_av *e, t_ls *ls)
 		free(lnk);
 		if (S_ISDIR(st_l.st_mode) && !(ls->flag & LS_F_LONG))
 		{
-			arg[1][e->n.n.d].name = av;
+			ft_strcpy(arg[1][e->n.n.d].name, av);
 			arg[1][e->n.n.d++].stat = e->stat;
 		}
 		else
 		{
-			arg[0][e->n.n.f].name = av;
+			ft_strcpy(arg[0][e->n.n.f].name, av);
 			arg[0][e->n.n.f++].stat = e->stat;
 		}
 	}
 	else
 	{
-		arg[0][e->n.n.f].name = av;
+		ft_strcpy(arg[0][e->n.n.f].name, av);
 		arg[0][e->n.n.f++].stat = e->stat;
 	}
 }
 
-void			ls_recup_arg(t_ls *ls, char **av)
+void			ls_recup_arg(char **av, t_ls *ls)
 {
 	t_info		*arg[2];
 	char		**tab;
@@ -138,12 +144,10 @@ void			ls_recup_arg(t_ls *ls, char **av)
 	}
 	else
 	{
-		*av = ".";
-		arg[1][0].name = *av;
+		ft_strcpy(arg[1][0].name, ".");
 		lstat(*av, &arg[1][0].stat);
 	}
 	ls_arg_err(tab, elem.n.n.e, ls);
-	ls_file(elem.n.n.f, arg[0], ls);
-	ls->arg = arg[1];
-	ls_dir(&elem, ls);
+	ls_file(elem.n.n.f, arg[0], ls);;
+	ls_dir(&elem, arg[1], ls);
 }

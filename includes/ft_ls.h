@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/04 11:08:03 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/05 08:22:09 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ enum
 
 typedef struct			s_info
 {
-	char				*name;
+	char				name[NAME_MAX];
 	struct stat			stat;
 	struct timespec		timespec;
 	off_t				size;
@@ -106,7 +106,7 @@ typedef struct			s_stls
 	size_t				nbe;
 	unsigned int		flag:13;
 	char				aff_dir:1;
-	t_info				*arg;
+	char				**path;
 }						t_ls;
 
 typedef struct			s_var
@@ -158,7 +158,7 @@ void					ls_display(t_info *info, t_print *print, t_ls *ls,
 void					ls_info(t_info *info, t_print *p, t_ls *ls);
 void					ls_list(t_list **mem, t_list **list, t_info *info);
 void					ls_opts(int ac, char **av, t_ls *ls);
-void					ls_recup_arg(t_ls *ls, char **av);
+void					ls_recup_arg(char **av, t_ls *ls);
 void					ls_sort(t_info *info, int flag, int nbe);
 
 #endif
