@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 20:57:52 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/05 10:40:47 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/08 21:14:47 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ static void		ls_file(int nbf, t_info *file, t_ls *ls)
 		ls_info(&file[print.nbe], &print, ls);
 		print.nbe++;
 	}
+	if ((ls->flag & LS_F_NOSORT) == 0)
+		ls_sort(file, ls->flag, print.nbe);
 	ls->path = (char**)ls_malloc(sizeof(char *), ls);
 	if (nbf > 0)
 	{
@@ -134,6 +136,7 @@ void			ls_recup_arg(char **av, t_ls *ls)
 	{
 		while (ls->nbe)
 		{
+		ft_printf
 			if ((lstat(*av, &elem.stat)) == 0)
 				ls_test(*av, arg, &elem, ls);
 			else
@@ -144,10 +147,10 @@ void			ls_recup_arg(char **av, t_ls *ls)
 	}
 	else
 	{
-		ft_strcpy(arg[1][0].name, ".");
+		ft_strcpy(arg[1][elem.n.n.d++].name, ".");
 		lstat(*av, &arg[1][0].stat);
 	}
 	ls_arg_err(tab, elem.n.n.e, ls);
-	ls_file(elem.n.n.f, arg[0], ls);;
+	ls_file(elem.n.n.f, arg[0], ls);
 	ls_dir(&elem, arg[1], ls);
 }

@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/05 10:57:10 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/08 20:45:43 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ char		*ls_print_link(char *name, int mode, t_ls *ls)
 	while (42)
 	{
 		str = (char *)ls_malloc(sizeof(char) * size, ls);
-		tmp = ls_get_tmp(name, *ls->path, ls);
+		tmp = ft_pathjoin(*ls->path, name, 1, "/");
+	//ft_printf("[%s]\n", tmp);
 		if (readlink(tmp, str, size) == -1)
 			ls_exit(LS_E_STD_EXIT, name, ls);
 		free(tmp);
@@ -119,6 +120,8 @@ void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 	size_t		i;
 
 	i = 0;
+	elem = NULL;
+	first = elem;
 	while (i < print->nbe)
 	{
 		ls_print(&info[i], print, ls);
@@ -126,7 +129,7 @@ void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 				(info[i].name[1] == '.' && info[i].name[2] == 0))) &&
 				(ls->flag & LS_F_RECURSIVE) != 0 && info[i].mode[0] == 'd')
 		{
-			ls_list(&first, &elem, info);
+			ls_list(&first, &elem, &info[i]);
 			lsr->nbe++;
 		}
 		free(info[i].owner);
@@ -134,7 +137,7 @@ void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 		i++;
 	}
 	free(info);
-	free(ls->path);
+	//free(*ls->path);
 	if (lsr->nbe)
 		ls_rec(first, ls, lsr);
 }

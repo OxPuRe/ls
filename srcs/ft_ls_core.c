@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/05 14:53:48 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/08 16:07:08 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static void		ls_convert(t_list *mem, t_info *info, t_print *print, t_ls *ls)
 	print->s.init = 0;
 	while (i < print->nbe)
 	{
+		ft_memcpy(&info[i], mem->content, sizeof(t_info));
 		ls_info(&info[i], print, ls);
 		print->block += info[i].stat.st_blocks;
 		mem = mem->next;
@@ -39,36 +40,40 @@ static void		ls_convert(t_list *mem, t_info *info, t_print *print, t_ls *ls)
 		ls_sort(info, ls->flag, print->nbe);
 }
 
-static void		ls_read(t_info *info, t_print *print, t_ls *ls)
+static void		ls_read(t_info **info, t_print *print, t_ls *ls)
 {
 	t_list		*elem;
 	t_list		*first;
 	char		*tmp;
 	t_var		v;
 
+	elem = NULL;
+	first = elem;
 	print->nbe = 0;
 	if (!(v.op = opendir(*ls->path)))
 		ls_exit(LS_E_STD, *ls->path, ls);
-	while ((v.rd = readdir(v.op)) != NULL)
-		if (v.rd->d_name[0] != '.' || (!(v.rd->d_name[0] == '.' &&
+	else
+	{
+		while ((v.rd = readdir(v.op)) != NULL)
+			if (v.rd->d_name[0] != '.' || (!(v.rd->d_name[0] == '.' &&
 		(v.rd->d_name[1] == 0 || (v.rd->d_name[1] == '.' &&
 		v.rd->d_name[2] == 0))) && ls->flag & LS_F_AALL) || ls->flag & LS_F_ALL)
-		{
-			tmp = ft_strxjoin("0000", "./", *ls->path, "/", v.rd->d_name, ls);
-ft_printf("[%s]\n", tmp);
-			if (lstat(tmp, &v.elem.stat))
 			{
-				ft_strcpy(v.elem.name, v.rd->d_name);
-				ls_list(&first, &elem, &v.elem);
-				print->nbe += 1;
+				tmp = ft_pathjoin(*ls->path, v.rd->d_name, 1, "/");
+				if (!lstat(tmp, &v.elem.stat))
+				{
+					ft_strcpy(v.elem.name, v.rd->d_name);
+					ls_list(&first, &elem, &v.elem);
+					print->nbe += 1;
+				}
+				free(tmp);
 			}
-			free(tmp);
-		}
-	closedir(v.op);
+		closedir(v.op);
+	}
 	if (print->nbe)
 	{
-		info = (t_info*)ls_malloc(sizeof(t_info) * print->nbe, ls);
-		ls_convert(first, info, print, ls);
+		*info = (t_info*)ls_malloc(sizeof(t_info) * print->nbe, ls);
+		ls_convert(first, *info, print, ls);
 	}
 }
 
@@ -76,13 +81,14 @@ int				ls_core(t_ls *ls)
 {
 	t_ls		lsr;
 	size_t		i;
-	t_info		info;
+	t_info		*info;
 	t_print		print;
 
 	i = 0;
-	lsr.nbe = 0;
+	info = NULL;
 	while (i < ls->nbe)
 	{
+		lsr.nbe = 0;
 		if (ls->nbe > 1 || ls->aff_dir)
 			ft_printf("%s:\n", *ls->path);
 		ls_read(&info, &print, ls);
@@ -90,7 +96,7 @@ int				ls_core(t_ls *ls)
 		{
 			if ((ls->flag & LS_F_LONG))
 				ft_printf("total %lld\n", print.block);
-			ls_display(&info, &print, ls, &lsr);
+			ls_display(info, &print, ls, &lsr);
 		}
 		if (lsr.nbe)
 		{

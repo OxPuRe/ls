@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/09 15:18:39 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/04 12:00:48 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/08 16:43:44 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,10 @@ void					ls_info(t_info *info, t_print *p, t_ls *ls)
 	p->s.s.lk = ft_max((ft_intlen((int)info->stat.st_nlink)), p->s.s.lk);
 	p->s.s.own = ft_max((ft_strlen(info->owner)), p->s.s.own);
 	p->s.s.grp = ft_max((ft_strlen(info->group)), p->s.s.grp);
+	p->s.s.sz = ft_max(ft_intlen((int)info->size), p->s.s.sz);
+	if (info->mode[0] == 'c' || info->mode[0] == 'b')
+	{
 	p->s.s.min = ft_max(ft_intlen((int)minor(info->stat.st_rdev)), p->s.s.min);
 	p->s.s.maj = ft_max(ft_intlen((int)major(info->stat.st_rdev)), p->s.s.maj);
-	p->s.s.sz = ft_max(ft_intlen((int)info->size), p->s.s.sz);
+	}
 }
