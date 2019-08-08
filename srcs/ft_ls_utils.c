@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/08 15:24:24 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/09 00:47:46 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void		ls_del(void *content, size_t size)
 {
-	(void)content;
+	free(content);
 	(void)size;
 }
 

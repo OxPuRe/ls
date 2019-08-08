@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 20:57:52 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/08 21:14:47 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/09 01:08:04 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,13 @@ static void		ls_test(char *av, t_info **arg, t_av *e, t_ls *ls)
 	}
 	else if (S_ISLNK(e->stat.st_mode))
 	{
-		lnk = ls_print_link(".", 1, ls);
+		ls->path = (char**)ls_malloc(sizeof(char *), ls);
+		*ls->path = ft_strdup(".");
+		lnk = ls_print_link(av, 1, ls);
 		lstat(lnk, &st_l);
 		free(lnk);
+		free(*ls->path);
+		free(ls->path);
 		if (S_ISDIR(st_l.st_mode) && !(ls->flag & LS_F_LONG))
 		{
 			ft_strcpy(arg[1][e->n.n.d].name, av);
@@ -129,28 +133,30 @@ void			ls_recup_arg(char **av, t_ls *ls)
 	t_av		elem;
 
 	elem.n.init = 0;
-	tab = (char **)ls_malloc(sizeof(char *) * ls->nbe, ls);
-	arg[0] = (t_info*)ls_malloc(sizeof(t_info) * ls->nbe, ls);
-	arg[1] = (t_info*)ls_malloc(sizeof(t_info) * ls->nbe, ls);
+	tab = (char **)ls_malloc(sizeof(char *) * (ls->nbe ? ls->nbe : 1), ls);
+	arg[0] = (t_info*)ls_malloc(sizeof(t_info) * (ls->nbe ? ls->nbe : 1), ls);
+	arg[1] = (t_info*)ls_malloc(sizeof(t_info) * (ls->nbe ? ls->nbe : 1), ls);
 	if (ls->nbe)
 	{
 		while (ls->nbe)
 		{
-		ft_printf
 			if ((lstat(*av, &elem.stat)) == 0)
 				ls_test(*av, arg, &elem, ls);
 			else
+			{
 				tab[elem.n.n.e++] = *av;
+			}
 			ls->nbe--;
 			av++;
 		}
 	}
 	else
 	{
-		ft_strcpy(arg[1][elem.n.n.d++].name, ".");
-		lstat(*av, &arg[1][0].stat);
+		if ((lstat(".", &elem.stat)) == 0)
+			ls_test(".", arg, &elem, ls);
 	}
 	ls_arg_err(tab, elem.n.n.e, ls);
 	ls_file(elem.n.n.f, arg[0], ls);
 	ls_dir(&elem, arg[1], ls);
+	free(arg[1]);
 }

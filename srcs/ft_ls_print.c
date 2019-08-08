@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/08 20:45:43 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/09 01:01:32 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ char		*ls_print_link(char *name, int mode, t_ls *ls)
 	{
 		str = (char *)ls_malloc(sizeof(char) * size, ls);
 		tmp = ft_pathjoin(*ls->path, name, 1, "/");
-	//ft_printf("[%s]\n", tmp);
 		if (readlink(tmp, str, size) == -1)
 			ls_exit(LS_E_STD_EXIT, name, ls);
 		free(tmp);
@@ -59,7 +58,7 @@ char		*ls_print_link(char *name, int mode, t_ls *ls)
 	}
 	if (mode)
 		return (str);
-	ft_printf(" -> %s", str);
+	ft_printf("%s -> %s\n", name, str);
 	free(str);
 	return (NULL);
 }
@@ -106,10 +105,10 @@ static void		ls_print(t_info *info, t_print *print, t_ls *ls)
 			print->s.s.grp, info->group, print->s.s.sz, info->size);
 		ls_print_time(info);
 	}
-	ft_printf("%s", info->name);
 	if ((ls->flag & LS_F_LONG) && info->mode[0] == 'l')
 		ls_print_link(info->name, 0, ls);
-	ft_printf("\n");
+	else
+		ft_printf("%s\n", info->name);
 	ls->aff_dir = 1;
 }
 
@@ -137,7 +136,7 @@ void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 		i++;
 	}
 	free(info);
-	//free(*ls->path);
 	if (lsr->nbe)
 		ls_rec(first, ls, lsr);
+	free(*ls->path);
 }
