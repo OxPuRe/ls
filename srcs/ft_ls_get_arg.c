@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 20:57:52 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/09 01:08:04 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/17 03:28:36 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static void		ls_dir(t_av *nb, t_info *dir, t_ls *ls)
 		ls->nbe = nb->n.n.d;
 		i = 0;
 		while (i < ls->nbe)
-			ls_info(&dir[i++], &print, ls);
+			ls_mode(&dir[i++], ls);
 		if ((ls->flag & LS_F_NOSORT) == 0)
 			ls_sort(dir, ls->flag, ls->nbe);
 		i = 0;
@@ -66,33 +66,34 @@ static void		ls_dir(t_av *nb, t_info *dir, t_ls *ls)
 		}
 		ls_core(ls);
 	}
-	else
-		exit(0);
 }
 
-static void		ls_arg_err(char **tab, int e, t_ls *ls)
-{
-	int			i;
-
-	i = 0;
-	if (e)
-	{
-		ft_qsort(tab, e, sizeof(char *), &ft_strvcmp);
-		while (i < e)
-		{
-			ls_exit(LS_E_STD, tab[i], ls);
-			i++;
-		}
-	}
-	if (tab)
-		free(tab);
-}
-
-static void		ls_test(char *av, t_info **arg, t_av *e, t_ls *ls)
+static void		ls_islnk(char *av, t_info **arg, t_av *e, t_ls *ls)
 {
 	char		*lnk;
 	struct stat st_l;
 
+	ls->path = (char**)ls_malloc(sizeof(char *), ls);
+	*ls->path = ft_strdup(".");
+	lnk = ls_print_link(av, 1, ls);
+	lstat(lnk, &st_l);
+	free(lnk);
+	free(*ls->path);
+	free(ls->path);
+	if (S_ISDIR(st_l.st_mode) && !(ls->flag & LS_F_LONG))
+	{
+		ft_strcpy(arg[1][e->n.n.d].name, av);
+		arg[1][e->n.n.d++].stat = e->stat;
+	}
+	else
+	{
+		ft_strcpy(arg[0][e->n.n.f].name, av);
+		arg[0][e->n.n.f++].stat = e->stat;
+	}
+}
+
+static void		ls_test(char *av, t_info **arg, t_av *e, t_ls *ls)
+{
 	if ((S_ISDIR(e->stat.st_mode) || av[ft_strlen(av) - 1] == '/') &&
 	!(ls->flag & LS_F_DIR))
 	{
@@ -100,25 +101,7 @@ static void		ls_test(char *av, t_info **arg, t_av *e, t_ls *ls)
 		arg[1][e->n.n.d++].stat = e->stat;
 	}
 	else if (S_ISLNK(e->stat.st_mode))
-	{
-		ls->path = (char**)ls_malloc(sizeof(char *), ls);
-		*ls->path = ft_strdup(".");
-		lnk = ls_print_link(av, 1, ls);
-		lstat(lnk, &st_l);
-		free(lnk);
-		free(*ls->path);
-		free(ls->path);
-		if (S_ISDIR(st_l.st_mode) && !(ls->flag & LS_F_LONG))
-		{
-			ft_strcpy(arg[1][e->n.n.d].name, av);
-			arg[1][e->n.n.d++].stat = e->stat;
-		}
-		else
-		{
-			ft_strcpy(arg[0][e->n.n.f].name, av);
-			arg[0][e->n.n.f++].stat = e->stat;
-		}
-	}
+		ls_islnk(av, arg, e, ls);
 	else
 	{
 		ft_strcpy(arg[0][e->n.n.f].name, av);
@@ -137,24 +120,17 @@ void			ls_recup_arg(char **av, t_ls *ls)
 	arg[0] = (t_info*)ls_malloc(sizeof(t_info) * (ls->nbe ? ls->nbe : 1), ls);
 	arg[1] = (t_info*)ls_malloc(sizeof(t_info) * (ls->nbe ? ls->nbe : 1), ls);
 	if (ls->nbe)
-	{
 		while (ls->nbe)
 		{
 			if ((lstat(*av, &elem.stat)) == 0)
 				ls_test(*av, arg, &elem, ls);
 			else
-			{
 				tab[elem.n.n.e++] = *av;
-			}
 			ls->nbe--;
 			av++;
 		}
-	}
-	else
-	{
-		if ((lstat(".", &elem.stat)) == 0)
-			ls_test(".", arg, &elem, ls);
-	}
+	else if ((lstat(".", &elem.stat)) == 0)
+		ls_test(".", arg, &elem, ls);
 	ls_arg_err(tab, elem.n.n.e, ls);
 	ls_file(elem.n.n.f, arg[0], ls);
 	ls_dir(&elem, arg[1], ls);

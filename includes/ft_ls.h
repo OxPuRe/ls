@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/08 14:58:00 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/17 03:28:26 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ typedef struct			s_var
 
 typedef struct			s_av
 {
-	struct stat 		stat;
+	struct stat			stat;
 	union				{
 		struct			{
 			uint8_t		f:8;
@@ -159,6 +159,8 @@ void					ls_info(t_info *info, t_print *p, t_ls *ls);
 void					ls_list(t_list **mem, t_list **list, t_info *info);
 void					ls_opts(int ac, char **av, t_ls *ls);
 void					ls_recup_arg(char **av, t_ls *ls);
+void					ls_mode(t_info *info, t_ls *ls);
 void					ls_sort(t_info *info, int flag, int nbe);
+void					ls_arg_err(char **tab, int e, t_ls *ls);
 
 #endif

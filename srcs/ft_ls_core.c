@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/09 01:11:10 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/17 04:57:08 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,27 @@ static void		ls_convert(t_list *mem, t_info *info, t_print *print, t_ls *ls)
 		ls_sort(info, ls->flag, print->nbe);
 }
 
+static void		ls_new_link(t_list *elem[2], t_var *v, t_print *print, t_ls *ls)
+{
+	char		*tmp;
+
+	tmp = ft_pathjoin(*ls->path, v->rd->d_name, 1, "/");
+	if (!lstat(tmp, &v->elem.stat))
+	{
+		ft_strcpy(v->elem.name, v->rd->d_name);
+		ls_list(&elem[0], &elem[1], &v->elem);
+		print->nbe += 1;
+	}
+	free(tmp);
+}
+
 static void		ls_read(t_info **info, t_print *print, t_ls *ls)
 {
-	t_list		*elem;
-	t_list		*first;
-	char		*tmp;
+	t_list		*elem[2];
 	t_var		v;
 
-	elem = NULL;
-	first = elem;
+	elem[0] = NULL;
+	elem[1] = NULL;
 	print->nbe = 0;
 	if (!(v.op = opendir(*ls->path)))
 		ls_exit(LS_E_STD, *ls->path, ls);
@@ -59,21 +71,14 @@ static void		ls_read(t_info **info, t_print *print, t_ls *ls)
 		(v.rd->d_name[1] == 0 || (v.rd->d_name[1] == '.' &&
 		v.rd->d_name[2] == 0))) && ls->flag & LS_F_AALL) || ls->flag & LS_F_ALL)
 			{
-				tmp = ft_pathjoin(*ls->path, v.rd->d_name, 1, "/");
-				if (!lstat(tmp, &v.elem.stat))
-				{
-					ft_strcpy(v.elem.name, v.rd->d_name);
-					ls_list(&first, &elem, &v.elem);
-					print->nbe += 1;
-				}
-				free(tmp);
+				ls_new_link(elem, &v, print, ls);
 			}
 		closedir(v.op);
 	}
 	if (print->nbe)
 	{
 		*info = (t_info*)ls_malloc(sizeof(t_info) * print->nbe, ls);
-		ls_convert(first, *info, print, ls);
+		ls_convert(elem[0], *info, print, ls);
 	}
 }
 
@@ -83,9 +88,11 @@ int				ls_core(t_ls *ls)
 	size_t		i;
 	t_info		*info;
 	t_print		print;
+	char		**mem;
 
 	i = 0;
 	info = NULL;
+	mem = ls->path;
 	while (i < ls->nbe)
 	{
 		lsr.nbe = 0;
@@ -98,6 +105,7 @@ int				ls_core(t_ls *ls)
 				ft_printf("total %lld\n", print.block);
 			ls_display(info, &print, ls, &lsr);
 		}
+		free(*ls->path);
 		if (lsr.nbe)
 		{
 			ft_printf("\n");
@@ -108,5 +116,6 @@ int				ls_core(t_ls *ls)
 		if (i < ls->nbe)
 			ft_printf("\n");
 	}
+	free(mem);
 	return (0);
 }

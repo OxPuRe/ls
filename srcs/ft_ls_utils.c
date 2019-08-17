@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 17:38:34 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/09 00:47:46 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/17 03:28:58 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,24 @@ void		ls_list(t_list **mem, t_list **list, t_info *info)
 		(*list)->next = ft_lstnew(info, sizeof(t_info));
 		*list = (*list)->next;
 	}
+}
+
+void		ls_arg_err(char **tab, int e, t_ls *ls)
+{
+	int			i;
+
+	i = 0;
+	if (e)
+	{
+		ft_qsort(tab, e, sizeof(char *), &ft_strvcmp);
+		while (i < e)
+		{
+			ls_exit(LS_E_STD, tab[i], ls);
+			i++;
+		}
+	}
+	if (tab)
+		free(tab);
 }
 
 void		*ls_malloc(size_t size, t_ls *ls)

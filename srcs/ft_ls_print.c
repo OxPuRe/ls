@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/09 01:01:32 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/17 03:03:27 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,28 +34,28 @@ static void		ls_rec(t_list *mem, t_ls *ls, t_ls *lsr)
 	ft_lstdel(&first, ls_del);
 }
 
-char		*ls_print_link(char *name, int mode, t_ls *ls)
+char			*ls_print_link(char *name, int mode, t_ls *ls)
 {
 	size_t		size;
 	char		*str;
 	char		*tmp;
+	int			ret;
 
 	size = LS_SL_BUFF;
 	while (42)
 	{
-		str = (char *)ls_malloc(sizeof(char) * size, ls);
-		tmp = ft_pathjoin(*ls->path, name, 1, "/");
-		if (readlink(tmp, str, size) == -1)
-			ls_exit(LS_E_STD_EXIT, name, ls);
+		str = (char *)ls_malloc(sizeof(char) * size + 1, ls);
+		if (!(tmp = ft_pathjoin(*ls->path, name, 1, "/")))
+			ls_exit(LS_E_STD_EXIT, NULL, ls);
+		if ((ret = readlink(tmp, str, size)) == -1)
+			ls_exit(LS_E_STD_EXIT, tmp, ls);
 		free(tmp);
-		if (ft_strnlen(str, size) == size)
-		{
-			free(str);
-			size += LS_SL_BUFF;
-		}
-		else
+		if (ret != (int)size)
 			break ;
+		free(str);
+		size += LS_SL_BUFF;
 	}
+	str[ret] = '\0';
 	if (mode)
 		return (str);
 	ft_printf("%s -> %s\n", name, str);
@@ -138,5 +138,4 @@ void			ls_display(t_info *info, t_print *print, t_ls *ls, t_ls *lsr)
 	free(info);
 	if (lsr->nbe)
 		ls_rec(first, ls, lsr);
-	free(*ls->path);
 }
