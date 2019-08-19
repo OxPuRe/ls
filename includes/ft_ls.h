@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 19:45:51 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/17 03:28:26 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/19 21:39:32 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <sys/xattr.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-# include <stdio.h>
 # include <unistd.h>
 # include <dirent.h>
 # include <time.h>

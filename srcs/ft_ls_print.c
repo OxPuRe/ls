@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 15:51:58 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/17 03:03:27 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/19 23:27:56 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static void		ls_print(t_info *info, t_print *print, t_ls *ls)
 	if ((ls->flag & LS_F_LONG))
 	{
 		if (info->mode[0] == 'c' || info->mode[0] == 'b')
-			ft_printf("%-11s %*lu %-*s  %-*s %*d, %*d ", info->mode,
+			ft_printf("%-11s %*lu %-*s  %-*s  %*d, %*d ", info->mode,
 				print->s.s.lk, info->stat.st_nlink, print->s.s.own, info->owner,
 				print->s.s.grp, info->group, print->s.s.maj,
 				major(info->stat.st_rdev), print->s.s.min,

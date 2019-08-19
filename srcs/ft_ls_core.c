@@ -6,7 +6,7 @@
 /*   By: auverneu <auverneu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/18 11:09:47 by auverneu          #+#    #+#             */
-/*   Updated: 2019/08/17 04:57:08 by auverneu         ###   ########.fr       */
+/*   Updated: 2019/08/19 23:26:29 by auverneu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ static void		ls_convert(t_list *mem, t_info *info, t_print *print, t_ls *ls)
 		i++;
 	}
 	ft_lstdel(&first, ls_del);
-	print->s.s.min = ft_max(print->s.s.min, print->s.s.maj);
 	print->s.s.maj = ft_max(print->s.s.min, print->s.s.maj);
-	if (print->s.s.sz > print->s.s.min * 2 + 2 && print->s.s.min * 2 >= 2)
-		print->s.s.maj = print->s.s.sz - print->s.s.min - 2;
+	print->s.s.min = ft_max(print->s.s.min, print->s.s.maj);
+	if (print->s.s.sz > print->s.s.maj * 2 + 2 && print->s.s.maj * 2 >= 2)
+		print->s.s.maj = print->s.s.sz - print->s.s.maj - 2;
 	else if (print->s.s.sz < print->s.s.min * 2 + 2 && print->s.s.min * 2 >= 2)
 		print->s.s.sz = print->s.s.min * 2 + 2;
 	if ((ls->flag & LS_F_NOSORT) == 0)
@@ -93,28 +93,19 @@ int				ls_core(t_ls *ls)
 	i = 0;
 	info = NULL;
 	mem = ls->path;
-	while (i < ls->nbe)
+	while (i++ < ls->nbe)
 	{
 		lsr.nbe = 0;
-		if (ls->nbe > 1 || ls->aff_dir)
-			ft_printf("%s:\n", *ls->path);
+		(ls->nbe > 1 || ls->aff_dir) ? ft_printf("%s:\n", *ls->path) : 0;
 		ls_read(&info, &print, ls);
-		if (print.nbe)
-		{
-			if ((ls->flag & LS_F_LONG))
-				ft_printf("total %lld\n", print.block);
-			ls_display(info, &print, ls, &lsr);
-		}
+		print.nbe && ls->flag & LS_F_LONG ? ft_printf("total %lld\n",
+		print.block) : 0;
+		print.nbe ? ls_display(info, &print, ls, &lsr) : 0;
 		free(*ls->path);
-		if (lsr.nbe)
-		{
-			ft_printf("\n");
-			ls_core(&lsr);
-		}
+		lsr.nbe ? ft_printf("\n") : 0;
+		lsr.nbe ? ls_core(&lsr) : 0;
 		ls->path++;
-		i++;
-		if (i < ls->nbe)
-			ft_printf("\n");
+		i < ls->nbe ? ft_printf("\n") : 0;
 	}
 	free(mem);
 	return (0);
